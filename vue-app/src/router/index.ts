@@ -3,11 +3,11 @@ import HomeView from '../views/HomeView.vue'
 import DemoViewer from '../views/DemoViewer.vue'
 
 // Auto-map every demo component in src/demos/<category>/<id>.vue
-const demoFiles = import.meta.glob<{ default: unknown }>('./demos/*/*.vue')
+const demoFiles = import.meta.glob<{ default: unknown }>('../demos/*/*.vue')
 
 const demoRoutes = Object.entries(demoFiles).map(([path, component]) => {
-  // "./demos/motion/loading-anim.vue" -> "motion/loading-anim"
-  const id = path.replace(/^\.\//, '').replace(/\.vue$/, '').replace(/^demos\//, '')
+  // "../demos/motion/loading-anim.vue" -> "motion/loading-anim"
+  const id = path.replace(/^\.\.\//, '').replace(/\.vue$/, '').replace(/^demos\//, '')
   const [categoryId, demoId] = id.split('/')
   return {
     path: `/demo/${categoryId}/${demoId}`,
