@@ -52,7 +52,8 @@ function dodge() {
 <style scoped>
 .demo {
   --purple: #792ddd;
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   background-color: var(--purple);
   display: grid;
   place-items: center;
@@ -61,8 +62,7 @@ function dodge() {
 }
 
 .wrapper {
-  width: 600px;
-  max-width: 95%;
+  width: min(600px, 95%);
   height: 400px;
   background-color: #fff;
   border-radius: 16px;
@@ -98,7 +98,7 @@ function dodge() {
 }
 
 .wrapper .title {
-  font-size: 2.6em;
+  font-size: clamp(1.5em, 6vw, 2.6em);
   color: var(--purple);
   letter-spacing: 2px;
   text-align: center;
@@ -113,7 +113,7 @@ function dodge() {
 }
 
 .wrapper .btn-group .btn {
-  width: 150px;
+  width: clamp(100px, 35vw, 150px);
   height: inherit;
   border: 2px solid var(--purple);
   border-radius: calc(infinity * 1px);

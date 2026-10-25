@@ -82,7 +82,8 @@ function submit(): void {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -91,9 +92,9 @@ function submit(): void {
 }
 
 .messages {
-  width: 1000px;
-  max-width: 90%;
-  padding: 50px 100px;
+  width: min(1000px, 90%);
+  max-width: 100%;
+  padding: 50px clamp(20px, 8vw, 100px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -136,7 +137,7 @@ textarea {
   width: 100%;
   text-align: left;
   margin-bottom: 70px;
-  font-size: 140px;
+  font-size: clamp(48px, 12vw, 140px);
   background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -152,7 +153,7 @@ textarea {
   background-image: linear-gradient(90deg, #e0c3fc 0%, #8ec5fc 100%);
   border: none;
   font-size: 30px;
-  width: 200px;
+  width: min(200px, 100%);
   height: 70px;
   border-radius: 50px;
   cursor: pointer;
@@ -210,7 +211,8 @@ textarea {
 
 strong {
   position: absolute;
-  width: 800px;
+  width: 100%;
+  max-width: 800px;
   letter-spacing: 3px;
   top: 70px;
   left: 170px;
@@ -227,5 +229,125 @@ strong {
   font-size: 36px;
   margin: 30px;
   width: 95%;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 768px) {
+  .demo {
+    padding: 20px 0;
+  }
+
+  .messages {
+    padding: 30px clamp(16px, 5vw, 40px);
+  }
+
+  input,
+  textarea {
+    font: 900 clamp(20px, 4vw, 28px) sans-serif;
+    padding: 18px;
+    margin-bottom: 24px;
+  }
+
+  input {
+    height: 60px;
+  }
+
+  textarea {
+    height: 140px;
+  }
+
+  .message {
+    margin: 40px 0;
+  }
+
+  .message-info {
+    height: auto;
+    font-size: 24px;
+  }
+
+  .avatar {
+    width: 100px;
+    height: 100px;
+    border: 6px #fff solid;
+  }
+
+  strong {
+    top: 46px;
+    left: 116px;
+  }
+
+  .time {
+    font-size: 16px;
+  }
+
+  .content {
+    font-size: 24px;
+    margin: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .messages {
+    padding: 20px 12px;
+  }
+
+  .messages h1 {
+    letter-spacing: 4px;
+    margin-bottom: 40px;
+  }
+
+  #submitBtn {
+    width: 100%;
+    height: 56px;
+    font-size: 24px;
+  }
+
+  .form {
+    padding-bottom: 80px;
+  }
+
+  input,
+  textarea {
+    font: 900 18px sans-serif;
+    padding: 14px;
+    margin-bottom: 18px;
+  }
+
+  input {
+    height: 52px;
+  }
+
+  textarea {
+    height: 120px;
+  }
+
+  .message {
+    margin: 30px 0;
+    padding: 8px;
+  }
+
+  .message-info {
+    font-size: 18px;
+  }
+
+  .avatar {
+    width: 70px;
+    height: 70px;
+    border: 4px #fff solid;
+  }
+
+  strong {
+    top: 32px;
+    left: 82px;
+  }
+
+  .time {
+    font-size: 13px;
+  }
+
+  .content {
+    font-size: 18px;
+    margin: 14px;
+  }
 }
 </style>

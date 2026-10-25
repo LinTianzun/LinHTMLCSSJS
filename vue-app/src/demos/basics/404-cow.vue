@@ -46,7 +46,8 @@ onUnmounted(() => {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: max(320px, 100vh);
   --bg: linear-gradient(#acb6e5, #86fde8);
   --anime-speed: 0.2s;
   background: var(--bg);
@@ -428,6 +429,19 @@ onUnmounted(() => {
   100% {
     transform: rotate(-3deg);
     height: 8rem;
+  }
+}
+
+/* 响应式：整体等比缩放场景（rem 定位的纯 CSS 动画画布） */
+@media (max-width: 768px) {
+  .scene {
+    zoom: 0.75;
+  }
+}
+
+@media (max-width: 480px) {
+  .scene {
+    zoom: 0.55;
   }
 }
 </style>

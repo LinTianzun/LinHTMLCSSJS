@@ -40,19 +40,26 @@ const columns = computed(() => [
 </template>
 
 <style scoped>
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 .demo {
-  min-height: 500px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   background-color: #fffaff;
-  overflow-y: auto;
+  min-height: 100vh;
 }
 
 main {
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(3, 430px);
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1400px;
+  width: 100%;
   overflow-y: hidden;
   padding: 50px 20px;
 }
@@ -63,14 +70,22 @@ section {
   flex-direction: column;
 }
 
-/* 侧边两列：随容器滚动反向流动，形成视差 */
+/* 侧边两列：随页面滚动反向流动，形成视差 */
 section.side {
+  animation: scroller linear;
+  animation-timeline: scroll(root);
   flex-direction: column-reverse;
+  translate: 0% calc(-100% + 100vh);
+}
+
+@keyframes scroller {
+  to {
+    translate: 0% calc(100% - 100vh);
+  }
 }
 
 section img {
-  width: 430px;
-  max-width: 100%;
+  width: 100%;
   height: 250px;
   object-fit: cover;
   box-shadow: 0 0 10px #0002;
@@ -81,5 +96,23 @@ section img {
 section img:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(150, 50, 50, 0.5);
+}
+
+@media (max-width: 768px) {
+  main {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+
+  section.side {
+    animation: none;
+    translate: none;
+    flex-direction: column;
+  }
 }
 </style>

@@ -134,7 +134,7 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: 500px;
+  min-height: 100vh;
   box-sizing: border-box;
   background: rgba(99, 99, 99, 0.8);
   overflow: hidden;
@@ -152,7 +152,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 380px;
+  width: min(380px, 90%);
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -275,5 +275,38 @@ onUnmounted(() => {
   border-right-width: 5px;
   transform: translate3d(-1px, 0, -60px) rotateY(90deg);
   transform-origin: 100%;
+}
+
+@media (max-width: 768px) {
+  .box h1 {
+    font-size: 50px;
+  }
+
+  .box span {
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .prev,
+  .next {
+    font-size: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .box h1 {
+    font-size: 38px;
+  }
+
+  .box span {
+    bottom: 12px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
+  .prev,
+  .next {
+    font-size: 34px;
+  }
 }
 </style>

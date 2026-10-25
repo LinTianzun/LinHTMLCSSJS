@@ -132,7 +132,8 @@ onUnmounted(() => {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -157,12 +158,14 @@ onUnmounted(() => {
 
 #time {
   display: flex;
-  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(10px, 3vw, 30px);
 }
 
 .circle {
-  width: 150px;
-  height: 150px;
+  width: clamp(90px, 22vw, 150px);
+  height: clamp(90px, 22vw, 150px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -225,7 +228,7 @@ onUnmounted(() => {
 }
 
 .newYear {
-  font-size: 4em;
+  font-size: clamp(2em, 9vw, 4em);
   font-weight: 500;
   color: #fff;
   text-align: center;
@@ -233,7 +236,7 @@ onUnmounted(() => {
 }
 
 .newYear.arrived {
-  font-size: 8em;
+  font-size: clamp(3em, 16vw, 8em);
   line-height: 0.6em;
   z-index: 1;
 }

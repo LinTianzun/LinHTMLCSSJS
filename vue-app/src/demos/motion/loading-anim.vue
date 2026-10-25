@@ -32,7 +32,8 @@ const bars = Array.from({ length: 20 }, (_, i) => i + 1)
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -68,8 +69,8 @@ const bars = Array.from({ length: 20 }, (_, i) => i + 1)
 
 .loader {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: min(200px, 50vw);
+  height: min(200px, 50vw);
   filter: url(#gooey);
 }
 
@@ -110,7 +111,9 @@ const bars = Array.from({ length: 20 }, (_, i) => i + 1)
 .loading {
   position: relative;
   display: flex;
-  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(2px, 1vw, 15px);
 }
 
 .loading span {

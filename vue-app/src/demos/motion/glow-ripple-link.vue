@@ -31,14 +31,22 @@ const links: PulseLink[] = [
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   margin: 0;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 9rem;
+  gap: clamp(2rem, 18vw, 9rem);
   background: #333;
   border-radius: 8px;
+}
+
+@media (max-width: 480px) {
+  .demo {
+    gap: 1.5rem;
+  }
 }
 
 .pulse ion-icon {

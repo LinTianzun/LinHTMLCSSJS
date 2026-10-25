@@ -89,8 +89,8 @@ function toggleSubMenu(index: number): void {
 
 <style scoped>
 .demo {
-  height: 100vh;
-  min-height: 480px;
+  width: 100%;
+  min-height: 100vh;
   position: relative;
   box-sizing: border-box;
   overflow: hidden;
@@ -363,5 +363,34 @@ function toggleSubMenu(index: number): void {
 .home-section .home-content .text {
   font-size: 26px;
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .home-section .home-content .text {
+    font-size: 22px;
+  }
+
+  .home-section .home-content .bx-menu {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .sidebar .profile-details {
+    width: 200px;
+  }
+
+  .home-section .home-content .text {
+    font-size: 18px;
+  }
+
+  .home-section .home-content .bx-menu {
+    font-size: 26px;
+    margin: 0 10px;
+  }
 }
 </style>

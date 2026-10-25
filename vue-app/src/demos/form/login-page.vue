@@ -154,7 +154,8 @@ const slideIsActive = ref(false)
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -218,7 +219,7 @@ const slideIsActive = ref(false)
 
 .container {
   position: relative;
-  width: 350px;
+  width: min(350px, 92vw);
   height: 340px;
   border-radius: 15px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.25);
@@ -398,7 +399,7 @@ form.signupForm b {
 
 .s-container {
   position: relative;
-  width: 850px;
+  width: min(850px, 100%);
   max-width: 100%;
   height: 550px;
   background: #fff;
@@ -583,5 +584,90 @@ form.signupForm b {
   background: transparent;
   border: 2px solid #fff;
   box-shadow: none;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 768px) {
+  .glass-stage {
+    min-height: 420px;
+    padding: 20px 0;
+  }
+
+  .slide-stage {
+    padding: 20px 12px;
+  }
+
+  .s-container {
+    height: auto;
+    min-height: 520px;
+  }
+
+  /* 移动端：改为上下堆叠，取消左右分栏滑动切换 */
+  .form-box {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 30px 20px;
+  }
+
+  .form-box.register {
+    visibility: visible;
+    display: none;
+  }
+
+  .s-container.active .form-box {
+    right: auto;
+  }
+
+  .s-container.active .form-box.register {
+    display: flex;
+  }
+
+  .s-container.active .form-box.login {
+    display: none;
+  }
+
+  .toggle-box {
+    display: none;
+  }
+
+  .s-container h1 {
+    font-size: 28px;
+  }
+
+  .input-box {
+    margin: 18px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .variant-tabs {
+    flex-wrap: wrap;
+  }
+
+  .variant-tabs button {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .container.signup {
+    height: 460px;
+  }
+
+  .slide-stage {
+    padding: 12px 8px;
+  }
+
+  .form-box {
+    padding: 24px 14px;
+  }
+
+  .s-container h1 {
+    font-size: 24px;
+  }
+
+  .toggle-panel .btn {
+    width: 130px;
+  }
 }
 </style>

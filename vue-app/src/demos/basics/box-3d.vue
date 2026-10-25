@@ -60,7 +60,8 @@ const items = ref<Item[]>([
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: max(320px, 100vh);
   background-color: #ccc;
   font-family: sans-serif;
   position: relative;
@@ -73,19 +74,22 @@ ul {
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   list-style: none;
   margin: 0;
   padding: 0;
+  width: 100%;
 }
 
 ul li {
-  margin: 0 25px;
+  margin: 25px clamp(6px, 2vw, 25px);
 }
 
 ul li a {
   text-decoration: none;
   display: block;
-  width: 210px;
+  width: clamp(150px, 40vw, 210px);
   height: 80px;
   background-color: #fff;
   text-align: left;

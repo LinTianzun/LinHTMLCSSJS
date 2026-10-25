@@ -80,7 +80,8 @@ const active = () => variants.value.find((v) => v.id === current.value)!
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: max(320px, 100vh);
   position: relative;
 }
 
@@ -115,5 +116,13 @@ const active = () => variants.value.find((v) => v.id === current.value)!
 .btn.on {
   background: #58a;
   color: #fff;
+}
+
+@media (max-width: 768px) {
+  .controls {
+    flex-wrap: wrap;
+    width: max-content;
+    max-width: calc(100% - 24px);
+  }
 }
 </style>

@@ -46,9 +46,10 @@ function select(index: number): void {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   margin: 0;
-  padding: 0;
+  padding: 0 1rem;
   box-sizing: border-box;
   background-color: #e9d5ca;
   display: flex;
@@ -57,7 +58,7 @@ function select(index: number): void {
 }
 
 .select-menu {
-  width: 300px;
+  width: min(300px, 100%);
   cursor: pointer;
   position: relative;
 }
@@ -118,5 +119,15 @@ function select(index: number): void {
 
 .iconDo.up {
   transform: rotate(-180deg);
+}
+
+@media (max-width: 480px) {
+  .selectNa {
+    padding: 16px;
+  }
+
+  .option {
+    font-size: 13px;
+  }
 }
 </style>

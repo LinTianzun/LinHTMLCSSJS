@@ -38,7 +38,8 @@ onUnmounted(() => {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   background: linear-gradient(#e8f0f7 50%, #4d5bf9 50%);
   position: relative;
 }
@@ -81,5 +82,21 @@ onUnmounted(() => {
   font-family: 'Poppins', sans-serif;
   font-size: 50px;
   color: #231c3d;
+}
+
+@media (max-width: 480px) {
+  .container {
+    height: 300px;
+    width: 300px;
+  }
+
+  .circular-progress {
+    height: 180px;
+    width: 180px;
+  }
+
+  .value-container {
+    font-size: 32px;
+  }
 }
 </style>

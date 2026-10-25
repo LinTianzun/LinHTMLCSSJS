@@ -112,7 +112,8 @@ onUnmounted(() => {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: max(320px, 100vh);
   overflow: hidden;
   background: radial-gradient(at 107% 30%, #3d4650 75px, #4a3d50 -4%, #1c1a2e 30%);
   position: relative;
@@ -139,13 +140,15 @@ onUnmounted(() => {
   animation: myMeteor 1s linear infinite;
 }
 
+/* 心形尺寸随视口自适应（--h 同时用于 ::before/::after 的位移） */
 .heart {
+  --h: clamp(100px, 40vmin, 200px);
   position: absolute;
   z-index: 3;
   left: 50%;
   top: 50%;
-  width: 200px;
-  height: 200px;
+  width: var(--h);
+  height: var(--h);
   opacity: 0;
   transform: translate(-50%, -50%) rotate(-45deg);
   border-left: 3px dotted pink;
@@ -155,22 +158,22 @@ onUnmounted(() => {
 
 .heart::before {
   content: '';
-  width: 200px;
-  height: 200px;
+  width: var(--h);
+  height: var(--h);
   border-right: 3px dotted pink;
   position: absolute;
   border-radius: 50%;
-  transform: translateX(100px);
+  transform: translateX(calc(var(--h) / 2));
 }
 
 .heart::after {
   content: '';
-  width: 200px;
-  height: 200px;
+  width: var(--h);
+  height: var(--h);
   border-top: 3px dotted pink;
   position: absolute;
   border-radius: 50%;
-  transform: translateY(-100px);
+  transform: translateY(calc(var(--h) / -2));
 }
 
 p {
@@ -180,9 +183,17 @@ p {
   bottom: 18%;
   transform: translateX(-50%);
   font-family: "LiSu", 隶书, "MicrosoftJhengHei", 华文细黑, STHeiti, MingLiu;
-  font-size: 35px;
+  font-size: clamp(1rem, 4vw, 35px);
   text-shadow: 0 0 10px pink, 0 0 20px pink, 0 0 30px pink, 0 0 40px pink;
   white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  p {
+    white-space: normal;
+    width: 90%;
+    text-align: center;
+  }
 }
 
 /* 繁星点点动画 */

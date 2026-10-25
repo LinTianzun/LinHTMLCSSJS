@@ -79,10 +79,12 @@ onUnmounted(() => {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .con {
@@ -117,16 +119,69 @@ img {
 
 .bu-bar {
   width: 400px;
+  max-width: 90%;
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
+  justify-content: center;
 }
 
 .bu {
   width: 80px;
   height: 35px;
   margin: 0 50px;
+}
+
+@media (max-width: 768px) {
+  .con {
+    height: 250px;
+  }
+
+  ul {
+    height: 170px;
+  }
+
+  li {
+    width: 260px;
+    padding-right: 16px;
+  }
+
+  img {
+    width: 260px;
+    height: 170px;
+  }
+
+  .bu {
+    margin: 0 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .con {
+    height: 220px;
+  }
+
+  ul {
+    height: 140px;
+  }
+
+  li {
+    width: 220px;
+    padding-right: 12px;
+  }
+
+  img {
+    width: 220px;
+    height: 140px;
+  }
+
+  .bu {
+    width: 70px;
+    height: 32px;
+    margin: 0 10px;
+    font-size: 12px;
+  }
 }
 </style>

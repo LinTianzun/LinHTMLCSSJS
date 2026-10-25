@@ -186,6 +186,7 @@ function finalPrice(book: Book): string {
 
 <style scoped>
 .demo {
+  width: 100%;
   min-height: 100vh;
   font-family: 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   color: #1f2933;
@@ -201,6 +202,7 @@ function finalPrice(book: Book): string {
 
 .demo img {
   max-width: 100%;
+  height: auto;
   display: block;
 }
 
@@ -533,19 +535,97 @@ section h2 {
   font-size: 0.85rem;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .main-nav {
     order: 3;
     width: 100%;
     justify-content: center;
+    gap: 1rem;
   }
 
   .search {
     min-width: 140px;
+    flex: 1 1 100%;
+    order: 4;
   }
 
   .hero {
     padding: 2.5rem 5vw;
+    gap: 1.5rem;
+  }
+
+  .featured,
+  .books,
+  .discount,
+  .testimonials {
+    padding: 2rem 5vw;
+  }
+
+  .join {
+    padding: 3rem 5vw;
+  }
+
+  section h2 {
+    font-size: 1.3rem;
+  }
+
+  .featured-card img,
+  .book-card img {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    gap: 0.8rem;
+    padding: 0.6rem 4vw;
+  }
+
+  .brand {
+    font-size: 1.1rem;
+  }
+
+  .main-nav {
+    gap: 0.8rem;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .main-nav a {
+    font-size: 0.85rem;
+  }
+
+  .hero-text h1 {
+    font-size: 1.6rem;
+  }
+
+  .featured-card img,
+  .book-card img {
+    height: 140px;
+  }
+
+  .discount-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .discount-card img {
+    width: 90px;
+  }
+
+  section h2 {
+    font-size: 1.15rem;
+  }
+
+  .featured,
+  .books,
+  .discount,
+  .testimonials {
+    padding: 1.5rem 4vw;
+  }
+
+  .hero {
+    padding: 1.8rem 4vw;
   }
 }
 </style>

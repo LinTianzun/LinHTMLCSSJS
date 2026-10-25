@@ -62,16 +62,18 @@ const linkLetters = computed<Letter[][]>(() =>
 
 <style scoped>
 .demo {
+  width: 100%;
   min-height: 320px;
   min-height: 100vh;
   margin: 0;
-  padding: 0;
+  padding: 0 5vw;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #252839;
+  overflow-x: hidden;
 }
 
 ul {
@@ -138,6 +140,35 @@ ul:hover li a span {
   100% {
     color: #fff2;
     filter: drop-shadow(0 0 0 var(--clr));
+  }
+}
+
+@media (max-width: 768px) {
+  ul {
+    gap: 20px;
+  }
+
+  ul li a {
+    font-size: 2.2em;
+  }
+
+  ul li a::before {
+    border-right-width: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  ul {
+    gap: 14px;
+  }
+
+  ul li a {
+    font-size: 1.6em;
+    letter-spacing: 0.15em;
+  }
+
+  ul li a::before {
+    border-right-width: 3px;
   }
 }
 </style>

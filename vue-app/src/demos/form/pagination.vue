@@ -110,7 +110,8 @@ function next(): void {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -126,11 +127,15 @@ function next(): void {
 
 .pagination ul {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
   background: #fff;
   padding: 8px;
   border-radius: 50px;
   list-style: none;
   margin: 0;
+  box-sizing: border-box;
 }
 
 .pagination ul li {
@@ -194,5 +199,47 @@ function next(): void {
 .arrow {
   font-size: 16px;
   display: inline-block;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 768px) {
+  .demo {
+    padding: 10px;
+  }
+
+  .pagination ul {
+    border-radius: 30px;
+  }
+
+  .pagination ul li {
+    font-size: 16px;
+    line-height: 40px;
+  }
+
+  .pagination ul li.numb {
+    height: 40px;
+    width: 40px;
+  }
+
+  .pagination ul li.btn {
+    padding: 0 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination ul li {
+    font-size: 14px;
+    line-height: 34px;
+  }
+
+  .pagination ul li.numb {
+    height: 34px;
+    width: 34px;
+    margin: 0 2px;
+  }
+
+  .pagination ul li.btn {
+    padding: 0 10px;
+  }
 }
 </style>

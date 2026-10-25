@@ -34,7 +34,8 @@ const panels = computed<Panel[]>(() => [
 
 <style scoped>
 .demo {
-  min-height: 500px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -169,7 +169,8 @@ onUnmounted(() => {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -199,8 +200,8 @@ onUnmounted(() => {
 .cover-box img {
   border-radius: 50%;
   border: 2px solid rgba(222, 215, 255, 0.9);
-  width: 120px;
-  height: 120px;
+  width: clamp(90px, 25vw, 120px);
+  height: clamp(90px, 25vw, 120px);
   object-fit: cover;
   transition: transform 0.5s ease-out;
   user-select: none;
@@ -253,14 +254,16 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(10px, 4vw, 20px);
 }
 
 .controls button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: clamp(36px, 9vw, 46px);
+  height: clamp(36px, 9vw, 46px);
   margin: 20px;
   background: #54dede;
   border-radius: 50%;
@@ -274,5 +277,11 @@ onUnmounted(() => {
 
 .controls button:nth-child(2) {
   transform: scale(1.3);
+}
+
+@media (max-width: 480px) {
+  .controls button {
+    margin: 10px;
+  }
 }
 </style>

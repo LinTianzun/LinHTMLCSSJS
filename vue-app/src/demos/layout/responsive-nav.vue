@@ -52,8 +52,8 @@ const links = [
 
 <style scoped>
 .demo {
-  min-height: 320px;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -139,7 +139,7 @@ header {
   position: absolute;
   right: 2rem;
   top: 60px;
-  width: 300px;
+  width: min(300px, 80vw);
   height: 0;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(15px);
@@ -195,10 +195,40 @@ section#hero {
   }
 }
 
+@media (max-width: 768px) {
+  #hero h1 {
+    font-size: 2.2rem;
+  }
+
+  #hero p {
+    font-size: 1rem;
+  }
+}
+
 @media (max-width: 576px) {
   .dropdown_menu {
     left: 2rem;
     width: unset;
+  }
+}
+
+@media (max-width: 480px) {
+  #hero h1 {
+    font-size: 1.7rem;
+  }
+
+  .navbar .logo a {
+    font-size: 1.5rem;
+  }
+
+  header {
+    padding: 0 1rem;
+  }
+
+  .dropdown_menu {
+    left: 1rem;
+    right: 1rem;
+    width: auto;
   }
 }
 </style>

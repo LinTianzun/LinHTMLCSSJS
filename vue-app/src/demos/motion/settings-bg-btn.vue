@@ -91,7 +91,8 @@ const cssVars = computed<Record<string, string>>(() => {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   font-family: sans-serif;
   line-height: 1.5;
@@ -110,6 +111,13 @@ const cssVars = computed<Record<string, string>>(() => {
   background-color: var(--c-bg-primary);
   transition: background-color 0.3s ease;
   border-radius: 15px;
+}
+
+@media (max-width: 480px) {
+  .menu {
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
 }
 
 .menu-header {

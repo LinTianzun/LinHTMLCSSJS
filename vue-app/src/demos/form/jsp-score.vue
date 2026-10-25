@@ -282,7 +282,8 @@ function removeRow(index: number): void {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -291,8 +292,7 @@ function removeRow(index: number): void {
 
 .shell {
   margin: auto;
-  width: 1000px;
-  max-width: 95%;
+  width: min(1000px, 95%);
   padding: 40px;
   display: flex;
   align-items: center;
@@ -315,10 +315,13 @@ function removeRow(index: number): void {
 
 .header {
   width: 100%;
-  height: 60px;
+  min-height: 60px;
+  height: auto;
   margin-bottom: 15px;
   background-color: #fff4;
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   padding: 10px 21px;
   justify-content: space-between;
   align-items: center;
@@ -368,6 +371,8 @@ function removeRow(index: number): void {
   letter-spacing: 3px;
   color: #339999;
   text-shadow: 0 0 10px #ccffff;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -499,7 +504,7 @@ tbody tr:hover {
 
 /* 班级下拉 */
 .select-menu {
-  width: 200px;
+  width: clamp(140px, 25vw, 200px);
   cursor: pointer;
   position: relative;
 }
@@ -586,7 +591,7 @@ tbody tr:hover {
   color: #339999;
   border-radius: 16px;
   padding: 24px 32px;
-  width: 360px;
+  width: min(360px, 92vw);
   text-shadow: none;
 }
 
@@ -620,5 +625,92 @@ tbody tr:hover {
   justify-content: center;
   gap: 16px;
   margin-top: 16px;
+}
+
+/* ---------- 响应式 ---------- */
+.pagination {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .shell {
+    padding: 24px 16px;
+    border-radius: 24px;
+  }
+
+  .title {
+    font-size: clamp(26px, 6vw, 45px);
+    letter-spacing: 2px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    padding: 12px;
+  }
+
+  .header .input-group,
+  .header .input-group:hover {
+    width: 100%;
+    height: 40px;
+  }
+
+  .header .liBtn.add {
+    width: 100%;
+  }
+
+  .select-menu {
+    width: 100%;
+  }
+
+  .sContent {
+    letter-spacing: 1px;
+  }
+}
+
+@media (max-width: 480px) {
+  .demo {
+    padding: 15px 0;
+  }
+
+  .title {
+    margin-bottom: 16px;
+  }
+
+  table,
+  th,
+  td {
+    padding: 8px 6px;
+    font-size: 13px;
+  }
+
+  .scoreClass {
+    width: 90px;
+  }
+
+  .scoreText {
+    width: 60px;
+  }
+
+  .scoreXuehao,
+  .scoreCaozuo {
+    width: 110px;
+  }
+
+  .liBtn {
+    padding: 8px 10px;
+  }
+
+  .pagination li {
+    width: 22px;
+    height: 22px;
+    margin: 8px 6px;
+    font-size: 13px;
+  }
+
+  .modal {
+    padding: 18px 16px;
+  }
 }
 </style>

@@ -35,7 +35,8 @@
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: max(320px, 100vh);
   background: #f5f7fa;
   padding: 24px;
   box-sizing: border-box;

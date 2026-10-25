@@ -36,7 +36,8 @@ function submit(): void {
 
 <style scoped>
 .demo {
-  min-height: 320px;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -49,12 +50,14 @@ function submit(): void {
   height: 40px;
   border-radius: 40px;
   padding: 10px;
+  margin: 0 12px;
+  max-width: 100%;
   display: flex;
   align-items: center;
 }
 
 .search-box.active > .search-txt {
-  width: 240px;
+  width: min(240px, 60vw);
   padding: 0 6px;
 }
 
@@ -91,5 +94,18 @@ function submit(): void {
 .icon {
   width: 22px;
   height: 22px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 768px) {
+  .demo {
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-box.active > .search-txt {
+    width: min(200px, 65vw);
+  }
 }
 </style>
