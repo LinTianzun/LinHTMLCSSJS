@@ -37,8 +37,8 @@ const years = new Date().getFullYear() - startedYear + 1
     <h2>六个大类</h2>
     <ol class="cats">
       <li v-for="c in demoCategories" :key="c.id">
-        <RouterLink :to="`/`">{{ c.name }}</RouterLink>
-        —— {{ c.summary }}
+        <RouterLink :to="{ path: '/', query: { cat: c.id } }">{{ c.name }}</RouterLink>
+        （{{ c.demos.length }} 个）—— {{ c.summary }}
       </li>
     </ol>
 
@@ -46,12 +46,14 @@ const years = new Date().getFullYear() - startedYear + 1
     <ul class="stack">
       <li>Vue 3.5 + Composition API + TypeScript</li>
       <li>Vite 8 / Vue Router 5 / Pinia 4</li>
+      <li>Vitest 单元测试 + oxlint，GitHub Actions 自动检查与部署</li>
       <li>部署：GitHub（<a href="https://github.com/LinTianzun/LinHTMLCSSJS" target="_blank" rel="noopener">LinTianzun/LinHTMLCSSJS</a>）</li>
     </ul>
 
     <h2>接下来</h2>
     <p>
-      贪吃蛇还有一份持续更新的待办：障碍物与奖励道具、模块化重构、动效打磨。
+      贪吃蛇最初的待办（障碍物与奖励道具、模块化重构、动效打磨）已经全部完成，
+      还顺势加了排行榜与触屏支持；也新写了翻牌记忆游戏。
       这个仓库会一直跟着我的学习进度更新。
     </p>
   </main>

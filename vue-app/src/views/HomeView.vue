@@ -1,18 +1,29 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { getAllCategories, LOCAL_CAT_ID } from '../demos/registry'
+import { demoGlyph, thumbStyle } from '../demos/thumbs'
 import { useLocalDemos } from '../composables/useLocalDemos'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import SiteHeader from '../components/SiteHeader.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 
 const { demos: localDemos, remove } = useLocalDemos()
 const router = useRouter()
+const route = useRoute()
 
 function removeLocal(id: string) {
   remove(id)
   router.go(0)
 }
+
+/* —— ?cat= 锚点：从 About 页等外部链接直达某个分类 —— */
+onMounted(async () => {
+  const cat = route.query.cat
+  if (typeof cat === 'string' && cat) {
+    await nextTick()
+    document.getElementById(`cat-${cat}`)?.scrollIntoView({ behavior: 'smooth' })
+  }
+})
 
 /* —— 搜索 + 技能筛选 —— */
 const searchQuery = ref('')
@@ -56,6 +67,15 @@ function clearFilters() {
   searchQuery.value = ''
   activeSkill.value = null
 }
+
+/* —— 随机体验：跳到随机一个 demo —— */
+function randomDemo() {
+  const cats = getAllCategories(localDemos.value)
+  const pool = cats.flatMap((c) => c.demos.map((d) => ({ cat: c.id, id: d.id })))
+  if (pool.length === 0) return
+  const pick = pool[Math.floor(Math.random() * pool.length)]!
+  router.push(`/demo/${pick.cat}/${pick.id}`)
+}
 </script>
 
 <template>
@@ -69,7 +89,10 @@ function clearFilters() {
         曾经的约 40 个原生 HTML/CSS/JS 练习，如今全部用 Vue 3 组件重新实现，
         按六个大类归档。点开任意一条，直接在页面里体验。
       </p>
-      <RouterLink to="/create" class="new-demo-btn">＋ 新建 demo</RouterLink>
+      <div class="hero-actions">
+        <RouterLink to="/create" class="new-demo-btn">＋ 新建 demo</RouterLink>
+        <button class="random-btn" @click="randomDemo">🎲 随机体验一个</button>
+      </div>
     </section>
 
     <!-- 搜索 + 技能筛选 -->
@@ -100,6 +123,7 @@ function clearFilters() {
     <section
       v-for="cat in filteredCategories"
       :key="cat.id"
+      :id="`cat-${cat.id}`"
       class="cat"
     >
       <header class="cat-head">
@@ -108,11 +132,18 @@ function clearFilters() {
       </header>
       <p class="cat-summary">{{ cat.summary }}</p>
       <ul class="demo-list">
-        <li v-for="d in cat.demos" :key="d.id" class="demo-item">
+        <li v-for="(d, i) in cat.demos" :key="d.id" class="demo-item">
           <div class="demo-link-wrap">
             <RouterLink :to="`/demo/${cat.id}/${d.id}`" class="demo-link">
-              <span class="demo-title">{{ d.title }}</span>
-              <span class="arrow">→</span>
+              <span
+                class="thumb"
+                :style="thumbStyle(cat.id, i)"
+                aria-hidden="true"
+              >{{ demoGlyph(d.id) }}</span>
+              <span class="title-row">
+                <span class="demo-title">{{ d.title }}</span>
+                <span class="arrow">→</span>
+              </span>
             </RouterLink>
             <button
               v-if="cat.id === LOCAL_CAT_ID"
@@ -236,16 +267,56 @@ h2 {
 
 .demo-link {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5em;
-  padding: 0.65em 1em;
+  flex-direction: column;
+  overflow: hidden;
   border: 1px solid var(--grid);
   border-radius: var(--radius);
   background: var(--paper);
   color: var(--ink) !important;
   font-size: 0.92rem;
   transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+/* 缩略封面：分类身份色 + 代表符号，纯 CSS 变量驱动 */
+.thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 16 / 8.5;
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  line-height: 1;
+  background:
+    linear-gradient(
+      135deg,
+      hsl(var(--thumb-h) 62% calc(var(--thumb-l) + 40%)) 0%,
+      hsl(var(--thumb-h) 55% calc(var(--thumb-l) + 47%)) 100%
+    );
+  color: hsl(var(--thumb-h) 52% calc(var(--thumb-l) - 8%));
+  filter: saturate(0.75);
+  transition: transform 0.2s ease;
+}
+
+:root.dark .thumb {
+  background:
+    linear-gradient(
+      135deg,
+      hsl(var(--thumb-h) 28% 26%) 0%,
+      hsl(var(--thumb-h) 24% 21%) 100%
+    );
+  color: hsl(var(--thumb-h) 45% calc(var(--thumb-l) + 24%));
+}
+
+.demo-link:hover .thumb {
+  transform: scale(1.04);
+}
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 0.9em;
 }
 
 .demo-link:hover {
@@ -291,9 +362,16 @@ h2 {
   color: #b3261e;
 }
 
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+}
+
 .new-demo-btn {
   display: inline-block;
-  margin-top: 0.5rem;
   padding: 0.55em 1.4em;
   border: 1px solid var(--accent);
   border-radius: var(--radius);
@@ -306,6 +384,26 @@ h2 {
 .new-demo-btn:hover {
   opacity: 0.85;
   text-decoration: none;
+}
+
+.random-btn {
+  padding: 0.55em 1.4em;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.random-btn:hover {
+  background: var(--paper-soft);
+}
+
+.random-btn:active {
+  transform: scale(0.97);
 }
 
 /* 搜索 + 技能筛选 */
