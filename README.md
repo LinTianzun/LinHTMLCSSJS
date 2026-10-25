@@ -20,7 +20,7 @@
 | 轮播与展示 | 4 | 3D 轮播、基础轮播、视差相册、时间轴轮播 |
 | 动效交互 | 8 | 加载动画、进度环、脉冲链接、日夜切换、主题按钮、躲闪按钮、新年倒计时、音乐播放器 |
 | 表单功能 | 5 | 登录注册、留言板、搜索框、分页器、成绩管理系统 |
-| 小游戏 | 1 | 贪吃蛇（DOM 方式，含难度递增/奖励/碰撞检测） |
+| 小游戏 | 2 | 贪吃蛇（排行榜/触屏/障碍物）、翻牌记忆游戏（3D 翻转/洗牌算法） |
 | CSS 基础 | 5 | 3D 盒子、盒模型、网格背景、404 奶牛、七夕星空 |
 
 ## 🛠️ 技术栈
@@ -30,7 +30,8 @@
 - **状态管理**：Pinia 4
 - **构建工具**：Vite 8（configLoader: native）
 - **代码规范**：ESLint + oxlint + Prettier
-- **本地存储**：localStorage（用户自创 demo 的持久化）
+- **单元测试**：Vitest 5（游戏逻辑 / 注册表 / 排行榜）
+- **本地存储**：localStorage（用户自创 demo + 贪吃蛇排行榜）
 
 ## 🚀 快速开始
 
@@ -40,18 +41,24 @@ npm install
 npm run dev          # 开发服务器
 npm run build       # 生产构建
 npm run type-check  # 类型检查
+npm run test        # 单元测试（vitest）
+npm run lint        # 代码检查（oxlint + eslint）
 ```
 
 ## ✨ 网站功能
 
 - **分类浏览**：首页按六大类展示所有 demo，每个 demo 标注技能标签
+- **搜索与筛选**：首页搜索框按标题模糊搜索 + 75 个技能标签点选筛选，支持组合过滤
 - **在线创作**：内置代码编辑器，支持 HTML/CSS/JS 三栏实时预览，保存后即可在站内展示
 - **设备模拟**：展示页支持自适应 / 手机 375×667 / 平板 768×1024 / 桌面 1024×768 四种尺寸切换
 - **iframe 隔离**：每个 demo 在独立 iframe 中渲染，媒体查询与滚动行为与原版一致
 - **裸模式嵌入**：支持 `?bare=1` / `?embed=1` 参数，仅渲染 demo 本身
 - **源码直达**：每个 demo 页提供 GitHub 源码链接
+- **原版对比**：一键跳转到对应的原生 HTML/CSS/JS 原版练习
 - **快捷键导航**：demo 展示页按 ← / → 键在同类练习间快速切换
 - **暗色模式**：站点级"夜间稿纸"主题，跟随系统偏好并持久化
+- **奶牛 404 页**：纯 CSS 奶牛动画，致敬 404-cow demo
+- **分享卡片**：OG meta 标签，社交媒体分享时显示预览卡片
 - **脚手架脚本**：`node scripts/new-demo.mjs <分类> <id> "标题"` 一键创建新 demo 骨架
 
 ## 📁 目录结构
@@ -59,11 +66,13 @@ npm run type-check  # 类型检查
 ```
 vue-app/
 ├── src/
-│   ├── demos/            # 28 个移植 demo 组件（按分类分子目录）
-│   │   ├── registry.ts   # demo 注册表（分类、标题、技能标签）
-│   ├── views/            # 页面：首页 / 展示页 / 创作页 / 关于页
+│   ├── demos/            # 30 个移植 demo 组件（按分类分子目录）
+│   │   ├── registry.ts   # demo 注册表（分类、标题、技能标签、原版路径）
+│   │   ├── asset.ts     # 资源路径助手（处理子路径部署）
+│   ├── views/            # 页面：首页 / 展示页 / 创作页 / 关于页 / 404 页
 │   ├── components/        # 通用组件（站点头部）
-│   ├── composables/      # useLocalDemos（localStorage 管理）
+│   ├── composables/      # useLocalDemos / useTheme / useSnakeGame / useSnakeScores
+│   ├── __tests__/        # Vitest 单元测试（3 文件 15 用例）
 │   └── router/           # 路由配置（自动生成 demo 路由）
 ├── public/demos/         # 静态资源（图片、音乐、字体）
 └── scripts/new-demo.mjs  # demo 脚手架脚本
@@ -78,6 +87,12 @@ vue-app/
 - **GitHub 仓库**：[LinTianzun/LinHTMLCSSJS](https://github.com/LinTianzun/LinHTMLCSSJS)
 - **在线预览（GitHub Pages）**：<https://lintianzun.github.io/LinHTMLCSSJS/>
 - **本地开发**：`npm run dev`（端口 5173）
+
+## 📊 质量保障
+
+- **Lighthouse**：A11y 95 · Best Practices 100 · SEO 90 · Agentic 100
+- **CI 流程**：push 自动触发 → type-check → lint → test → build → deploy GitHub Pages
+- **单元测试**：Vitest 覆盖游戏逻辑、注册表工具函数、排行榜数据管理
 
 ## 📄 许可证
 
