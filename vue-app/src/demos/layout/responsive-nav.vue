@@ -14,19 +14,25 @@ const links = [
   { href: 'services', text: 'Services' },
   { href: 'hero', text: 'Contact' },
 ] as const
+
+// demo 内链接只做演示：不发生真实导航，滚动到 hero 并收起菜单
+function goSection(): void {
+  menuOpen.value = false
+  document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' })
+}
 </script>
 
 <template>
   <div class="demo">
     <header>
       <div class="navbar">
-        <div class="logo"><a href="#">Logo</a></div>
+        <div class="logo"><a href="#" @click.prevent="goSection">Logo</a></div>
         <ul class="links">
           <li v-for="link in links" :key="link.href">
-            <a :href="link.href">{{ link.text }}</a>
+            <a :href="link.href" @click.prevent="goSection">{{ link.text }}</a>
           </li>
         </ul>
-        <a href="#" class="action_btn">Get Started</a>
+        <a href="#" class="action_btn" @click.prevent="goSection">Get Started</a>
         <!-- 原版使用 iconfont 菜单/关闭图标，这里用 unicode 字符替代 -->
         <div class="toggle_btn" @click="toggleMenu">
           {{ menuOpen ? '✕' : '☰' }}
@@ -35,9 +41,9 @@ const links = [
 
       <div class="dropdown_menu" :class="{ open: menuOpen }">
         <li v-for="link in links" :key="link.href">
-          <a :href="link.href">{{ link.text }}</a>
+          <a :href="link.href" @click.prevent="goSection">{{ link.text }}</a>
         </li>
-        <li><a href="#" class="action_btn">Get Started</a></li>
+        <li><a href="#" class="action_btn" @click.prevent="goSection">Get Started</a></li>
       </div>
     </header>
 
