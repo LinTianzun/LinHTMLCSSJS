@@ -64,7 +64,9 @@ const ORIGIN_DIR: Record<string, string> = {
 export function originUrl(demoId: string): string | null {
   const dir = ORIGIN_DIR[demoId]
   if (!dir) return null
-  return `${ORIGIN_BASE}/${encodeURIComponent(dir)}`
+  // 斜杠是路径分隔符不能编码，只对每一段目录名编码
+  const encoded = dir.split('/').map(encodeURIComponent).join('/')
+  return `${ORIGIN_BASE}/${encoded}`
 }
 
 export const demoCategories: DemoCategory[] = [
@@ -121,9 +123,10 @@ export const demoCategories: DemoCategory[] = [
   {
     id: 'game',
     name: '小游戏',
-    summary: '用 DOM 从零写的贪吃蛇，附一份持续更新的待办清单。',
+    summary: '从零写的小游戏：贪吃蛇（含排行榜/触屏）与翻牌记忆游戏。',
     demos: [
-      { id: 'snake', title: '贪吃蛇', skills: ['游戏循环', '键盘事件', '碰撞检测', '难度递增'] },
+      { id: 'snake', title: '贪吃蛇', skills: ['游戏循环', '键盘事件', '碰撞检测', '难度递增', '触屏支持', '排行榜'] },
+      { id: 'memory-cards', title: '翻牌记忆游戏', skills: ['洗牌算法', '3D 翻转', '配对状态机', '计时计步'] },
     ],
   },
   {

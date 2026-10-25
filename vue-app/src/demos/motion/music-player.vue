@@ -118,9 +118,9 @@ onUnmounted(() => {
   const audio = audioEl.value
   if (audio) {
     audio.pause()
-    audio.removeEventListener('loadedmetadata', () => {})
-    audio.removeEventListener('timeupdate', () => {})
-    audio.removeEventListener('ended', () => {})
+    audio.onloadedmetadata = null
+    audio.ontimeupdate = null
+    audio.onended = null
   }
   isPlaying.value = false
 })

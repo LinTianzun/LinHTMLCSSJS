@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import {
   useSnakeGame,
   DIRECTION_MAP,
   isPerpendicularTurn,
+  type Direction,
 } from '@/composables/useSnakeGame'
+import { useSnakeScores } from '@/composables/useSnakeScores'
 
 const {
   snake, food, obstacles, reward, rewardKind,
@@ -13,21 +15,33 @@ const {
   start, togglePause, allowChangeDirection, direction,
 } = useSnakeGame()
 
+const { records, submitScore, bestScore } = useSnakeScores()
+
 const title = ref('贪吃蛇小游戏')
+// 本局是否进入排行榜（用于结算弹窗提示）
+const lastRank = ref<number | null>(null)
+
+// 游戏结束时分自动提交成绩
+watch(gameOver, (over) => {
+  if (over && score.value > 0) {
+    lastRank.value = submitScore(score.value, timeText.value)
+  }
+})
+
+function turnTo(newDirection: Direction): void {
+  if (!allowChangeDirection.value) return
+  if (isPerpendicularTurn(direction.value, newDirection)) {
+    direction.value = newDirection
+    allowChangeDirection.value = false
+  }
+}
 
 function onKeydown(event: KeyboardEvent): void {
   const key = event.key
   if (key in DIRECTION_MAP) {
-    if (!allowChangeDirection.value) return
     event.preventDefault()
     const newDirection = DIRECTION_MAP[key]
-    if (
-      newDirection !== undefined &&
-      isPerpendicularTurn(direction.value, newDirection)
-    ) {
-      direction.value = newDirection
-      allowChangeDirection.value = false
-    }
+    if (newDirection !== undefined) turnTo(newDirection)
   } else if (event.code === 'Space') {
     event.preventDefault()
     togglePause()
@@ -37,6 +51,32 @@ function onKeydown(event: KeyboardEvent): void {
   }
 }
 
+// ── 触屏：滑动改变方向 ──
+let touchStartX = 0
+let touchStartY = 0
+
+function onTouchStart(e: TouchEvent): void {
+  const t = e.touches[0]
+  if (!t) return
+  touchStartX = t.clientX
+  touchStartY = t.clientY
+}
+
+function onTouchEnd(e: TouchEvent): void {
+  const t = e.changedTouches[0]
+  if (!t) return
+  const dx = t.clientX - touchStartX
+  const dy = t.clientY - touchStartY
+  if (Math.abs(dx) < 24 && Math.abs(dy) < 24) return // 轻点不算滑动
+  let dir: Direction
+  if (Math.abs(dx) > Math.abs(dy)) {
+    dir = dx > 0 ? 'right' : 'left'
+  } else {
+    dir = dy > 0 ? 'down' : 'up'
+  }
+  turnTo(dir)
+}
+
 onMounted(() => {
   window.addEventListener('keydown', onKeydown)
 })
@@ -44,13 +84,15 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('keydown', onKeydown)
 })
+
+const best = computed(() => bestScore())
 </script>
 
 <template>
   <div class="demo">
     <h1>{{ title }}</h1>
 
-    <!-- 状态栏：得分 / 时间 / 难度 -->
+    <!-- 状态栏：得分 / 时间 / 难度 / 最高分 -->
     <div class="status-bar">
       <div class="status-item">
         <span class="status-label">得分</span>
@@ -71,11 +113,20 @@ onUnmounted(() => {
           ></span>
         </span>
       </div>
+      <div class="status-item">
+        <span class="status-label">最高分</span>
+        <span class="status-value score">{{ best }}</span>
+      </div>
     </div>
 
     <button v-if="!started" class="btn" @click="start">开始游戏</button>
 
-    <div class="game-container" :style="{ width: SIZE + 'px', height: SIZE + 'px' }">
+    <div
+      class="game-container"
+      :style="{ width: Math.min(SIZE, 400) + 'px', height: Math.min(SIZE, 400) + 'px' }"
+      @touchstart.passive="onTouchStart"
+      @touchend.passive="onTouchEnd"
+    >
       <!-- 障碍物 -->
       <div
         v-for="(ob, i) in obstacles"
@@ -130,7 +181,30 @@ onUnmounted(() => {
       <div v-if="isPaused" class="pause-mask">⏸ 已暂停</div>
     </div>
 
-    <p class="tip">方向键 / WASD 控制 · 空格暂停/继续 · ★=+30分 · ⊙=减速</p>
+    <!-- 触屏方向键（手机上更顺手，桌面隐藏） -->
+    <div class="touch-pad" aria-hidden="true">
+      <button class="pad-btn up" @click="turnTo('up')">▲</button>
+      <div class="pad-mid">
+        <button class="pad-btn" @click="turnTo('left')">◀</button>
+        <button class="pad-btn pause" @click="togglePause">⏸</button>
+        <button class="pad-btn" @click="turnTo('right')">▶</button>
+      </div>
+      <button class="pad-btn down" @click="turnTo('down')">▼</button>
+    </div>
+
+    <!-- 排行榜 -->
+    <div v-if="records.length > 0" class="leaderboard">
+      <h2>🏆 最高分 TOP 5</h2>
+      <ol>
+        <li v-for="(r, i) in records" :key="i">
+          <span class="rank">#{{ i + 1 }}</span>
+          <span class="r-score">{{ r.score }} 分</span>
+          <span class="r-meta">{{ r.time }} · {{ r.date }}</span>
+        </li>
+      </ol>
+    </div>
+
+    <p class="tip">方向键 / WASD / 滑动控制 · 空格暂停 · ★=+30分 · ⊙=减速</p>
     <button v-if="started && gameOver" class="btn" @click="start">再来一遍</button>
 
     <div v-if="gameOver" class="modal" @click.self="start">
@@ -138,6 +212,7 @@ onUnmounted(() => {
         <span class="close" @click="start">&times;</span>
         <p class="game-over-title">{{ showWin ? '🎉 恭喜你获胜了！' : '游戏结束' }}</p>
         <p class="game-over-info">得分: {{ score }} · 用时: {{ timeText }}</p>
+        <p v-if="lastRank" class="rank-hint">🏅 进入排行榜第 {{ lastRank }} 名！</p>
         <button class="btn" @click="start">再来一遍</button>
       </div>
     </div>
@@ -169,7 +244,9 @@ h1 {
 /* 状态栏 */
 .status-bar {
   display: flex;
-  gap: 32px;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
   margin-bottom: 16px;
   padding: 10px 24px;
   background: rgba(255, 255, 255, 0.06);
@@ -241,11 +318,13 @@ h1 {
   margin-top: 16px;
   color: #64748b;
   font-size: 0.85rem;
+  text-align: center;
 }
 
 /* 游戏区域 */
 .game-container {
   position: relative;
+  max-width: 100%;
   border: 3px solid #334155;
   border-radius: 12px;
   background-color: #0b1220;
@@ -258,6 +337,7 @@ h1 {
     linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
   background-size: 20px 20px;
   overflow: hidden;
+  touch-action: none;
 }
 
 /* 障碍物：暗红石块 */
@@ -437,6 +517,95 @@ h1 {
   z-index: 5;
 }
 
+/* 触屏方向键 */
+.touch-pad {
+  display: none;
+  margin-top: 16px;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+
+.pad-mid {
+  display: flex;
+  gap: 6px;
+}
+
+.pad-btn {
+  width: 52px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #cbd5e1;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.pad-btn:active {
+  background: rgba(34, 197, 94, 0.35);
+}
+
+@media (pointer: coarse) {
+  .touch-pad {
+    display: flex;
+  }
+}
+
+/* 排行榜 */
+.leaderboard {
+  margin-top: 20px;
+  width: min(320px, 100%);
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.leaderboard h2 {
+  font-size: 0.95rem;
+  color: #f1f5f9;
+  margin: 0 0 8px;
+}
+
+.leaderboard ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.leaderboard li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.leaderboard li:last-child {
+  border-bottom: none;
+}
+
+.rank {
+  color: #fbbf24;
+  font-weight: 700;
+  min-width: 2.2em;
+}
+
+.r-score {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.r-meta {
+  margin-left: auto;
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
 /* 结束弹窗 */
 .modal {
   position: fixed;
@@ -482,6 +651,12 @@ h1 {
 .game-over-info {
   color: #94a3b8;
   margin: 0 0 16px;
+}
+
+.rank-hint {
+  color: #fbbf24;
+  font-weight: 600;
+  margin: -8px 0 16px;
 }
 
 .close {

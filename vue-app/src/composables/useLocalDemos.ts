@@ -61,6 +61,6 @@ export function buildDemoDocument(html: string, css: string, js: string): string
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><style>${css}</style></head>
-<body>${html}<script>${js}<\/script></body>
+<body>${html}<script>${js}</scr` + `ipt></body>
 </html>`
 }
