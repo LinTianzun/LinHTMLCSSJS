@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>侧边二级导航栏</title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo-details">
+            <ion-icon class="logoicon" name="logo-apple-ar"></ion-icon>
+            <span class="logo_name">CodingLab</span>
+        </div>
+
+        <ul class="nav-links">
+            <li>
+                <a class="icona" href="#">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span class="link_name">Dashboard</span>
+                </a>
+                <ul class="sub-menu blank">
+                    <li><a class="link_name" href="#">Dashboard</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="icon-link">
+                    <a class="icona" href="#">
+                        <ion-icon name="hardware-chip-outline"></ion-icon>
+                        <span class="link_name">Category</span>
+                    </a>
+                    <ion-icon class="arrow" name="chevron-down-outline"></ion-icon>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link_name" href="#">Category</a></li>
+                    <li><a href="#">HTML & CSS</a></li>
+                    <li><a href="#">JavaScript</a></li>
+                    <li><a href="#">PHP & MySql</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="icon-link">
+                    <a class="icona" href="#">
+                        <ion-icon name="book-outline"></ion-icon>
+                        <span class="link_name">Posts</span>
+                    </a>
+                    <ion-icon class="arrow" name="chevron-down-outline"></ion-icon>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link_name" href="#">Posts</a></li>
+                    <li><a href="#">Web Design</a></li>
+                    <li><a href="#">Card Design</a></li>
+                    <li><a href="#">Login Foem</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="icona" href="#">
+                    <ion-icon name="pie-chart-outline"></ion-icon>
+                    <span class="link_name">Analytics</span>
+                </a>
+                <ul class="sub-menu blank">
+                    <li><a class="link_name" href="#">Analytics</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="icona" href="#">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <span class="link_name">Chart</span>
+                </a>
+                <ul class="sub-menu blank">
+                    <li><a class="link_name" href="#">Chart</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="icon-link">
+                    <a class="icona" href="#">
+                        <ion-icon name="cloud-upload-outline"></ion-icon>
+                        <span class="link_name">CloudUp</span>
+                    </a>
+                    <ion-icon class="arrow" name="chevron-down-outline"></ion-icon>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link_name" href="#">CloudUp</a></li>
+                    <li><a href="#">Web Design</a></li>
+                    <li><a href="#">Card Design</a></li>
+                    <li><a href="#">Login Foem</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="icona" href="#">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    <span class="link_name">Setting</span>
+                </a>
+                <ul class="sub-menu blank">
+                    <li><a class="link_name" href="#">Setting</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="icon-link">
+                    <a class="icona" href="#">
+                        <ion-icon name="cloud-upload-outline"></ion-icon>
+                        <span class="link_name">CloudUp</span>
+                    </a>
+                    <ion-icon class="arrow" name="chevron-down-outline"></ion-icon>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link_name" href="#">CloudUp</a></li>
+                    <li><a href="#">Web Design</a></li>
+                    <li><a href="#">Card Design</a></li>
+                    <li><a href="#">Login Foem</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="icon-link">
+                    <a class="icona" href="#">
+                        <ion-icon name="cloud-upload-outline"></ion-icon>
+                        <span class="link_name">CloudUp</span>
+                    </a>
+                    <ion-icon class="arrow" name="chevron-down-outline"></ion-icon>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link_name" href="#">CloudUp</a></li>
+                    <li><a href="#">Web Design</a></li>
+                    <li><a href="#">Card Design</a></li>
+                    <li><a href="#">Login Foem</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="profile-details ">
+                    <div class="profile-content">
+                        <img src="../../img/前端好看壁纸图片/01chun.jpeg" alt="">
+                    </div>
+                    <div class="name-job">
+                        <div class="profile_name">LinLin</div>
+                        <div class="job">Student</div>
+                    </div>
+                    <ion-icon name="log-out-outline"></ion-icon>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+    <section class="home-section">
+        <div class="home-content">
+            <ion-icon class="bx-menu" name="menu-outline"></ion-icon>
+            <span class="text">Drop Down Sidebar</span>
+        </div>
+    </section>
+
+    <script>
+        let arrow = document.querySelectorAll('.arrow')
+
+        for (var i = 0; i < arrow.length; i++) {
+            arrow[i].addEventListener("click", (e) => {
+                let arroParent = e.target.parentElement.parentElement
+                arroParent.classList.toggle('showMenu')
+            })
+        }
+
+        let sidebar = document.querySelector('.sidebar')
+        let sidebarBtn = document.querySelector('.bx-menu')
+        console.log(sidebarBtn)
+        sidebarBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("close")
+        })
+    </script>
+</body>
+
+</html>

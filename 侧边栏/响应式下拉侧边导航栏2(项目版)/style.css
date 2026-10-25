@@ -1,0 +1,470 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url(../../img/qq/11.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url(../../img/qq/22.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: 0.5s;
+}
+
+body.isSwitch::after {
+    opacity: 1;
+}
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.sidebar {
+    position: absolute;
+    width: 256px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 20px;
+    transition: all 0.5s;
+    z-index: 100;
+    /* overflow: hidden; */
+}
+
+.sidebar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-conic-gradient(from var(--a), #ead2ad 0%, #56CCF2 10%, transparent 10%, transparent 80%, #e79f6c 100%);
+    border-radius: 20px;
+    animation: loginAni 3s linear infinite;
+}
+
+@property --a {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+}
+
+@keyframes loginAni {
+    0% {
+        --a: 0deg;
+    }
+
+    50% {
+        --a: 180deg;
+    }
+
+    100% {
+        --a: 360deg;
+    }
+}
+
+/* 新增的尝试 */
+.sidebar .ssp {
+    position: absolute;
+    inset: 5px;
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+.sidebar .ssp::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    background: url(../../img/qq/11.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px);
+}
+
+.sidebar .ssp::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    background: url(../../img/qq/11.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    filter: blur(15px);
+}
+
+body.isSwitch .sidebar .ssp::before,
+body.isSwitch .sidebar .ssp::after {
+    background: url(../../img/qq/22.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    filter: blur(15px);
+}
+
+.sidebar .head {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f6f6f6;
+    z-index: 100;
+}
+
+.user-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+}
+
+.user-details .title,
+.menu .title {
+    font-size: 10px;
+    font-weight: 500;
+    /* color: #757575; */
+    color: #fff;
+    /* text-transform: uppercase; */
+    margin-bottom: 10px;
+    user-select: none;
+}
+
+.user-details .name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.user-logo {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.user-logo .iconfont {
+    font-size: 28px;
+    color: #fff;
+}
+
+.nav {
+    flex: 1;
+    /* new */
+    z-index: 100;
+}
+
+.menu ul li {
+    position: relative;
+    list-style: none;
+    margin-bottom: 5px;
+}
+
+.menu ul li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    /* color: #757575; */
+    text-decoration: none;
+    padding: 12px 8px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.menu ul li>a:hover,
+.menu ul li.active>a {
+    color: #000;
+    background-color: #f6f6f6;
+}
+
+.menu ul li .iconfont {
+    font-size: 20px;
+}
+
+.menu ul li .text {
+    flex: 1;
+}
+
+.menu ul li .arrow {
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.menu ul li.active .arrow {
+    transform: rotate(180deg);
+}
+
+.menu .sub-menu {
+    display: none;
+    margin-left: 20px;
+    padding-left: 20px;
+    padding-top: 5px;
+    border-left: 1px solid #f6f6f6;
+}
+
+.menu .sub-menu li a {
+    padding: 10px 8px;
+    font-size: 12px;
+}
+
+.menu:not(:last-child) {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #f6f6f6;
+}
+
+.menu-btn i {
+    transition: all 0.3s;
+}
+
+.menu-btn:hover i {
+    color: #000;
+}
+
+.sidebar.active {
+    width: 92px;
+}
+
+.sidebar.active .user-details {
+    display: none;
+}
+
+.sidebar.active .menu .title {
+    text-align: center;
+}
+
+.sidebar.active .menu ul li .arrow {
+    display: none;
+}
+
+.sidebar.active .menu>ul>li>a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar.active .menu>ul>li>a .text {
+    position: absolute;
+    width: 100px;
+    left: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 10px;
+    border-radius: 4px;
+    color: #fff;
+    /* background-color: #4b6d99; */
+    background-color: #edbd90;
+    /* background-color: #e79f6c; */
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.sidebar.active .menu>ul>li>a .text::after {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 20%;
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+    /* background-color: #4b6d99; */
+    background-color: #edbd90;
+    /* background-color: #e79f6c; */
+    transform: rotate(45deg);
+    z-index: -1;
+}
+
+body.isSwitch .sidebar.active .menu>ul>li>a .text,
+body.isSwitch .sidebar.active .menu>ul>li>a .text::after {
+    /* background-color: #edbd90; */
+    background-color: #4b6d99;
+}
+
+.sidebar.active .menu>ul>li>a:hover .text {
+    left: 50px;
+    opacity: 1;
+    visibility: visible;
+}
+
+body.isSwitch .sidebar.active .menu .sub-menu {
+    /* background-color: #e79f6c; */
+    background-color: #1e4980;
+}
+
+.sidebar.active .menu .sub-menu {
+    position: absolute;
+    top: -8px;
+    left: 22px;
+    width: 200px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    border: 1px solid #f6f6f6;
+    /* background-color: #1e4980; */
+    background-color: #e79f6c;
+    box-shadow: 0px 10px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.active .user-logo {
+    display: none;
+}
+
+.sidebar .menu .sub-menu .sub-menu-title {
+    color: #fff;
+    text-align: center;
+    display: none;
+    user-select: none;
+}
+
+.sidebar.active .menu .sub-menu .sub-menu-title {
+    display: block;
+}
+
+.container .home-section {
+    position: relative;
+    height: 100vh;
+    left: 256px;
+    background-size: cover;
+    width: calc(100% - 256px);
+    transition: all 0.5s ease;
+}
+
+.sidebar.active~.home-section {
+    left: 92px;
+    width: calc(100% - 92px);
+}
+
+.container .home-section home-section-title {
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.container .home-section .menu-btn {
+    position: absolute;
+    left: 30px;
+    top: 30px;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-self: center;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.container .home-section .menu-btn .iconfont {
+    color: #fff;
+    font-size: 30px;
+}
+
+.sidebar.active .iconSwitch {
+    opacity: 0;
+}
+
+
+.toggle-switch {
+    position: absolute;
+    right: -8px;
+    height: 100%;
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+
+.switch {
+    position: relative;
+    height: 22px;
+    width: 40px;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.menu ul li.active>a .switch,
+.menu ul li>a:hover .switch {
+    background-color: #6a88b1;
+}
+
+.switch::before {
+    content: '';
+    position: absolute;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.icon-outline-moon {
+    display: none;
+}
+
+body.isSwitch .icon-outline-sun {
+    display: none;
+
+}
+
+body.isSwitch .icon-outline-moon {
+    display: block;
+}
+
+body.isSwitch .menu ul li.active>a .switch,
+body.isSwitch .menu ul li>a:hover .switch {
+    background-color: #e79f6c;
+}
+
+body.isSwitch .switch::before {
+    left: 20px;
+}
+
+body.isSwitch .sidebar::before {
+    filter: hue-rotate(200deg);
+}

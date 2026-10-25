@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户维护</title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../js/jquery-3.7.1.js"></script>
+    <link rel="stylesheet" href="./usersManage.css">
+
+</head>
+
+<body>
+    <div class="shell">
+        <h2 class="title">用户维护</h2>
+        <section class="header">
+            <span>查询结果: <span class="resultye">3</span> 页 <span class="resultxiang">3</span> 项</span>
+            <div class="input-group">
+                <input type="search" name="" id="" placeholder="班级编号">
+                <a href="">
+                    <ion-icon name="search-outline"></ion-icon>
+                </a>
+            </div>
+            <input type="button" value="增加" class="liBtn" id="addClassBtn">
+        </section>
+        <section class="sContent">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="thUs">用户名</th>
+                        <th class="thTp">用户类型</th>
+                        <th class="thOp">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            <input type="text" value="001">
+                        </td>
+                        <td>
+                            <div class="select-menu">
+                                <div class="selectStuScoreNa">
+                                    <span id="finalStubjbh" style="display: none;">404</span>
+                                    <span id="finalStubjmc">用户类型</span>
+                                    <a class="iconDo">
+                                        <ion-icon name="chevron-down-outline"></ion-icon>
+                                    </a>
+                                </div>
+                                <div class="options-list">
+                                    <div class="optionStuScore">
+                                        系统管理员
+                                    </div>
+                                    <div class="optionStuScore">
+                                        普通用户
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="button" value="修改" class="liBtn" id="reviseClassBtn">
+                            <input type="button" value="删除" class="liBtn" id="deleteClassBtn">
+                            <input type="button" value="重置" class="liBtn" id="resetClassBtn">
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </section>
+        <section class="sBotton">
+            <ul class="pagination">
+                <li class="page-btn page-btn-prev">
+                    < </li>
+                <li class="page-btn page-btn-next isClick"> > </li>
+            </ul>
+        </section>
+    </div>
+</body>
+<script src="./fenyeJQ.js"></script>
+<script>
+
+
+    $(document).ready(function () {
+
+        // 添加按钮功能
+        $('#addClassBtn').click(function () {
+            $('.home-section .homeCT').empty()  //清空内容
+            $('.home-section .homeCT').removeClass().addClass('addUser homeCT');
+            $.ajax({
+                url: 'addUser.html',
+                success: function (response) {
+                    $('.home-section .addUser').html(response)
+                }
+            })
+        })
+
+        let selectStuScoreNaList = document.querySelectorAll('.selectStuScoreNa')
+        console.log(selectStuScoreNaList)
+
+
+
+        selectStuScoreNaList.forEach((selectStuScoreNa) => {
+            const options_list = selectStuScoreNa.nextElementSibling
+            const options = options_list.querySelectorAll('.optionStuScore')
+
+
+            //     切换菜单的显示和隐藏
+            selectStuScoreNa.addEventListener('click', () => {
+                selectStuScoreNaList.forEach((menu) => {
+                    if (menu !== selectStuScoreNa) {
+                        menu.nextElementSibling.classList.remove('stuactive')
+                        menu.querySelector('.iconDo').classList.remove('up')
+                    }
+                })
+                options_list.classList.toggle('stuactive')
+                selectStuScoreNa.querySelector('.iconDo').classList.toggle('up')
+            })
+
+
+            //切换选择
+            options.forEach((option, index) => {
+                option.addEventListener('click', () => {
+                    options.forEach((option) => {
+                        option.classList.remove('selected')
+                    })
+                    selectStuScoreNa.querySelector('#finalStubjmc').innerHTML = option.innerHTML
+                    $('#finalStubjbh').text(index)
+                    option.classList.add('selected')
+                    options_list.classList.toggle('stuactive')
+                    selectStuScoreNa.querySelector('.iconDo').classList.toggle('up')
+                })
+            })
+        })
+
+    })
+
+</script>
+
+</html>

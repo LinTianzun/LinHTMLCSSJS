@@ -1,0 +1,228 @@
+* {
+    padding: 0;
+    margin: 0;
+    transition: .3s;
+}
+
+body {
+    height: 100vh;
+    background-image: url(../img/前端好看壁纸图片/13.jpg);
+}
+
+.shell {
+    margin: auto;
+    margin-top: 10%;
+    width: 640px;
+    height: 510px;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: #ffffff49;
+    border-radius: 50px;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.5) inset;
+    color: #fff;
+    text-shadow: 0 0 10px #ff9dff80;
+    /* letter-spacing: 3px; */
+}
+
+.title {
+    font-size: 45px;
+    margin-bottom: 30px;
+    color: #fff;
+    text-shadow: 0 0 10px #ff9dff80;
+    letter-spacing: 3px;
+}
+
+.header {
+    width: 100%;
+    height: 60px;
+    margin-bottom: 15px;
+    background-color: #fff4;
+    padding: 10px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: 2px;
+}
+
+.header .input-group {
+    width: 25%;
+    height: 60%;
+    background-color: #fff5;
+    padding: 0 10px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .2s;
+}
+
+.header .input-group:hover {
+    width: 30%;
+    background-color: #fff8;
+    box-shadow: 0 0 10px #ff9dff80;
+}
+
+.header .input-group ion-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.header .input-group input {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+.sContent {
+    width: 95%;
+    height: 47%;
+    background-color: #fffb;
+    margin: 8px auto;
+    border-radius: 10px;
+    overflow: auto;
+    overflow: overlay;
+    letter-spacing: 3px;
+}
+
+.sContent::-webkit-scrollbar {
+    display: none;
+    /* width: 10px;
+    height: 10px; */
+}
+
+table {
+    width: 100%;
+}
+
+table,
+th,
+td {
+    border-collapse: collapse;
+    padding: 11px;
+    text-align: center;
+}
+
+thead {
+    padding: 0px;
+}
+
+thead th {
+    position: sticky;
+    width: 33%;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+}
+
+tbody input[type="text"] {
+    width: 70%;
+    border: none;
+    outline: none;
+    background: none;
+    color: #339999;
+    text-shadow: 0 0 10px #CCFFFF;
+    letter-spacing: 3px;
+}
+
+.liBtn {
+    padding: 3px 7px;
+    margin: 0px 10px;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    text-align: center;
+}
+
+#addClassBtn {
+    background-color: #86e49d;
+    color: #fff;
+    letter-spacing: 3px;
+}
+
+#reviseClassBtn {
+    background-color: #ebc474;
+    color: #fff;
+    letter-spacing: 3px;
+}
+
+#deleteClassBtn {
+    background-color: #d893a3;
+    color: #b30021;
+    letter-spacing: 3px;
+}
+
+
+
+
+/* 分页列表 */
+.pagination {
+    display: flex;
+    height: 50px;
+    margin-top: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 10px #CCFFFF;
+}
+
+.pagination li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    margin: 10px;
+    color: #333;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+/* 左右按钮 */
+.pagination li.page-btn {
+    /* 默认为不可点击状态 */
+    color: #cdd5f7;
+    font-size: 22px;
+}
+
+.pagination li.page-btn.isClick {
+    /* 右按钮 默认为可点击状态 */
+    color: #666666;
+    font-size: 22px;
+}
+
+.pagination li.page-btn.isClick:hover {
+    color: #fff;
+    cursor: pointer;
+    background-color: #6b5bfd;
+}
+
+/* 数字按钮 */
+.pagination li.page-number {
+    color: #333;
+    cursor: pointer;
+}
+
+.pagination li.page-number:hover {
+    color: #fff;
+    /* 文字加粗 */
+    font-weight: bold;
+    background-color: #6b5bfd;
+}
+
+.pagination li.page-number.active {
+    color: #fff;
+    /* 文字加粗 */
+    font-weight: bold;
+    background-color: #6b5bfd;
+    /* 鼠标变为默认箭头 */
+    cursor: default;
+}
+
+/* 省略号按钮 */
+.pagination li.page-dot {
+    color: #cdd5f7;
+    font-size: 18px;
+}

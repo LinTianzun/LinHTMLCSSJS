@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>密码设置</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            transition: .3s;
+        }
+
+        body {
+            height: 100vh;
+            background-image: url(../img/前端好看壁纸图片/13.jpg);
+        }
+
+        .shell {
+            margin: auto;
+            margin-top: 10%;
+            width: 540px;
+            height: 460px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            background-color: #ffffff49;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5) inset;
+            color: #fff;
+            text-shadow: 0 0 10px #ff9dff80;
+            letter-spacing: 3px;
+        }
+
+        .shell .addClassForm {
+            width: 100%;
+            height: 100%;
+        }
+
+        .shell .addClassForm ul {
+            list-style: none;
+        }
+
+        .shell .addClassForm ul li {
+            /* padding: 0 auto; */
+        }
+
+        .title {
+            font-size: 45px;
+            /* padding: auto; */
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 0 10px #ff9dff80;
+            letter-spacing: 3px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            display: flex;
+            width: 85%;
+            height: 50px;
+            margin: 20px auto;
+            box-sizing: border-box;
+            color: rgb(0, 0, 0);
+            border: 5px solid transparent;
+            background: rgba(255, 255, 255, .5);
+            border-radius: 100px;
+            padding: 5px 20px 0 20px;
+            transition: 0.3s;
+            font-size: 18px;
+            outline: none;
+        }
+
+        input[type="text"]:hover,
+        input[type="password"]:hover {
+            background-color: rgba(255, 255, 255, 0);
+            border: 5px solid #ffffff;
+        }
+
+
+        input::placeholder {
+            color: #92a7e8;
+        }
+
+        .liBtnS {
+            width: 95%;
+            margin: 20px 20px;
+        }
+
+        .liBtn {
+            width: 25%;
+            height: 50px;
+            padding: 10px;
+            margin: 15px 13px;
+            border-radius: 100px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 20px;
+            letter-spacing: 3px;
+        }
+
+        #addClassBtn {
+            background-color: #66CCFF;
+        }
+
+        #resetBtn {
+            background-color: #CCCCFF;
+        }
+
+        #cancelBtn {
+            background-color: #FFCCCC;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="shell">
+        <h2 class="title">密码设置</h2>
+        <form class="addClassForm" action="">
+            <ul>
+                <li><input type="text" name="username" id="username" placeholder="用户名" disabled></li>
+                <li><input type="password" name="password" id="password" placeholder="密 &nbsp &nbsp 码">
+                </li>
+                <li><input type="password" name="confirmPassword" id="confirmPassword" placeholder="确认密码">
+                </li>
+                <li class="liBtnS">
+                    <input type="button" value="确定" class="liBtn" id="addClassBtn">
+                    <input type="button" value="重置" class="liBtn" id="resetBtn">
+                    <input type="button" value="取消" class="liBtn" id="cancelBtn">
+                </li>
+            </ul>
+        </form>
+        <div id="addResult"></div>
+    </div>
+
+</body>
+<script src="../js/jquery-3.7.1.js"></script>
+<script>
+    $(document).ready(function () {
+        // 模拟传入的数据
+        const username = $('.usName').html().toString()
+        $('#username').val(username)
+
+        $('#addClassBtn').click(function () {
+
+            const password = $('#password').val()
+            const confPasword = $('#confirmPassword').val()
+            if (confPasword === '' || password === '') {
+                alert("修改的密码不能为空")
+            } else if (password != confPasword) {
+                alert("两次密码不一致")
+                $('#password').val('')
+                $('#confirmPassword').val('')
+            } else {
+                alert("修改成功")
+            }
+        })
+
+        $('#resetBtn').click(function () {
+            $('#password').val(''); // 清空班级名称文本框内容
+        })
+
+        //  点击取消按钮 回到初始页面 
+        $('#cancelBtn').click(function () {
+            $('.home-section .homeCT').empty()  //清空内容
+            $('.home-section .homeCT').removeClass().addClass('content homeCT');  //清除所有的类名
+            var newContent = '<span class="text">WelCome to HOME</span>';
+            $('.home-section .homeCT').append(newContent);
+        })
+    })
+</script>
+
+</html>

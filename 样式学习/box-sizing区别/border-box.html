@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* border-box  边框盒模型 */
+        /**
+        在这个模型中，元素设置的宽度和高度包括内容区域、内边距和边框。
+        也就是说 当前这个盒子大小 是 100px * 100px 
+        (60px 内容 + 20px (左/右)内边距 + 20px (左/右)边框 ) = 100px
+        */
+        .item{
+            position: relative;
+            box-sizing: border-box;
+            width: 100px;
+            height: 100px;
+            border: dashed 10px #7dd4f2;
+            padding: 10px;
+            background-color: blueviolet;
+        }
+
+        .item::after {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background-color: #ff0000;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="item"></div>
+</body>
+</html>

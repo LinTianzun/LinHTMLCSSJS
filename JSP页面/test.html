@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>局部页面切换模板</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background-image: url(../img/前端好看壁纸图片/13.jpg);
+            background-size: cover;
+        }
+
+        .messages {
+            margin: auto;
+            margin-top: 15%;
+            width: 500px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #ffffff49;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5) inset;
+        }
+
+
+        .messages h1 {
+            position: relative;
+            font-size: 40px;
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 10px;
+            top: -100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="messages">
+        <h1>留言板</h1>
+    </div>
+</body>
+<script>
+    let classArr = [{ mc: '零班', bh: '110' }, { mc: '一班', bh: '111' }, { mc: '二班', bh: '112' }]
+    let scoreArr = [{ xh: '1101', bh: '110' }, { xh: '1111', bh: '111' }, { xh: '1121', bh: '112' }]
+    scoreArr.forEach((item) => {
+        let bjmc = classArr.find(classItem => classItem.bh === item.bh)?.mc || '未知班级'
+        console.log(`学号为 ${item.xh} 的学生所在班级为：${bjmc}`)
+
+    })
+</script>
+
+</html>

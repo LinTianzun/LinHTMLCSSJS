@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点击不到的按钮</title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            --purple: #792ddd;
+            height: 100vh;
+            background-color: var(--purple);
+            display: grid;
+            place-items: center;
+            /* font-family: PingFang SC, MicroSoft YeHei,sans-serif; */
+            user-select: none;
+        }
+
+        .wrapper {
+            width: 600px;
+            height: 400px;
+            background-color: #fff;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .wrapper .iconHihg {
+            font-size: 7em;
+            color: var(--purple);
+            border: 0px solid transparent;
+            outline: 3px solid;
+            border-radius: 50%;
+            transition: filter 1.5s ease;
+        }
+
+        .wrapper .iconHihg.ai {
+            display: none;
+        }
+
+        .wrapper .title {
+            font-size: 2.6em;
+            color: var(--purple);
+            letter-spacing: 2px;
+        }
+
+        .wrapper .btn-group {
+            width: 100%;
+            height: 46px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .wrapper .btn-group .btn {
+            width: 150px;
+            height: inherit;
+            border: 2px solid var(--purple);
+            border-radius: calc(infinity * 1px);
+            position: absolute;
+            font-size: 1em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            animation-duration: 2s;
+            animation-delay: 0s;
+            animation-fill-mode: forwards;
+            animation-timing-function: linear;
+            box-shadow: 4px 4px 20px 4px rgba(121, 45, 221, 0.4);
+        }
+
+        .btn.yes {
+            margin-left: -200px;
+            color: #fff;
+            background-color: var(--purple);
+            animation-delay: 1s;
+            transition: .3s linear;
+        }
+
+        .btn.yes:hover {
+            opacity: 0.9;
+        }
+
+        .btn.no {
+            margin-right: -200px;
+            color: var(--purple);
+        }
+
+        @keyframes disappear {
+            0% {
+                pointer-events: none;
+            }
+
+            100% {
+                opacity: 0;
+                filter: blur(20px);
+                transform: scale(2);
+                visibility: hidden;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form action="" class="wrapper">
+        <ion-icon class="iconHihg wen" name="help-circle"></ion-icon>
+        <ion-icon class="iconHihg ai" name="heart-circle"></ion-icon>
+        <h2 class="title">喜欢我吗?</h2>
+        <div class="btn-group">
+            <button class="btn yes">爱的深沉</button>
+            <button class="btn no">滚一边去</button>
+        </div>
+    </form>
+</body>
+<script>
+    const yes = document.querySelector('.yes')
+    const no = document.querySelector('.no')
+    const wrapper = document.querySelector('.wrapper')
+    const title = document.querySelector('.title')
+    const iconHihg = document.querySelector('.iconHihg')
+    const ai = document.querySelector('.ai')
+
+    yes.addEventListener("click", (e) => {
+        e.preventDefault()
+        title.innerHTML = '2024 请从爱自己开始<br/>'
+        iconHihg.style.display = 'none'
+        ai.style.display = 'block'
+        ai.style.outline = 'none'
+        ai.style.filter = 'drop-shadow(0 0 60px)'
+        no.style.animationName = 'disappear'
+        yes.style.animationName = 'disappear'
+    })
+
+    const wrapperRect = wrapper.getBoundingClientRect()
+    const noRect = no.getBoundingClientRect()
+
+    no.addEventListener("mouseover", (e) => {
+        e.preventDefault()
+        no.style.left = `${Math.floor(Math.random() * (wrapperRect.width - noRect.width))}px`
+        no.style.top = `${Math.floor(Math.random() * (wrapperRect.height - noRect.height))}px`
+    })
+</script>
+
+</html>

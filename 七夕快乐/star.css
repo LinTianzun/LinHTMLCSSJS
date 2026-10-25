@@ -1,0 +1,149 @@
+*{
+	margin:0;
+	padding:0;
+	box-sizing:border-box;
+}
+
+body{
+	height:100vh;
+	overflow:hidden;
+	background:radial-gradient(at 107% 30%, #3d4650 75px, #4a3d50 -4%, #1c1a2e 30%);
+	position: relative;
+	
+}
+
+.star{
+	width: 4px;
+	height: 4px;
+	position:absolute;
+	border-radius: 50%;
+	background: radial-gradient(at 70% 30%, rgb(246,243,243) 1px, #fbfdff -4%, #eeeef4 38%);
+	box-shadow: 0 0 6px 1px rgb(37,179,249);
+	animation: myStar 5s linear forwards;
+}
+
+.meteor{
+	position:absolute;
+	width: 100px;
+	height: 2px;
+	right: 0;
+	top:0;
+	background:linear-gradient(to right, #fff, rgba(0,0,0,0));
+	box-shadow: 0 0 -3px rab(37,179,249);
+	animation: myMeteor 1s linear infinite;
+}
+
+.heart{
+	position: absolute;
+	z-index: 3;
+	left: 50%;
+	top: 50%;
+	width: 200px;
+	height: 200px;
+	opacity: 0;
+	transform: translate(-50%,-50%) rotate(-45deg);
+	border-left: 3px dotted pink;
+	border-bottom: 3px dotted pink;
+	animation: myHeart 4s linear 6s forwards;
+}
+
+.heart::before{
+	content: '';
+	width: 200px;
+	height: 200px;
+	border-right: 3px dotted pink;
+	position: absolute;
+	border-radius: 50%;
+	transform: translateX(100px);
+}
+
+.heart::after{
+	content: '';
+	width: 200px;
+	height: 200px;
+	border-top: 3px dotted pink;
+	position: absolute;
+	border-radius: 50%;
+	transform: translateY(-100px);
+}
+
+p{
+	position: absolute;
+	color: #fff;
+	display: none;
+	left: 50%;
+	bottom: 18%;
+	transform: translateX(-50%);
+	font-family: "LiSu",
+		隶书,
+		"MicrosoftJhengHei",
+		华文细黑,
+		STHeiti,
+		MingLiu;
+	;
+	font-size: 35px;
+	/* transform: rotate(45deg);
+	left: 50%;
+	top: 20%; */
+	text-shadow:  0 0 10px pink, 0 0 20px pink, 0 0 30px pink,0 0 40px pink;
+}
+
+/* 繁星点点动画 */
+@keyframes myStar{
+	0%{
+		opacity: .5;
+	}
+	25%{
+		transform: translateX(-50%);
+	}
+	50%{
+		opacity: .8;
+		transform: translateY(50%);
+	}
+	75%{
+		transform: translateX(30%);
+	}
+	90%{
+		opacity: .9;
+	}
+	100%{
+		opacity: 0;
+		transform: translateY(-20%);
+	}
+}
+
+
+@keyframes myMeteor{
+	0%{
+		transform: translate(-320%,12000%) rotate(-30deg);
+	}
+	25%{
+		transform: translate(-535%,17000%) rotate(-30deg);
+	}
+	100%{
+		transform: translate(-795%,24500%) rotate(-30deg);
+	}
+}
+
+@keyframes myHeart{
+	0%{
+		opacity: .5;
+		transform: translate(-50%,-50%) rotate(-45deg) scale(1);
+	}
+	25%{
+		opacity: 1;
+		transform: translate(-50%,-50%) rotate(-45deg) scale(1.5);
+	}
+	50%{
+		opacity: 1;
+		transform: translate(-50%,-50%) rotate(-45deg) scale(1);
+	}
+	75%{
+		opacity: 1;
+		transform: translate(-50%,-50%) rotate(-45deg) scale(1.5);
+	}
+	100%{
+		opacity: 1;
+		transform: translate(-50%,-50%) rotate(-45deg) scale(1);
+	}
+}

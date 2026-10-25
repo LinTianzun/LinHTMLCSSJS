@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户增加</title>
+    <!-- <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4375159_kjejnbquk9.css"> -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../js/jquery-3.7.1.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background-image: url(../img/前端好看壁纸图片/13.jpg);
+            background-size: cover;
+        }
+
+        .messages {
+            margin: auto;
+            margin-top: 15%;
+            width: 400px;
+            height: 350px;
+            display: flex;
+            /* justify-content: center; */
+            align-items: center;
+            flex-direction: column;
+            background-color: #ffffff49;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5) inset;
+        }
+
+
+        .messages h1 {
+            position: relative;
+            font-size: 40px;
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 8px;
+            /* top: -100px; */
+            margin: 20px 0;
+        }
+
+        .addScoreContent {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            /* padding-left: 14%; */
+            align-items: center;
+        }
+
+        .addScoreContent div {
+            margin: auto;
+        }
+
+        .btnScore,
+        .inputScore,
+        .select-menu {
+            width: 300px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .selectStuScoNa {
+            background-color: #695CFE;
+            padding: 15px;
+            color: #fff;
+            font-weight: 500;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+        }
+
+        .options-list {
+            position: absolute;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 6px;
+            margin: 10px 0;
+            padding: 0 20px;
+            max-height: 102px;
+            overflow-y: auto;
+            transition: 0.4s linear 0.2s;
+            height: 0;
+            z-index: 100;
+        }
+
+        .optionStuScore {
+            padding: 8px 0;
+            font-weight: 500;
+            font-size: 14px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .optionStuScore:hover,
+        .optionStuScore.selected {
+            color: #00a8ff;
+        }
+
+        .options-list::-webkit-scrollbar {
+            width: 4px;
+            background-color: #eee;
+        }
+
+        .options-list::-webkit-scrollbar-thumb {
+            background-color: #00a8ff;
+        }
+
+        .options-list.stuactive {
+            height: 73px;
+        }
+
+        .iconDo {
+            transition: 0.3s ease-in-out;
+        }
+
+        .iconDo.up {
+            transform: rotate(-180deg);
+        }
+
+        input[type="text"] {
+            width: 300px;
+            /* height: 20px; */
+            padding: 8px 0;
+            margin-top: 20px;
+            /* margin: 10px 0; */
+            box-sizing: border-box;
+            color: rgb(0, 0, 0);
+            border: 5px solid transparent;
+            background: rgba(255, 255, 255, .5);
+            border-radius: 10px;
+            padding: 5px 20px 0 20px;
+            transition: 0.3s;
+            font-size: 18px;
+            outline: none;
+        }
+
+        input[type="text"]:hover {
+            background-color: rgba(255, 255, 255, 0);
+            border: 5px solid #ffffff;
+        }
+
+        input::placeholder {
+            color: #92a7e8;
+        }
+
+        .btnScore {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .liBtn {
+            width: 80px;
+            height: 50px;
+            padding: 10px;
+            margin: auto;
+            margin-top: 10px;
+            border-radius: 10px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 20px;
+            letter-spacing: 3px;
+        }
+
+        #addScoreBtn {
+            background-color: #66CCFF;
+        }
+
+        #resetBtn {
+            background-color: #CCCCFF;
+        }
+
+        #cancelBtn {
+            background-color: #FFCCCC;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="messages">
+        <h1>用户增加</h1>
+        <div class="addScoreContent">
+            <div class="select-menu">
+                <div class="selectStuScoNa">
+                    <span id="finalStubjbh" style="display: none;">404</span>
+                    <span id="finalStubjmc">用户类型</span>
+                    <a class="iconDo">
+                        <ion-icon name="chevron-down-outline"></ion-icon>
+                    </a>
+                </div>
+                <div class="options-list">
+                    <div class="optionStuScore">
+                        系统管理员
+                    </div>
+                    <div class="optionStuScore">
+                        普通用户
+                    </div>
+                </div>
+            </div>
+            <div class="inputScore">
+                <input type="text" name="" class="usName" id="" placeholder="用户名">
+                <input type="text" name="" class="usPswd" id="" placeholder="密码">
+            </div>
+            <div class="btnScore" style="margin-top: 10px;">
+                <input type="button" value="确定" class="liBtn" id="addScoreBtn">
+                <input type="button" value="重置" class="liBtn" id="resetBtn">
+                <input type="button" value="取消" class="liBtn" id="cancelBtn">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        let selectStuScoNa = document.querySelector('.selectStuScoNa')
+        const options_list = document.querySelector('.options-list')
+        const options = options_list.querySelectorAll('.optionStuScore')
+
+        //切换菜单的显示和隐藏
+        selectStuScoNa.addEventListener('click', () => {
+            options_list.classList.toggle('stuactive')
+            selectStuScoNa.querySelector('.iconDo').classList.toggle('up')
+        })
+
+        //切换选择
+        options.forEach((option, index) => {
+            option.addEventListener('click', () => {
+                options.forEach((option) => {
+                    option.classList.remove('selected')
+                })
+                selectStuScoNa.querySelector('#finalStubjmc').innerHTML = option.innerHTML
+                $('#finalStubjbh').text(index)
+                option.classList.add('selected')
+                options_list.classList.toggle('stuactive')
+                selectStuScoNa.querySelector('.iconDo').classList.toggle('up')
+            })
+        })
+
+        //清空所有的选择框
+        $('#resetBtn').click(function () {
+            options.forEach((option) => {
+                option.classList.remove('selected')
+                $('#finalStubjbh').text(404)
+                $('#finalStubjmc').text('用户类型')
+                $('.usName').val('')
+                $('.usPswd').val('')
+            })
+        })
+
+        //  点击取消按钮 回到初始页面 
+        $('#cancelBtn').click(function () {
+            $('.home-section .homeCT').empty()  //清空内容
+            $('.home-section .homeCT').removeClass().addClass('content homeCT');  //清除所有的类名
+            var newContent = '<span class="text">WelCome to HOME</span>';
+            $('.home-section .homeCT').append(newContent);
+        })
+    })
+
+</script>
+
+</html>

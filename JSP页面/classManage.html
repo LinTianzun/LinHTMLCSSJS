@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班级维护</title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../js/jquery-3.7.1.js"></script>
+    <link rel="stylesheet" href="./classManage.css">
+   
+</head>
+
+<body>
+    <div class="shell">
+        <h2 class="title">班级维护</h2>
+        <section class="header">
+            <span>查询结果: <span class="resultye">3</span> 页 <span class="resultxiang">3</span> 项</span>
+            <div class="input-group">
+                <input type="search" name="" id="" placeholder="班级编号">
+                <a href=""><ion-icon name="search-outline"></ion-icon></a>
+            </div>
+            <input type="button" value="增加" class="liBtn" id="addClassBtn">
+        </section>
+        <section class="sContent">
+            <table>
+                <thead>
+                    <tr>
+                        <th>班级编号</th>
+                        <th>班级名称</th>
+                        <th>班级操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="text" value="001">
+                        </td>
+                        <td>
+                            <input type="text" value="一班">
+                        </td>
+                        <td>
+                            <input type="button" value="修改" class="liBtn" id="reviseClassBtn">
+                            <input type="button" value="删除" class="liBtn" id="deleteClassBtn">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="001">
+                        </td>
+                        <td>
+                            <input type="text" value="一班">
+                        </td>
+                        <td>
+                            <input type="button" value="修改" class="liBtn" id="reviseClassBtn">
+                            <input type="button" value="删除" class="liBtn" id="deleteClassBtn">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="002">
+                        </td>
+                        <td>
+                            <input type="text" value="二班">
+                        </td>
+                        <td>
+                            <input type="button" value="修改" class="liBtn" id="reviseClassBtn">
+                            <input type="button" value="删除" class="liBtn" id="deleteClassBtn">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="002">
+                        </td>
+                        <td>
+                            <input type="text" value="二班">
+                        </td>
+                        <td>
+                            <input type="button" value="修改" class="liBtn" id="reviseClassBtn">
+                            <input type="button" value="删除" class="liBtn" id="deleteClassBtn">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="003">
+                        </td>
+                        <td>
+                            <input type="text" value="三班">
+                        </td>
+                        <td>
+                            <input type="button" value="修改" class="liBtn" id="reviseClassBtn">
+                            <input type="button" value="删除" class="liBtn" id="deleteClassBtn">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="003">
+                        </td>
+                        <td>
+                            <input type="text" value="三班">
+                        </td>
+                        <td>
+                            <input type="button" value="修改" class="liBtn" id="reviseClassBtn">
+                            <input type="button" value="删除" class="liBtn" id="deleteClassBtn">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="003">
+                        </td>
+                        <td>
+                            <input type="text" value="三班">
+                        </td>
+                        <td>
+                            <input type="button" value="修改" class="liBtn" id="reviseClassBtn">
+                            <input type="button" value="删除" class="liBtn" id="deleteClassBtn">
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </section>
+        <section class="sBotton">
+            <ul class="pagination">
+                <li class="page-btn page-btn-prev">
+                    < </li>
+                <li class="page-btn page-btn-next isClick"> > </li>
+            </ul>
+        </section>
+    </div>
+</body>
+<script src="./fenyeJQ.js"></script>
+<script>
+    // 页码按钮功能
+    $('#addClassBtn').click(function () {
+        $('.home-section .homeCT').empty()  //清空内容
+        $('.home-section .homeCT').removeClass().addClass('ClassContent homeCT');
+        $.ajax({
+            url: 'addClasses.html',
+            success: function (response) {
+                $('.home-section .ClassContent').html(response)
+            }
+        })
+    })
+
+</script>
+
+</html>

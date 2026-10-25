@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fffaff;
+        }
+
+        main {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(3, 500px);
+            overflow-y: hidden;
+            padding: 50px;
+        }
+
+        section {
+            display: flex;
+            gap: 2rem;
+            flex-direction: column;
+        }
+
+
+        section:nth-child(1),
+        section:nth-child(3) {
+            /* 应用平滑的动画 */
+            animation: scroller linear;
+            /* 动画根据滚动进行 */
+            animation-timeline: scroll(root);
+            /* 子元素反转队列 */
+            flex-direction: column-reverse;
+            /* 初始位置设置为底部 */
+            translate: 0% calc(-100% + 100vh);
+        }
+
+        section img {
+            width: 430px;
+            height: 250px;
+            box-shadow: 0 0 10px #0002;
+            border-radius: 5px;
+            transition: .3s;
+        }
+
+        section img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(150, 50, 50, 0.5);
+        }
+
+        @keyframes scroller {
+            to {
+                /* 最终位置设置为顶部 */
+                translate: 0% calc(100% - 100vh);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section>
+            <img src="../img/qq/01.jpg" alt="">
+            <img src="../img/qq/02.jpg" alt="">
+            <img src="../img/qq/03.jpg" alt="">
+            <img src="../img/qq/04.jpg" alt="">
+            <img src="../img/qq/05.jpg" alt="">
+            <img src="../img/qq/06.png" alt="">
+        </section>
+        <section>
+            <img src="../img/qq/07.jpg" alt="">
+            <img src="../img/qq/08.jpg" alt="">
+            <img src="../img/qq/09.jpg" alt="">
+            <img src="../img/qq/10.png" alt="">
+            <img src="../img/qq/11.jpg" alt="">
+            <img src="../img/qq/12.jpg" alt="">
+        </section>
+        <section>
+            <img src="../img/qq/13.jpg" alt="">
+            <img src="../img/qq/14.jpg" alt="">
+            <img src="../img/qq/15.jpg" alt="">
+            <img src="../img/qq/16.jpg" alt="">
+            <img src="../img/qq/17.jpg" alt="">
+            <img src="../img/qq/18.jpg" alt="">
+        </section>
+    </main>
+</body>
+
+</html>

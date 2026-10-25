@@ -1,0 +1,211 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url(../../img/qq/11.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url(../../img/qq/22.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: 0.5s;
+}
+
+body::after .container.signup {
+    opacity: 1;
+}
+
+h2 {
+    user-select: none;
+}
+
+.container {
+    position: relative;
+    width: 350px;
+    height: 340px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: 0.5s;
+    overflow: hidden;
+}
+
+.container.signup {
+    height: 440px;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: repeating-conic-gradient(from var(--a), #ead2ad 0%, #56CCF2 10%, transparent 10%, transparent 80%, #e79f6c 100%);
+    border-radius: 20px;
+    animation: loginAni 2.5s linear infinite;
+}
+
+body.signup .container::before {
+    filter: hue-rotate(200deg);
+}
+
+@property --a {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+}
+
+@keyframes loginAni {
+    0% {
+        --a: 0deg;
+    }
+
+    100% {
+        --a: 360deg;
+    }
+}
+
+.container span {
+    position: absolute;
+    inset: 5px;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+.container span::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    background: url(../../img/qq/11.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px);
+}
+
+.container span::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    background: url(../../img/qq/11.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    filter: blur(15px);
+}
+
+.container.signup .container span::before,
+.container.signup .container span::after {
+    background: url(../../img/qq/22.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    filter: blur(15px);
+}
+
+form {
+    position: absolute;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+    transition: 0.5s;
+}
+
+form#signupForm {
+    left: 100%;
+}
+
+.container.signup form#signinForm {
+    left: -100%;
+}
+
+.container.signup form#signupForm {
+    left: 0;
+}
+
+form h2 {
+    position: relative;
+    color: #fff;
+    font-size: 1.5em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+form .inputBox {
+    position: relative;
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+
+form .inputBox a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.85em;
+}
+
+form .inputBox a:nth-child(2) {
+    text-decoration: underline;
+}
+
+form .inputBox input {
+    width: 100%;
+    outline: none;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.15);
+    padding: 6px 15px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #fff;
+}
+
+form .inputBox input::placeholder {
+    color: rgba(255, 255, 255, 0.5)
+}
+
+form .inputBox input[type="submit"] {
+    background: #2196f3;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+form#signupForm .inputBox input[type="submit"] {
+    background: #f08568;
+}
+
+form#signupForm b {
+    margin-left: 3px;
+    font-weight: 500;
+    color: #ead2ad;
+    text-decoration: underline;
+}

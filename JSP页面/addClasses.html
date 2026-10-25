@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班级增加</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            transition: .3s;
+        }
+
+        body {
+            height: 100vh;
+            background-image: url(../img/前端好看壁纸图片/13.jpg);
+        }
+
+        .shell {
+            margin: auto;
+            margin-top: 10%;
+            width: 640px;
+            height: 460px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            background-color: #ffffff49;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5) inset;
+            color: #fff;
+            text-shadow: 0 0 10px #ff9dff80;
+            /* letter-spacing: 3px; */
+        }
+
+        .shell .addClassForm {
+            width: 100%;
+            height: 100%;
+        }
+
+        .shell .addClassForm ul {
+            list-style: none;
+        }
+
+        .title {
+            font-size: 45px;
+            /* padding: auto; */
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 0 10px #ff9dff80;
+            letter-spacing: 3px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 80%;
+            height: 50px;
+            margin: 20px 0;
+            box-sizing: border-box;
+            color: rgb(0, 0, 0);
+            border: 5px solid transparent;
+            background: rgba(255, 255, 255, .5);
+            border-radius: 100px;
+            padding: 5px 20px 0 20px;
+            transition: 0.3s;
+            font-size: 18px;
+            outline: none;
+        }
+
+        input[type="text"]:hover,
+        input[type="password"]:hover {
+            background-color: rgba(255, 255, 255, 0);
+            border: 5px solid #ffffff;
+        }
+
+        .shell .addClassForm ul li .text {
+            margin-right: 10px;
+            font-size: 22px;
+        }
+
+        input::placeholder {
+            color: #92a7e8;
+        }
+
+        .liBtnS {
+            margin-top: 20px;
+        }
+
+        .liBtn {
+            width: 30%;
+            height: 50px;
+            padding: 10px;
+            margin: 15px 7px;
+            border-radius: 100px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 20px;
+            letter-spacing: 3px;
+        }
+
+        #addClassBtn {
+            background-color: #66CCFF;
+        }
+
+        #resetBtn {
+            background-color: #CCCCFF;
+        }
+
+        #cancelBtn {
+            background-color: #FFCCCC;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="shell">
+        <h2 class="title">班级增加</h2>
+        <form class="addClassForm" action="">
+            <ul>
+                <li><span class="text">班级编号: </span><input type="text" name="bjbh" id="bjbh" placeholder="班级编号"></li>
+                <li><span class="text">班级名称: </span><input type="password" name="bjmc" id="bjmc" placeholder="班级名称">
+                </li>
+                <li class="liBtnS">
+                    <input type="button" value="确定" class="liBtn" id="addClassBtn">
+                    <input type="button" value="重置" class="liBtn" id="resetBtn">
+                    <input type="button" value="取消" class="liBtn" id="cancelBtn">
+                </li>
+            </ul>
+        </form>
+        <div id="addResult"></div>
+    </div>
+
+</body>
+<script src="../js/jquery-3.7.1.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#addClassBtn').click(function () {
+            $('.home-section .homeCT').empty()  //清空内容
+            $('.home-section .homeCT').removeClass().addClass('ClassManageContent homeCT');
+            $.ajax({
+                url: 'classManage.html',
+                success: function (response) {
+                    $('.home-section .ClassManageContent').html(response)
+                }
+            })
+        })
+
+        $('#resetBtn').click(function () {
+            $('#bjbh').val(''); // 清空班级编号文本框内容
+            $('#bjmc').val(''); // 清空班级名称文本框内容
+        })
+
+        //  点击取消按钮 回到初始页面 
+        $('#cancelBtn').click(function () {
+            $('.home-section .homeCT').empty()  //清空内容
+            $('.home-section .homeCT').removeClass().addClass('content homeCT');  //清除所有的类名
+            var newContent = '<span class="text">WelCome to HOME</span>';
+            $('.home-section .homeCT').append(newContent);
+        })
+    })
+</script>
+
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4375159_kjejnbquk9.css">
+</head>
+
+<body>
+    <div class="music-box">
+        <!-- 光盘 -->
+        <div class="cover-box">
+            <img id="rotatingImage" src="../img/前端好看壁纸图片/04dong.jpeg" alt="">
+            <span class="point"></span>
+        </div>
+
+        <h2>歌名</h2>
+        <p>歌手</p>
+
+        <!-- 音乐播放器 -->
+        <audio id="myMusic" src="../music/被神明写的歌 - K.D.mp3">
+            <source src="../music/被神明写的歌 - K.D.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- 进度条 -->
+        <input type="range" value="0" id="progress" max="100">
+
+        <!-- 控件 -->
+        <div class="controls">
+            <button class="backward">
+                <i class="iconfont icon-step-backward"></i>
+            </button>
+            <button class="play-pause-btn">
+                <i id="controlIcon" class="iconfont icon-caret-right"></i>
+            </button>
+            <button class="forward">
+                <i class="iconfont icon-step-forward"></i>
+            </button>
+        </div>
+    </div>
+</body>
+<script>
+    // 进度条
+    const progress = document.getElementById('progress')
+    const myMusic = document.getElementById('myMusic')
+    // 播放暂停按钮
+    const controlIcon = document.getElementById('controlIcon')
+    const playPauseButton = document.querySelector(".play-pause-btn")
+    // 上一首按钮
+    const pervBtn = document.querySelector(".controls button.backward")
+    // 下一首按钮
+    const nextBtn = document.querySelector(".controls button.forward")
+    // 唱片图片
+    const rotatingIamge = document.getElementById('rotatingImage')
+    // 歌名
+    const songName = document.querySelector(".music-box h2")
+    // 歌手
+    const artisName = document.querySelector(".music-box p")
+    // 歌曲列表
+    const musicArr = [
+        {
+            title: "被神明写的歌",
+            name: "K.D",
+            source: "../music/被神明写的歌 - K.D.mp3"
+        },
+        {
+            title: "江南烟雨色",
+            name: "杨树人",
+            source: "../music/江南烟雨色 - 杨树人.mp3"
+        },
+        {
+            title: "泡沫",
+            name: "杨树人",
+            source: "../music/泡沫 (男声版) - 杨树人.mp3"
+        },
+    ]
+    // 当前音乐
+    let nowIndex = 0
+    let rotating = false
+    let currentRorarion = 0
+    let rotationInterval
+    // rotation(1)
+    // 旋转
+    function rotation(type) {
+        // 移动
+        if (type == 1) {
+            if (!rotating) {
+                rotating = true
+                rotationInterval = setInterval(function () {
+                    currentRorarion += 1
+                    rotatingIamge.style.transform = `rotate(${currentRorarion}deg)`
+                }, 50)
+            }
+        } else {  // 停止
+            clearInterval(rotationInterval)
+            rotating = false
+        }
+    }
+
+
+    // 加载mp3
+    function initMusic() {
+        songName.textContent = musicArr[nowIndex].title
+        artisName.textContent = musicArr[nowIndex].name
+        myMusic.src = musicArr[nowIndex].source
+    }
+
+    // 音频加载完成
+    myMusic.addEventListener("loadedmetadata", function () {
+        progress.max = myMusic.duration
+        progress.value = myMusic.currentTime
+    })
+
+    // 播放结束 自动播放下一首
+    myMusic.addEventListener("ended", function () {
+        nowIndex = (nowIndex + 1) % musicArr.length
+        initMusic()
+        playPause()
+    })
+
+    // 切换播放暂停歌曲
+    // 播放 暂停
+    function playPause() {
+        if (myMusic.paused) {
+            myMusic.play()
+            controlIcon.classList.add("icon-pause")
+            controlIcon.classList.remove("icon-caret-right")
+            rotation(1)
+        } else {
+            myMusic.pause()
+            controlIcon.classList.remove("icon-pause")
+            controlIcon.classList.add("icon-caret-right")
+            rotation(2)
+        }
+    }
+    playPauseButton.addEventListener('click', playPause)
+    // playPauseButton.addEventListener('click', function () {
+    //     controlIcon.classList.toggle('icon-caret-right')
+    // })
+
+    // 更新播放进度条
+    myMusic.addEventListener("timeupdate", function () {
+        if (!myMusic.paused) {
+            progress.value = myMusic.currentTime
+        }
+    })
+
+    // 拖动进度条
+    progress.addEventListener("input", function () {
+        myMusic.currentTime = progress.value
+    })
+
+    progress.addEventListener("change", function () {
+        myMusic.play()
+        controlIcon.classList.add("icon-pause")
+        controlIcon.classList.remove("icon-caret-right")
+        rotation(1)
+    })
+
+    // 下一首按钮
+    nextBtn.addEventListener("click", function () {
+        nowIndex = (nowIndex + 1) % musicArr.length
+        initMusic()
+        playPause()
+    })
+
+    // 上一首按钮
+    pervBtn.addEventListener("click", function () {
+        nowIndex = (nowIndex - 1 + musicArr.length) % musicArr.length
+        initMusic()
+        playPause()
+    })
+    initMusic()
+
+
+</script>
+
+</html>

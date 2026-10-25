@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新年倒计时</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- 外部div包裹四个圆的区域 -->
+    <div id="time">
+
+        <!-- 天 -->
+        <!-- 需要在圆环上定义自己的颜色 名称都是 --clr -->
+        <div class="circle" style="--clr:#ffffff;">
+            <!-- 用来显示圆环终点的小圆球 -->
+            <div class="dots" id="day_dot"></div>
+            <!-- 圆环 -->
+            <svg>
+                <!-- 底层圆环轨道 -->
+                <circle cx="70" cy="70" r="70"></circle>
+                <!-- 上层显示具体刻度的圆环 -->
+                <circle cx="70" cy="70" r="70" id="dd"></circle>
+            </svg>
+            <!-- 显示圆环内部的文字 -->
+            <div class="txt" id="days"></div>
+        </div>
+
+        <!-- 小时 -->
+        <div class="circle" style="--clr:#ff2972;">
+            <!-- 用来显示圆环终点的小圆球 -->
+            <div class="dots" id="hr_dot"></div>
+            <!-- 圆环 -->
+            <svg>
+                <!-- 底层圆环轨道 -->
+                <circle cx="70" cy="70" r="70"></circle>
+                <!-- 上层显示具体刻度的圆环 -->
+                <circle cx="70" cy="70" r="70" id="hh"></circle>
+            </svg>
+            <!-- 显示圆环内部的文字 添加id来选择此元素 -->
+            <div class="txt" id="hours"></div>
+        </div>
+
+        <!-- 分钟 -->
+        <div class="circle" style="--clr:#fee800;">
+            <!-- 用来显示圆环终点的小圆球 -->
+            <div class="dots" id="min_dot"></div>
+            <!-- 圆环 -->
+            <svg>
+                <!-- 底层圆环轨道 -->
+                <circle cx="70" cy="70" r="70"></circle>
+                <!-- 上层显示具体刻度的圆环 -->
+                <circle cx="70" cy="70" r="70" id="mm"></circle>
+            </svg>
+            <!-- 显示圆环内部的文字 -->
+            <div class="txt" id="minutes"></div>
+        </div>
+
+        <!-- 秒 -->
+        <div class="circle" style="--clr:#04fc43;">
+            <!-- 用来显示圆环终点的小圆球 -->
+            <div class="dots" id="sec_dot"></div>
+            <!-- 圆环 -->
+            <svg>
+                <!-- 底层圆环轨道 -->
+                <circle cx="70" cy="70" r="70"></circle>
+                <!-- 上层显示具体刻度的圆环 -->
+                <circle cx="70" cy="70" r="70" id="ss"></circle>
+            </svg>
+            <!-- 显示圆环内部的文字 -->
+            <div class="txt" id="seconds"></div>
+        </div>
+    </div>
+    <h2 class="newYear" id="newYear" ></h2>
+    <script src="index.js">
+        
+    </script>
+</body>
+
+</html>

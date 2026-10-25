@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* content-box  内容盒模型 */
+        /**
+        在这个模型中，元素设置的宽度和高度只包括内容区域（content area），
+        不包括边框（border）和内边距（padding）。
+        也就是说 当前这个盒子大小 是 100px + 20px + 20px * 100px + 20px + 20px
+        (100px 内容 + 20px (左/右)内边距 + 20px (左/右)边框 ) = 140px
+        */
+        .item {
+            box-sizing: content-box;
+            width: 100px;
+            height: 100px;
+            background-color: aqua;
+            position: relative;
+            border: dashed 10px #7dd4f2;
+            padding: 10px;
+        }
+
+        .item::after {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background-color: #ff0000;
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="item"></div>
+</body>
+
+</html>

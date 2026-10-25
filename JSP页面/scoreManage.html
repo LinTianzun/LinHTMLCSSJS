@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班级维护</title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../js/jquery-3.7.1.js"></script>
+    <link rel="stylesheet" href="./scoreManage.css">
+
+</head>
+
+<body>
+    <div class="shell">
+        <h2 class="title">成绩维护</h2>
+        <section class="header">
+            <div class="select-menu">
+                <div class="selectStuScoreNa">
+                    <span id="finalStubjbh" style="display: none;">404</span>
+                    <span id="finalStubjmc">请选择班级班号</span>
+                    <a class="iconDo">
+                        <ion-icon name="chevron-down-outline"></ion-icon>
+                    </a>
+                </div>
+                <div class="options-list">
+                    <div class="optionStuScore">
+                        Java
+                    </div>
+                    <div class="optionStuScore">
+                        c#
+                    </div>
+                    <div class="optionStuScore">
+                        Python
+                    </div>
+                    <div class="optionStuScore">
+                        HTML
+                    </div>
+                    <div class="optionStuScore">
+                        CSS
+                    </div>
+                    <div class="optionStuScore">
+                        JavaScript
+                    </div>
+                </div>
+            </div>
+            <span>查询结果: <span class="resultye">3</span> 页 <span class="resultxiang">3</span> 项</span>
+            <div class="input-group">
+                <input type="search" name="" id="" placeholder="学号">
+                <a href=""><ion-icon name="search-outline"></ion-icon></a>
+            </div>
+            <input type="button" value="增加" class="liBtn" id="addClassBtn">
+        </section>
+        <section class="sContent">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="scoreClass">班级</th>
+                        <th class="scoreXuehao">学号</th>
+                        <th class="scoreText">姓名</th>
+                        <th class="scoreText">语文</th>
+                        <th class="scoreText">数学</th>
+                        <th class="scoreText">英语</th>
+                        <th class="scoreText">总分</th>
+                        <th class="scoreCaozuo">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="select-menu">
+                                <div class="selectStuScoreNa">
+                                    <span id="finalStubjbh" style="display: none;">404</span>
+                                    <span id="finalStubjmc">请选择班级班号</span>
+                                    <a class="iconDo">
+                                        <ion-icon name="chevron-down-outline"></ion-icon>
+                                    </a>
+                                </div>
+                                <div class="options-list">
+                                    <div class="optionStuScore">
+                                        Java
+                                    </div>
+                                    <div class="optionStuScore">
+                                        c#
+                                    </div>
+                                    <div class="optionStuScore">
+                                        Python
+                                    </div>
+                                    <div class="optionStuScore">
+                                        HTML
+                                    </div>
+                                    <div class="optionStuScore">
+                                        CSS
+                                    </div>
+                                    <div class="optionStuScore">
+                                        JavaScript
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" value="023321752108">
+                        </td>
+                        <td>
+                            <input type="text" value="001">
+                        </td>
+                        <td>
+                            <input type="text" value="9999">
+                        </td>
+                        <td>
+                            <input type="text" value="100.00">
+                        </td>
+                        <td>
+                            <input type="text" value="一班">
+                        </td>
+                        <td>
+                            <input type="text" value="001">
+                        </td>
+                        <td>
+                            <input type="button" value="修改" class="liBtn" id="reviseClassBtn">
+                            <input type="button" value="删除" class="liBtn" id="deleteClassBtn">
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </section>
+        <section class="sBotton">
+            <ul class="pagination">
+                <li class="page-btn page-btn-prev">
+                    < </li>
+                <li class="page-btn page-btn-next isClick"> > </li>
+            </ul>
+        </section>
+    </div>
+</body>
+<script src="./fenyeJQ.js"></script>
+<script>
+    $(document).ready(function () {
+
+
+        // 页码按钮功能
+        $('#addClassBtn').click(function () {
+            $('.home-section .homeCT').empty()  //清空内容
+            $('.home-section .homeCT').removeClass().addClass('ClassContent homeCT');
+            $.ajax({
+                url: 'addClasses.html',
+                success: function (response) {
+                    $('.home-section .ClassContent').html(response)
+                }
+            })
+        })
+
+        let selectStuScoreNaList = document.querySelectorAll('.selectStuScoreNa')
+
+
+
+        selectStuScoreNaList.forEach((selectStuScoreNa) => {
+            const options_list = selectStuScoreNa.nextElementSibling
+            const options = options_list.querySelectorAll('.optionStuScore')
+
+
+            //     切换菜单的显示和隐藏
+            selectStuScoreNa.addEventListener('click', () => {
+                selectStuScoreNaList.forEach((menu) => {
+                    if (menu !== selectStuScoreNa) {
+                        menu.nextElementSibling.classList.remove('stuactive')
+                        menu.querySelector('.iconDo').classList.remove('up')
+                    }
+                })
+                options_list.classList.toggle('stuactive')
+                selectStuScoreNa.querySelector('.iconDo').classList.toggle('up')
+            })
+
+
+            //切换选择
+            options.forEach((option, index) => {
+                option.addEventListener('click', () => {
+                    options.forEach((option) => {
+                        option.classList.remove('selected')
+                    })
+                    selectStuScoreNa.querySelector('#finalStubjmc').innerHTML = option.innerHTML
+                    $('#finalStubjbh').text(index)
+                    option.classList.add('selected')
+                    options_list.classList.toggle('stuactive')
+                    selectStuScoreNa.querySelector('.iconDo').classList.toggle('up')
+                })
+            })
+        })
+
+    })
+
+</script>
+
+</html>

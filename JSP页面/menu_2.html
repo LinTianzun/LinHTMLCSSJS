@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>侧边二级导航栏</title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="./menu_2_style.css">
+    <script src="../js/jquery-3.7.1.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo-details">
+            <ion-icon class="logoicon" name="logo-apple-ar"></ion-icon>
+            <span class="logo_name">菜单页面</span>
+        </div>
+
+        <ul class="nav-links">
+            <li>
+                <div class="icon-link ">
+                    <a class="icona" href="#">
+                        <ion-icon name="grid-outline"></ion-icon>
+                        <span class="link_name arrows">班级管理</span>
+                    </a>
+                    <ion-icon class="arrow" name="chevron-down-outline"></ion-icon>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link_name" href="#">班级管理</a></li>
+                    <li>
+                        <a href="#" class="addClasses">
+                            <ion-icon name="cloud-upload-outline"></ion-icon>
+                            班级增加
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="ClassesManage">
+                            <ion-icon name="construct-outline"></ion-icon>
+                            班级维护
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="icon-link arrows">
+                    <a class="icona" href="#">
+                        <ion-icon name="folder-outline"></ion-icon>
+                        <span class="link_name arrows">成绩管理</span>
+                    </a>
+                    <ion-icon class="arrow" name="chevron-down-outline"></ion-icon>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link_name" href="#">成绩管理</a></li>
+                    <li><a href="#" class="addstuScore">
+                            <ion-icon name="duplicate-outline"></ion-icon>
+                            成绩增加
+                        </a>
+                    </li>
+                    <li><a href="#" class="stuScoreManage">
+                            <ion-icon name="document-text-outline"></ion-icon>
+                            成绩维护
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="icon-link arrows">
+                    <a class="icona" href="#">
+                        <ion-icon name="people-outline"></ion-icon>
+                        <span class="link_name arrows">用户管理</span>
+                    </a>
+                    <ion-icon class="arrow" name="chevron-down-outline"></ion-icon>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link_name" href="#">用户管理</a></li>
+                    <li>
+                        <a href="#" class="addUser">
+                            <ion-icon name="person-add-outline"></ion-icon>
+                            用户增加
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="usersManage">
+                            <ion-icon name="person-outline"></ion-icon>
+                            用户维护
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="icona passSet" href="#">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    <span class="link_name">密码设置</span>
+                </a>
+                <ul class="sub-menu blank">
+                    <li><a class="link_name passSet" href="#">密码设置</a></li>
+                </ul>
+            </li>
+
+
+            <li>
+                <div class="profile-details ">
+                    <div class="profile-content">
+                        <img src="../img/前端好看壁纸图片/01chun.jpeg" alt="">
+                    </div>
+                    <div class="name-job">
+                        <div style="display: none;" class="usName"></div>
+                        <div class="profile_name">LinLin</div>
+                        <div class="job">Student</div>
+                    </div>
+                    <ion-icon name="log-out-outline"></ion-icon>
+                </div>
+
+
+            </li>
+        </ul>
+
+    </div>
+    <section class="home-section">
+        <div class="home-content">
+            <ion-icon class="bx-menu" name="menu-outline"></ion-icon>
+            <span class="text">学生成绩管理系统</span>
+        </div>
+
+        <div class="content homeCT">
+            <span class="text">WelCome</span>
+        </div>
+    </section>
+
+    <script>
+        $(document).ready(function () {
+
+            //  点击左上角菜单页面 回到初始页面 
+            $('.sidebar .logo-details').click(function () {
+                if ($('.home-section .content').hasClass('content')) {
+                    // 只有当class="content"时才执行以下代码
+                    console.log("当前已是主页了")
+                } else {  // 如果当前页面已经不是主页的时候 执行  恢复成主页
+                    $('.home-section .homeCT').empty()  //清空内容
+                    $('.home-section .homeCT').removeClass().addClass('content homeCT');  //清除所有的类名
+                    var newContent = '<span class="text">WelCome to HOME</span>';
+                    $('.home-section .homeCT').append(newContent);
+                }
+
+            })
+
+            //  点击事件 页面局部刷新 
+            //  点击班级增加 刷新出班级增加的页面
+            $('.sidebar .nav-links li .sub-menu li .addClasses').click(function () {
+                $('.home-section .homeCT').empty()  //清空内容
+                $('.home-section .homeCT').removeClass().addClass('ClassContent homeCT');
+                $.ajax({
+                    url: 'addClasses.html',
+                    success: function (response) {
+                        $('.home-section .ClassContent').html(response)
+                    }
+                })
+
+            })
+
+            //  点击班级维护 刷新出班级维护的页面
+            $('.sidebar .nav-links li .sub-menu li .ClassesManage').click(function () {
+                $('.home-section .homeCT').empty()  //清空内容
+                $('.home-section .homeCT').removeClass().addClass('ClassManageContent homeCT');
+                $.ajax({
+                    url: 'classManage.html',
+                    success: function (response) {
+                        $('.home-section .ClassManageContent').html(response)
+                    }
+                })
+
+            })
+
+            //  点击成绩增加 刷新出成绩增加的页面
+            $('.sidebar .nav-links li .sub-menu li .addstuScore').click(function () {
+                $('.home-section .homeCT').empty()  //清空内容
+                $('.home-section .homeCT').removeClass().addClass('addstuScoreContent homeCT');
+                $.ajax({
+                    url: 'addScore.html',
+                    success: function (response) {
+                        $('.home-section .addstuScoreContent').html(response)
+                    }
+                })
+
+            })
+
+
+            //  点击成绩维护 刷新出成绩维护的页面
+            $('.sidebar .nav-links li .sub-menu li .stuScoreManage').click(function () {
+                $('.home-section .homeCT').empty()  //清空内容
+                $('.home-section .homeCT').removeClass().addClass('stuScoreManage homeCT');
+                $.ajax({
+                    url: 'scoreManage.html',
+                    success: function (response) {
+                        $('.home-section .stuScoreManage').html(response)
+                    }
+                })
+
+            })
+
+            //  点击用户增加 刷新出用户增加的页面
+            $('.sidebar .nav-links li .sub-menu li .addUser').click(function () {
+                $('.home-section .homeCT').empty()  //清空内容
+                $('.home-section .homeCT').removeClass().addClass('addUser homeCT');
+                $.ajax({
+                    url: 'addUser.html',
+                    success: function (response) {
+                        $('.home-section .addUser').html(response)
+                    }
+                })
+            })
+
+            //  点击用户维护 刷新出用户维护的页面
+            $('.sidebar .nav-links li .sub-menu li .usersManage').click(function () {
+                $('.home-section .homeCT').empty()  //清空内容
+                $('.home-section .homeCT').removeClass().addClass('usersManage homeCT');
+                $.ajax({
+                    url: 'usersManage.html',
+                    success: function (response) {
+                        $('.home-section .usersManage').html(response)
+                    }
+                })
+            })
+
+
+            //  点击密码设置 刷新出密码设置的页面
+            $('.passSet').click(function () {
+                $('.home-section .homeCT').empty()  //清空内容
+                $('.home-section .homeCT').removeClass().addClass('PasswdSet homeCT');
+                $.ajax({
+                    url: 'passSet.html',
+                    success: function (response) {
+                        $('.home-section .PasswdSet').html(response)
+                    }
+                })
+            })
+
+            // 点击退出的icon 图标 退出登录 回到login页面
+            $('.sidebar .profile-details ion-icon').click(function () {
+                window.location.replace('login.html')
+            })
+
+        })
+
+        let arrows = document.querySelectorAll('.arrows')
+
+        for (var i = 0; i < arrows.length; i++) {
+            arrows[i].addEventListener("click", (e) => {
+                let arroParent = e.target.parentElement.parentElement.parentElement
+                arroParent.classList.toggle('showMenu')
+            })
+        }
+
+        let arrow = document.querySelectorAll('.arrow')
+
+        for (var i = 0; i < arrow.length; i++) {
+            arrow[i].addEventListener("click", (e) => {
+                let arroParent = e.target.parentElement.parentElement
+                arroParent.classList.toggle('showMenu')
+            })
+        }
+
+        let sidebar = document.querySelector('.sidebar')
+        let sidebarBtn = document.querySelector('.bx-menu')
+        sidebarBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("close")
+        })
+
+    </script>
+</body>
+
+</html>

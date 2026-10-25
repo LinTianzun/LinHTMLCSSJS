@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单的下拉按钮</title>
+    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4375159_kjejnbquk9.css">
+    <script src="../js/jquery-3.7.1.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #e9d5ca;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .select-menu {
+            width: 300px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .selectNa {
+            background-color: #695CFE;
+            padding: 20px;
+            color: #fff;
+            font-weight: 500;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+        }
+
+        .options-list {
+            position: absolute;
+            width: 100%;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            margin-top: 5px;
+            padding: 0 20px;
+            max-height: 102px;
+            overflow-y: auto;
+            transition: 0.4s linear 0.2s;
+            height: 0;
+        }
+
+        .option {
+            padding: 8px 0;
+            font-weight: 500;
+            font-size: 14px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .option:hover,
+        .option.selected {
+            color: #00a8ff;
+        }
+
+        .options-list::-webkit-scrollbar {
+            width: 4px;
+            background-color: #eee;
+        }
+
+        .options-list::-webkit-scrollbar-thumb {
+            background-color: #00a8ff;
+        }
+
+        .options-list.active {
+            height: 102px;
+        }
+
+        .iconDo {
+            transition: 0.3s ease-in-out;
+        }
+
+        .iconDo.up {
+            transform: rotate(-180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="select-menu">
+        <div class="selectNa">
+            <span id="finalStubjbh" style="display: none;">bjbh</span>
+            <span id="finalStubjmc">Select Language</span>
+            <a class="iconDo"><i class="iconfont icon-down"></i></a>
+        </div>
+        <div class="options-list">
+            <div class="option">
+                Java
+            </div>
+            <div class="option">
+                c#
+            </div>
+            <div class="option">
+                Python
+            </div>
+            <div class="option">
+                HTML
+            </div>
+            <div class="option">
+                CSS
+            </div>
+            <div class="option">
+                JavaScript
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const selectNa = document.querySelector('.selectNa')
+        const options_list = document.querySelector('.options-list')
+        const options = options_list.querySelectorAll('.option')
+
+        //切换菜单的显示和隐藏
+        selectNa.addEventListener('click', () => {
+            options_list.classList.toggle('active')
+            selectNa.querySelector('.iconDo').classList.toggle('up')
+        })
+
+        //切换选择
+        options.forEach((option, index) => {
+            option.addEventListener('click', () => {
+                options.forEach((option) => {
+                    option.classList.remove('selected')
+                })
+                selectNa.querySelector('#finalStubjmc').innerHTML = option.innerHTML
+                $('#finalStubjbh').text(index)
+                option.classList.add('selected')
+                options_list.classList.toggle('active')
+                selectNa.querySelector('.iconDo').classList.toggle('up')
+            })
+        })
+    </script>
+</body>
+
+</html>

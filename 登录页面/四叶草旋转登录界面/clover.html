@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>登录</title>
+	<link rel="stylesheet" href="./clover.css">
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+
+<body>
+	<div class="box">
+		<div class="clover"></div>
+		<div class="clover"></div>
+		<div class="clover"></div>
+		<div class="clover"></div>
+	</div>
+	<div class="form-box">
+		<div class="login-box">
+			<h1 class="title">
+				Sign in
+			</h1>
+			<div class="img-box">
+				<img src="../../img/沙雕猫/sd10.gif" alt="">
+			</div>
+			<div class="input-box">
+				<input type="text" placeholder="用户名">
+				<input type="text" placeholder="密码">
+			</div>
+			<div class="btn-box">
+				<button>登录</button>
+				<button onclick="mySlide()">注册</button>
+			</div>
+		</div>
+		<div class="register-box">
+			<h1 class="title">
+				Sign up
+			</h1>
+			<div class="img-box">
+				<img src="../../img/沙雕猫/sd11.gif" alt="">
+			</div>
+			<div class="input-box">
+				<input type="text" placeholder="用户名">
+				<input type="text" placeholder="密码">
+				<input type="text" placeholder="确认密码">
+			</div>
+			<div class="btn-box">
+				<button>注册</button>
+				<button onclick="mySlide()">登录</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	let flag = true
+	const mySlide = () => {
+		const register_box = document.querySelector('.register-box')
+		const login_box = document.querySelector('.login-box')
+		if (flag) {
+			register_box.style.display = "block"
+			login_box.style.display = "none"
+		} else {
+			register_box.style.display = "none"
+			login_box.style.display = "block"
+		}
+		flag = !flag
+	}
+</script>
+
+</html>

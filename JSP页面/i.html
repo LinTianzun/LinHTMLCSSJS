@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜单页面</title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--body-color);
+            background-image: url(../img/前端好看壁纸图片/13.jpg);
+            background-size: cover;
+            transition: all 0.3s ease;
+        }
+
+        /* 设置全局变量 */
+        :root {
+            --body-color: #E4E9F7;
+            --shell-color: #FFF;
+            --primary-color: #695CFE;
+            --primary-color-light: #F6F5FF;
+            --toggle-color: #DDD;
+            --text-color: #707070;
+        }
+
+        /* 深色主题变量 */
+        .dark {
+            --body-color: #202224;
+            --shell-color: #171717;
+            --primary-color: #3a3b3c;
+            --primary-color-light: #3a3b3c;
+            --toggle-color: #FFF;
+            --text-color: #CCC;
+        }
+
+        .shell {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            padding: 10px 14px;
+            background: var(--shell-color);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .close {
+            width: 88px;
+        }
+
+        .shell li {
+            height: 50px;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .image,
+        .icon {
+            min-width: 60px;
+            border-radius: 6px;
+        }
+
+        .icon {
+            min-width: 60px;
+            border-radius: 6px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font: 300 23px '';
+        }
+
+        .text,
+        .icon {
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .text {
+            font: 500 17px;
+            white-space: nowrap;
+            opacity: 1;
+        }
+
+        .shell.close .text {
+            opacity: 0;
+        }
+
+        header {
+            position: relative;
+        }
+
+        .image-text {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .name {
+            margin-top: 2px;
+            font: 600 18px '';
+        }
+
+        .sofrware {
+            font-size: 20px;
+            margin-top: -2px;
+            display: block;
+        }
+
+        .image {
+            margin-right: 16px;
+        }
+
+        .menu-links,
+        .sub-menu {
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .menu-links a,
+        .sub-menu a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            height: 50px;
+            padding: 0 15px;
+            border-radius: 6px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .menu-links a:hover,
+        .sub-menu a:hover {
+            background: var(--primary-color-light);
+            color: var(--primary-color);
+        }
+
+        .menu-links .nav-link {
+            position: relative;
+            margin-bottom: 5px;
+        }
+
+        .menu-links .nav-link.show .sub-menu {
+            display: block;
+        }
+
+        .sub-menu {
+            display: none;
+            margin-top: 0;
+            padding-left: 15px;
+        }
+
+        .sub-menu a {
+            padding-left: 30px;
+        }
+
+        .iconfont.icon {
+            margin-right: 10px;
+        }
+
+        .toggle-theme {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-theme span {
+            margin-right: 5px;
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .sub-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            display: none;
+        }
+
+        .nav-link.show .sub-menu {
+            display: block;
+        }
+
+        .menu-links {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="shell">
+        <header>
+            <div class="image-text">
+                <img class="image" src="img/logo.png" alt="">
+                <div class="logo-text">
+                    <span class="name">Your Logo</span>
+                    <span class="sofrware">Your Software</span>
+                </div>
+            </div>
+        </header>
+        <nav>
+            <ul class="menu-links">
+                <li class="nav-link">
+                    <a href="#">
+                        <i class="iconfont icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </i>
+                        <span class="text nac-text">班级管理</span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li><a href="#">二级导航1</a></li>
+                        <li><a href="#">二级导航2</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-link">
+                    <a href="#">
+                        <i class="iconfont icon">
+                            <ion-icon name="star-outline"></ion-icon>
+                        </i>
+                        <span class="text nac-text">成绩管理</span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li><a href="#">二级导航1</a></li>
+                        <li><a href="#">二级导航2</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-link">
+                    <a href="#">
+                        <i class="iconfont icon">
+                            <ion-icon name="time-outline"></ion-icon>
+                        </i>
+                        <span class="text nac-text">用户管理</span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li><a href="#">二级导航1</a></li>
+                        <li><a href="#">二级导航2</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-link">
+                    <a href="#">
+                        <i class="iconfont icon">
+                            <ion-icon name="person-outline"></ion-icon>
+                        </i>
+                        <span class="text nac-text">当前用户</span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li><a href="#">二级导航1</a></li>
+                        <li><a href="#">二级导航2</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-link">
+                    <a href="#">
+                        <i class="iconfont icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </i>
+                        <span class="text nac-text">密码设置</span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li><a href="#">二级导航1</a></li>
+                        <li><a href="#">二级导航2</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+        </nav>
+    </div>
+
+    <script>
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        navLinks.forEach(navLink => {
+            const subMenu = navLink.querySelector(".sub-menu");
+            navLink.addEventListener('click', () => {
+                navLink.classList.toggle('show');
+                subMenu.classList.toggle('show');
+            });
+        });
+
+        // navLinks.forEach(navLink => {
+        //     const subMenu = navLink.querySelector(".sub-menu");
+        //     navLink.addEventListener('click', () => {
+        //         navLink.classList.toggle('show');
+
+        //         if (subMenu.style.display === "block") {
+        //             subMenu.style.display = "none";
+        //         } else {
+        //             subMenu.style.display = "block";
+        //         }
+        //     });
+        // });
+
+        // navLinks.forEach(navLink => {
+        //     const subMenu = navLink.querySelector(".sub-menu");
+        //     navLink.addEventListener('click', () => {
+        //         // 先关闭所有已打开的二级菜单
+        //         navLinks.forEach(link => {
+        //             if (link !== navLink) {
+        //                 link.classList.remove('show');
+        //                 link.querySelector(".sub-menu").style.display = "none";
+        //             }
+        //         });
+
+        //         navLink.classList.toggle('show');
+
+        //         if (subMenu.style.display === "block") {
+        //             subMenu.style.display = "none";
+        //         } else {
+        //             subMenu.style.display = "block";
+        //         }
+        //     });
+        // });
+    </script>
+</body>
+
+</html>

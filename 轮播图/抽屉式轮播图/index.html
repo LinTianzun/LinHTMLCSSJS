@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url(../../img/可爱的偏粉色系/bg.jpg);
+            background-size: cover;
+        }
+
+        #main {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #click-section {
+            width: 35%;
+            height: 100%;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        #drawerboxes {
+            margin-left: 10%;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+
+        #drawerboxes::before {
+            content: "";
+            width: 8px;
+            height: 94%;
+            position: absolute;
+            left: -10px;
+            top: 3%;
+            z-index: 120;
+        }
+
+        .drawerbox {
+            height: calc(100% / 5.5);
+            width: 70%;
+            position: relative;
+            z-index: 100;
+            transform: translateX(-70%);
+            transition: transform .5s ease-in-out;
+        }
+
+        .drawerbox.active {
+            transform: translateX(0);
+        }
+
+        .drawer-btn {
+            width: 100%;
+            height: 100%;
+            font: 800 30px '';
+            background-color: rgb(175, 190, 255);
+            border: none;
+            transition: background-color .5s ease-in-out;
+            color: #ffffff00;
+        }
+
+        .drawer-btn.active {
+            background-image: url(../../img/可爱的偏粉色系/bg.jpg);
+            background-size: cover;
+            color: rgb(70, 100, 180);
+        }
+
+        .drawer-btn:hover {
+            cursor: pointer;
+        }
+
+        .drawer-head {
+            position: absolute;
+            color: #fff;
+            font-size: 200px;
+            font-weight: 700;
+            right: -38px;
+            top: calc(50% - 135px);
+            text-shadow: 2px -1px 8px rgba(250, 80, 193, 0.323);
+        }
+
+        #slide-section {
+            position: relative;
+            height: 100%;
+            width: 65%;
+            display: flex;
+            justify-content: center;
+            padding: 0 40px;
+            background: linear-gradient(to right bottom,
+                    rgba(255, 255, 255, .6),
+                    rgba(255, 255, 255, .3),
+                    rgba(255, 255, 255, .2));
+            backdrop-filter: blur(11px);
+        }
+
+        #slide-bar {
+            position: absolute;
+            top: 10%;
+            left: 40px;
+            height: 80%;
+            width: 1px;
+            background-color: rgb(233, 233, 233);
+        }
+
+        #bar {
+            position: absolute;
+            height: calc(100%/4);
+            width: 5px;
+            top: 0;
+            left: -1.2px;
+            background-color: rgb(175, 190, 255);
+            transition: transform .5s ease-in-out;
+        }
+
+        #card-section {
+            height: 100%;
+            width: 80%;
+            overflow: hidden;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            padding: 10% 0;
+            color: white;
+            font-size: 30px;
+            transition: transform .5s ease-in-out;
+        }
+
+        .card-small-title {
+            font-size: 30px;
+            font-weight: 600;
+            padding-bottom: min(5%, 10px);
+            color: rgb(70, 100, 180);
+        }
+
+        .card-title {
+            font-size: 80px;
+            font-weight: 700;
+            padding-bottom: min(20%, 40px);
+            color: rgb(70, 100, 180);
+        }
+
+        .card-content {
+            font-size: 24px;
+            font-weight: 400;
+            color: rgb(94, 123, 255);
+            margin-bottom: 60px;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .card-img img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="click-section">
+            <div id="drawerboxes">
+                <div class="drawerbox active">
+                    <button class="drawer-btn active" onclick="slideTo(1)">
+                        The Wind Rises
+                        <span class="drawer-head">1</span>
+                    </button>
+                </div>
+                <div class="drawerbox">
+                    <button class="drawer-btn" onclick="slideTo(2)">
+                        The Wind Rises
+                        <span class="drawer-head">2</span>
+                    </button>
+                </div>
+                <div class="drawerbox">
+                    <button class="drawer-btn" onclick="slideTo(3)">
+                        The Wind Rises
+                        <span class="drawer-head">3</span>
+                    </button>
+                </div>
+                <div class="drawerbox">
+                    <button class="drawer-btn" onclick="slideTo(4)">
+                        The Wind Rises
+                        <span class="drawer-head">4</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-section">
+            <div id="slide-bar">
+                <div id="bar"></div>
+            </div>
+            <div id="card-section">
+                <div id="card1" class="card">
+                    <div class="card-small-title">Auguries of Innocence</div>
+                    <div class="card-title">William Blake</div>
+                    <div class="card-content">
+                        To see a world in a grain of sand,
+
+                        一粒沙里阅世界
+
+                        And a heaven in a wild flower,
+
+                        一朵花中觅天堂
+
+                        Hold infinity in the palm of your hand,
+
+                        无穷尽在掌心中
+
+                        And eternity in an hour.
+
+                        永恒不过一刻钟
+                    </div>
+                    <div class="card-img">
+                        <img src="../../img/沙雕猫/sd1.gif" alt="">
+                    </div>
+                </div>
+                <div id="card2" class="card">
+                    <div class="card-small-title">Dreams</div>
+                    <div class="card-title">Langston Hughes</div>
+                    <div class="card-content">
+                        Hold fast to dreams 紧紧抓住梦想，
+
+                        For if dreams die 梦想若是消亡
+
+                        Life is a broken-winged bird 生命就象鸟儿折了翅膀
+
+                        That can never fly. 再也不能飞翔
+
+                        Hold fast to dreams 紧紧抓住梦想，
+
+                        For when dreams go 梦想若是消丧
+
+                        Life is a barren field 生命就象贫瘠的荒野，
+
+                        Frozen only with snow 雪覆冰封，万物不再生
+                    </div>
+                    <div class="card-img">
+                        <img src="../../img/沙雕猫/sd2.gif" alt="">
+                    </div>
+                </div>
+                <div id="card3" class="card">
+                    <div class="card-small-title">Shakespeare's Sonnets</div>
+                    <div class="card-title">Shakespeare</div>
+                    <div class="card-content">
+                        Love alters not with his brief hours and weeks.
+
+                        But bears it out even to the edge of doom.
+
+                        If this be error and upon me proved.
+
+                        I never writ, nor no man ever loved.
+
+
+
+                        沧桑轮回，爱却长生不改，
+
+                        雄立千秋万世直到末日的尽头。
+
+                        假如有人能证明我这话说得过火，
+
+                        那就算我从未写诗，世人从未爱过。
+                    </div>
+                    <div class="card-img">
+                        <img src="../../img/沙雕猫/sd3.gif" alt="">
+                    </div>
+                </div>
+                <div id="card4" class="card">
+                    <div class="card-small-title">She Walks in Beauty</div>
+                    <div class="card-title">Lord Byron</div>
+                    <div class="card-content">
+                        She walks in beauty, like the night
+
+                        Of cloudless climes and starry skies;
+
+                        And all that's best of dark and bright；
+
+                        Meet in her aspect and her eyes.
+
+
+
+                        她走在美的光彩中，像夜晚
+
+                        皎洁无云而且繁星漫天，
+
+                        黑夜与白天最美妙的色彩，
+
+                        都在她的面容和目光里显现。
+                    </div>
+                    <div class="card-img">
+                        <img src="../../img/沙雕猫/sd4.gif" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // 定义变量 
+        let chosenSlideNumber = 1   //  当前选择的幻灯片编号
+        let offset = 0  //  幻灯片偏移量
+        let barOffset = 0   //  导航栏偏移量
+        let intervalID  //  定时器 ID
+
+        // 启动幻灯片轮播
+        startSlide()
+
+        //  获取所有的抽屉按钮 并为每个按钮添加点击事件
+        const drawerBtns = Array.from(document.querySelectorAll(".drawer-btn"))
+        drawerBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                clearInterval(intervalID)   //  清除定时器
+                startSlide()    //  重新启动幻灯片轮播
+            })
+        })
+
+        // 获取幻灯片区域
+        const slideSection = document.querySelector("#slide-section")
+        // 鼠标移入幻灯片区域时清除定时器
+        slideSection.addEventListener("mouseenter", () => {
+            clearInterval(intervalID)
+        })
+
+        //鼠标移出幻灯片区域时重新启动幻灯片
+        slideSection.addEventListener("mouseleave", () => {
+            startSlide()
+        })
+
+        // 切换到指定编号幻灯片
+        function slideTo(slideNumber) {
+            drawerboxToggle(slideNumber)    //  切换抽屉面板状态
+            drawerbtnToggle(slideNumber)    //  切换抽屉按钮状态
+            // 更新偏移量
+            let previousSlideNumber = chosenSlideNumber
+            chosenSlideNumber = slideNumber
+            offset += ((chosenSlideNumber - previousSlideNumber) * (-100))    //  计算幻灯片偏移量
+            barOffset += ((chosenSlideNumber - previousSlideNumber) * (100))    //  计算导航栏偏移量
+            barSlide(barOffset) //  移动导航栏
+            // 获取所有幻灯片 为每个幻灯片设置偏移量
+            const slides = document.querySelectorAll(".card")
+            Array.from(slides).forEach(slide => {
+                slide.style.transform = `translateY(${offset}%)`
+            })
+        }
+
+        // 切换抽屉面板状态
+        function drawerboxToggle(drawerboxNumber) {
+            let prevDrawerboxNumber = chosenSlideNumber
+            const drawerboxes = document.querySelectorAll(".drawerbox")
+            drawerboxes[prevDrawerboxNumber - 1].classList.toggle("active") // 切换前一个抽屉面板的状态 
+            drawerboxes[drawerboxNumber - 1].classList.toggle("active") // 切换当前抽屉面板的状态 
+        }
+
+        //  切换抽屉按钮状态
+        function drawerbtnToggle(drawerBtnNumber) {
+            let prevDrawerbtnNumber = chosenSlideNumber
+            const drawerbtnes = document.querySelectorAll(".drawer-btn")
+            drawerbtnes[prevDrawerbtnNumber - 1].classList.toggle("active") // 切换前一个抽屉按钮的状态 
+            drawerbtnes[drawerBtnNumber - 1].classList.toggle("active") // 切换当前抽屉按钮的状态 
+        }
+
+        // 移动导航栏
+        function barSlide(barOffset) {
+            const bar = document.querySelector("#bar")
+            bar.style.transform = `translateY(${barOffset}%)`
+        }
+
+        // 启动幻灯片轮播
+        function startSlide() {
+            intervalID = setInterval(() => {
+                slideTo(chosenSlideNumber % 4 + 1)  //  每次切换到下一个幻灯片
+            }, 3000) //  每隔3秒自动切换幻灯片
+        }
+
+    </script>
+</body>
+
+</html>
