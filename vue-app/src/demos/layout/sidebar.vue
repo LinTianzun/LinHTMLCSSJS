@@ -63,7 +63,7 @@ function toggleSubMenu(index: number): void {
           </ul>
         </li>
 
-        <li>
+        <li class="profile-li">
           <div class="profile-details">
             <div class="profile-content">
               <img src="/demos/book-site/testimonial-perfil-1.png" alt="avatar" />
@@ -265,6 +265,11 @@ function toggleSubMenu(index: number): void {
   font-size: 18px;
   opacity: 1;
   display: block;
+}
+
+/* 挂在侧边栏底部：li 不设 relative，让 absolute 相对 .sidebar 定位 */
+.sidebar .nav-links li.profile-li {
+  position: static;
 }
 
 .sidebar .profile-details {

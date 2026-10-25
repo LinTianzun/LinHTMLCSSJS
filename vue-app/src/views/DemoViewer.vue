@@ -60,6 +60,46 @@ function go(target: { id: string } | null) {
 // iframe 内加载同路由：demo 在独立视口中渲染，链接/滚动都隔离在框内
 const frameSrc = computed(() => `${route.path}?embed=1`)
 
+// 自适应模式下让 iframe 高度贴合内容，消除展示区大片空白
+const frameEl = ref<HTMLIFrameElement | null>(null)
+let resizeObserver: ResizeObserver | null = null
+
+function syncFrameHeight() {
+  const frame = frameEl.value
+  if (!frame || sizeId.value !== 'full') return
+  try {
+    const doc = frame.contentDocument
+    if (!doc) return
+    const h = Math.max(
+      doc.documentElement.scrollHeight,
+      doc.body.scrollHeight,
+    )
+    if (h > 0) frame.style.height = `${h}px`
+  } catch {
+    /* 跨域时忽略 */
+  }
+}
+
+function setupObserver() {
+  const frame = frameEl.value
+  if (!frame) return
+  resizeObserver?.disconnect()
+  resizeObserver = new ResizeObserver(syncFrameHeight)
+  frame.addEventListener('load', syncFrameHeight)
+  try {
+    const doc = frame.contentDocument
+    if (doc) resizeObserver.observe(doc.documentElement)
+  } catch {
+    /* 跨域时忽略 */
+  }
+}
+
+onMounted(setupObserver)
+onUnmounted(() => {
+  resizeObserver?.disconnect()
+  resizeObserver = null
+})
+
 let prevTitle = ''
 onMounted(() => {
   prevTitle = document.title
@@ -106,6 +146,7 @@ onUnmounted(() => {
     <!-- demo 装在 iframe 里：媒体查询、滚动、链接跳转都按 iframe 自己的视口生效 -->
     <div class="stage" :class="{ framed: sizeId !== 'full' }">
       <iframe
+        ref="frameEl"
         :key="frameSrc"
         :src="frameSrc"
         class="frame"
@@ -239,12 +280,13 @@ h1 {
   background: #fff;
 }
 
-/* iframe 撑满展示区；固定尺寸预设时用 width/height 内联样式 */
+/* 自适应模式：高度由脚本贴合内容；固定尺寸预设用内联 width/height */
 .frame {
   border: none;
   width: 100%;
   height: calc(100vh - 10rem);
   min-width: 320px;
+  min-height: 320px;
   background: #fff;
 }
 
