@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { useTheme } from '../composables/useTheme'
+
+const { isDark, toggle } = useTheme()
 </script>
 
 <template>
@@ -15,6 +18,15 @@ import { RouterLink } from 'vue-router'
         <RouterLink to="/create">创作</RouterLink>
         <span class="sep">·</span>
         <a href="https://github.com/LinTianzun/LinHTMLCSSJS" target="_blank" rel="noopener">GitHub ↗</a>
+        <span class="sep">·</span>
+        <button
+          class="theme-btn"
+          @click="toggle"
+          :title="isDark ? '切换到亮色' : '切换到暗色'"
+          :aria-label="isDark ? '切换到亮色' : '切换到暗色'"
+        >
+          {{ isDark ? '☀' : '☾' }}
+        </button>
       </nav>
     </div>
   </header>
@@ -71,5 +83,22 @@ nav a:hover {
 
 .sep {
   color: var(--ink-faint);
+}
+
+.theme-btn {
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.15em 0.45em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.theme-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 </style>

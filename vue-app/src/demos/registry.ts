@@ -6,7 +6,13 @@ export interface DemoMeta {
   title: string
   /** 该练习涉及的主要技能点，展示在首页与展示页 */
   skills: string[]
+  /** 原生练习版本所在目录名（仓库根下），用于"原版对比"链接；缺省按 id 查找 */
+  origin?: string
 }
+
+/** 原生练习在 GitHub 上的根路径 */
+export const ORIGIN_BASE =
+  'https://github.com/LinTianzun/LinHTMLCSSJS/tree/master'
 
 export interface DemoCategory {
   id: string
@@ -21,6 +27,44 @@ export const SOURCE_BASE =
 
 export function sourceUrl(catId: string, demoId: string): string {
   return `${SOURCE_BASE}/${catId}/${demoId}.vue`
+}
+
+/** 按注册表 id 映射到原生练习目录名（registry id → 仓库根目录名） */
+const ORIGIN_DIR: Record<string, string> = {
+  'responsive-nav': '响应式导航栏',
+  'duoluoji-nav': '堕落街导航栏',
+  sidebar: '侧边栏',
+  'book-site': '响应式图书网站',
+  'simple-dropdown': '简单的下拉按钮',
+  'carousel-3d': '3D旋转轮播',
+  'carousel-basic': '轮播图',
+  'parallax-album': '视差滚动相册',
+  'timeline-carousel': '响应式轮播时间轴',
+  'loading-anim': '加载动画',
+  'loop-progress': '动态循环进度条',
+  'glow-ripple-link': '酷炫的发光波纹link链接',
+  'sun-moon-toggle': '日月交替按钮',
+  'settings-bg-btn': '动态切换设置栏背景色按钮',
+  'unclickable-btn': '点击不到的按钮',
+  'new-year-countdown': '新年倒计时(花哨版)',
+  'music-player': '简易音乐播放器',
+  'login-page': '登录页面',
+  'message-board': '留言板',
+  'search-box': '动态search box搜索框',
+  pagination: '分页按钮',
+  snake: 'game/Snakes',
+  'box-3d': '样式学习',
+  'box-sizing': '样式学习',
+  'grid-bg': '样式学习',
+  '404-cow': '404页面',
+  qixi: '七夕快乐',
+}
+
+/** 原生练习目录在 GitHub 上的链接；无映射时返回 null */
+export function originUrl(demoId: string): string | null {
+  const dir = ORIGIN_DIR[demoId]
+  if (!dir) return null
+  return `${ORIGIN_BASE}/${encodeURIComponent(dir)}`
 }
 
 export const demoCategories: DemoCategory[] = [

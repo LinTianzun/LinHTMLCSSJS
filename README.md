@@ -2,6 +2,10 @@
 
 > 一些前端的有意思的小界面 —— 从原生 HTML/CSS/JS 到 Vue 3 组件化作品的练习合集。
 
+[![Deploy to GitHub Pages](https://github.com/LinTianzun/LinHTMLCSSJS/actions/workflows/deploy.yml/badge.svg)](https://github.com/LinTianzun/LinHTMLCSSJS/actions/workflows/deploy.yml)
+[![在线预览](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E9%A2%84%E8%A7%88-GitHub%20Pages-2b3a67?logo=githubpages)](https://lintianzun.github.io/LinHTMLCSSJS/)
+[![License](https://img.shields.io/badge/license-MIT-green)](#)
+
 ## 📖 项目简介
 
 本仓库收录了约 40 个前端练习 demo，涵盖导航栏、轮播、动画、表单、小游戏等六大类。每个 demo 都是独立完成的小作品，记录了从零开始学习前端的完整路径。
@@ -46,6 +50,8 @@ npm run type-check  # 类型检查
 - **iframe 隔离**：每个 demo 在独立 iframe 中渲染，媒体查询与滚动行为与原版一致
 - **裸模式嵌入**：支持 `?bare=1` / `?embed=1` 参数，仅渲染 demo 本身
 - **源码直达**：每个 demo 页提供 GitHub 源码链接
+- **快捷键导航**：demo 展示页按 ← / → 键在同类练习间快速切换
+- **暗色模式**：站点级"夜间稿纸"主题，跟随系统偏好并持久化
 - **脚手架脚本**：`node scripts/new-demo.mjs <分类> <id> "标题"` 一键创建新 demo 骨架
 
 ## 📁 目录结构
@@ -70,7 +76,8 @@ vue-app/
 ## 🔗 相关链接
 
 - **GitHub 仓库**：[LinTianzun/LinHTMLCSSJS](https://github.com/LinTianzun/LinHTMLCSSJS)
-- **在线预览**：开发服务器 `npm run dev`（端口 5173）
+- **在线预览（GitHub Pages）**：<https://lintianzun.github.io/LinHTMLCSSJS/>
+- **本地开发**：`npm run dev`（端口 5173）
 
 ## 📄 许可证
 

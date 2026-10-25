@@ -49,6 +49,11 @@ const router = createRouter({
       component: DemoViewer,
     },
     ...demoRoutes,
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/NotFoundView.vue'),
+    },
   ],
   scrollBehavior() {
     return { top: 0 }

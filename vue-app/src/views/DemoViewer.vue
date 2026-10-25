@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { demoCategories, sourceUrl, LOCAL_CAT_ID } from '../demos/registry'
+import { demoCategories, sourceUrl, originUrl, LOCAL_CAT_ID } from '../demos/registry'
 import { useLocalDemos, buildDemoDocument } from '../composables/useLocalDemos'
 
 const route = useRoute()
@@ -18,6 +18,7 @@ const demoId = computed(() => {
 })
 
 const isLocal = computed(() => categoryId.value === LOCAL_CAT_ID)
+const origin = computed(() => (isLocal.value ? null : originUrl(demoId.value)))
 const localDemo = computed(() =>
   isLocal.value ? getLocal(demoId.value) ?? null : null,
 )
@@ -74,6 +75,20 @@ function go(target: { id: string } | null) {
   }
 }
 
+// ── 快捷键：←/→ 在同类内切换 demo ──
+function onKeydown(e: KeyboardEvent) {
+  // 在输入框/编辑器中不拦截
+  const tag = (e.target as HTMLElement)?.tagName
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+  if (e.key === 'ArrowLeft' && prev.value) {
+    e.preventDefault()
+    go(prev.value)
+  } else if (e.key === 'ArrowRight' && next.value) {
+    e.preventDefault()
+    go(next.value)
+  }
+}
+
 // iframe 内加载同路由：demo 在独立视口中渲染，链接/滚动都隔离在框内
 const frameSrc = computed(() => `${route.path}?embed=1`)
 
@@ -87,6 +102,13 @@ const localDoc = computed(() =>
 function removeLocalDemo() {
   removeLocal(demoId.value)
   router.push('/')
+}
+
+// ── 加载状态：iframe load 前显示 loading 提示 ──
+const frameLoading = ref(true)
+function onFrameLoad() {
+  frameLoading.value = false
+  syncFrameHeight()
 }
 
 // 自适应模式下让 iframe 高度贴合内容，消除展示区大片空白
@@ -123,17 +145,16 @@ function setupObserver() {
   }
 }
 
-onMounted(setupObserver)
-onUnmounted(() => {
-  resizeObserver?.disconnect()
-  resizeObserver = null
-})
-
 let prevTitle = ''
 onMounted(() => {
   prevTitle = document.title
+  setupObserver()
+  window.addEventListener('keydown', onKeydown)
 })
 onUnmounted(() => {
+  resizeObserver?.disconnect()
+  resizeObserver = null
+  window.removeEventListener('keydown', onKeydown)
   document.title = prevTitle
   document.body.style.overflow = ''
   document.body.style.background = ''
@@ -166,6 +187,16 @@ onUnmounted(() => {
           rel="noopener"
         >
           &lt;/&gt; 查看源码
+        </a>
+        <a
+          v-if="origin"
+          class="ctl-btn src-btn origin-btn"
+          :href="origin"
+          target="_blank"
+          rel="noopener"
+          title="查看这个练习的原生 HTML/CSS/JS 版本"
+        >
+          ⏳ 原版对比
         </a>
         <RouterLink
           v-if="isLocal"
@@ -204,17 +235,25 @@ onUnmounted(() => {
 
     <!-- demo 装在 iframe 里：媒体查询、滚动、链接跳转都按 iframe 自己的视口生效 -->
     <div class="stage" :class="{ framed: sizeId !== 'full' }">
+      <transition name="fade">
+        <div v-if="frameLoading" class="frame-loading">
+          <span class="spin"></span>
+          <span>正在加载 demo…</span>
+        </div>
+      </transition>
       <iframe
         v-if="isLocal"
         ref="frameEl"
         :key="demoId"
         :srcdoc="localDoc"
         class="frame"
+        :class="{ hidden: frameLoading }"
         :style="{
           width: activeSize.w || undefined,
           height: activeSize.h || undefined,
         }"
         title="demo 演示"
+        @load="onFrameLoad"
       ></iframe>
       <iframe
         v-else
@@ -222,11 +261,13 @@ onUnmounted(() => {
         :key="frameSrc"
         :src="frameSrc"
         class="frame"
+        :class="{ hidden: frameLoading }"
         :style="{
           width: activeSize.w || undefined,
           height: activeSize.h || undefined,
         }"
         title="demo 演示"
+        @load="onFrameLoad"
       ></iframe>
     </div>
 
@@ -235,6 +276,7 @@ onUnmounted(() => {
       <span v-else></span>
       <button v-if="next" class="pager-btn" @click="next && go(next)">{{ next?.title }} →</button>
     </nav>
+    <p class="kbd-hint">提示：按 ← / → 键在同类练习间快速切换</p>
   </div>
 </template>
 
@@ -382,6 +424,7 @@ h1 {
 }
 
 .stage {
+  position: relative;
   display: flex;
   justify-content: center;
   margin: 0 auto;
@@ -409,6 +452,46 @@ h1 {
   height: 100%;
 }
 
+/* 加载中：iframe 半透明，loading 提示浮在上面 */
+.frame.hidden {
+  opacity: 0.15;
+}
+
+.frame-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.spin {
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 2px solid var(--grid);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.fade-leave-to {
+  opacity: 0;
+}
+
 .pager {
   display: flex;
   justify-content: space-between;
@@ -432,5 +515,18 @@ h1 {
 
 .pager-btn:hover {
   background: var(--paper-soft);
+}
+
+.kbd-hint {
+  margin-top: 0.8rem;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 640px) {
+  .kbd-hint {
+    display: none;
+  }
 }
 </style>

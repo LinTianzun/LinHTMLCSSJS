@@ -75,6 +75,36 @@ a:hover {
   outline-offset: 2px;
 }
 
+/* ===== 暗色"夜间稿纸"主题 ===== */
+:root.dark {
+  --paper:        #1a1825;
+  --paper-soft:   #221f30;
+  --panel:        #262338;
+  --grid:         #2e2b42;
+  --ink:          #e8e4f0;
+  --ink-soft:     #a8a2bc;
+  --ink-faint:    #6e6884;
+  --accent:       #8b9ef0;
+  --accent-light: #a8bcff;
+  --line:         1px solid var(--grid);
+  --line-ink:     1px solid rgba(232,228,240,0.12);
+}
+
+:root.dark body {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+}
+
+:root.dark a {
+  color: var(--accent);
+}
+
+:root.dark ::selection {
+  background: var(--accent);
+  color: var(--paper);
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
