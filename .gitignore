@@ -12,3 +12,9 @@ Desktop.ini
 # npm 缓存
 .npm-cache/
 node_modules/
+
+# 截图工具的浏览器 profile
+.shots/
+
+# Vue 构建输出
+dist/

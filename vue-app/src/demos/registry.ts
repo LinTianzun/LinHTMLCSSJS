@@ -95,3 +95,21 @@ export const demoCategories: DemoCategory[] = [
     ],
   },
 ]
+
+/** 本地创作分类的 ID */
+export const LOCAL_CAT_ID = 'local'
+
+/** 获取包含本地创作的完整分类列表（本地 demo 保存在 localStorage） */
+export function getAllCategories(
+  localDemos: { id: string; title: string; skills: string[] }[],
+): DemoCategory[] {
+  const hasLocal = localDemos.length > 0
+  if (!hasLocal) return demoCategories
+  const localCat: DemoCategory = {
+    id: LOCAL_CAT_ID,
+    name: '本地创作',
+    summary: '在浏览器里直接写的练习，保存在 localStorage。',
+    demos: localDemos,
+  }
+  return [...demoCategories, localCat]
+}

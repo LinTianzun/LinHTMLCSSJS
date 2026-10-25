@@ -1,26 +1,43 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { demoCategories, sourceUrl } from '../demos/registry'
+import { demoCategories, sourceUrl, LOCAL_CAT_ID } from '../demos/registry'
+import { useLocalDemos, buildDemoDocument } from '../composables/useLocalDemos'
 
 const route = useRoute()
 const router = useRouter()
+const { get: getLocal, remove: removeLocal } = useLocalDemos()
 
 const categoryId = computed(() => {
   const m = route.path.match(/^\/demo\/([^/]+)\/([^/]+)/)
-  return m ? m[1] : ''
+  return m ? m[1] ?? '' : ''
 })
 const demoId = computed(() => {
   const m = route.path.match(/^\/demo\/([^/]+)\/([^/]+)/)
-  return m ? m[2] : ''
+  return m ? m[2] ?? '' : ''
 })
 
-const category = computed(
-  () => demoCategories.find((c) => c.id === categoryId.value) ?? null,
+const isLocal = computed(() => categoryId.value === LOCAL_CAT_ID)
+const localDemo = computed(() =>
+  isLocal.value ? getLocal(demoId.value) ?? null : null,
 )
-const demo = computed(
-  () => category.value?.demos.find((d) => d.id === demoId.value) ?? null,
-)
+
+const category = computed(() => {
+  if (isLocal.value) {
+    return localDemo.value
+      ? { id: LOCAL_CAT_ID, name: '本地创作', summary: '', demos: [] }
+      : null
+  }
+  return demoCategories.find((c) => c.id === categoryId.value) ?? null
+})
+const demo = computed(() => {
+  if (isLocal.value) {
+    return localDemo.value
+      ? { id: localDemo.value.id, title: localDemo.value.title, skills: localDemo.value.skills }
+      : null
+  }
+  return category.value?.demos.find((d) => d.id === demoId.value) ?? null
+})
 const demoIndex = computed(() =>
   category.value ? category.value.demos.findIndex((d) => d.id === demoId.value) : -1,
 )
@@ -59,6 +76,18 @@ function go(target: { id: string } | null) {
 
 // iframe 内加载同路由：demo 在独立视口中渲染，链接/滚动都隔离在框内
 const frameSrc = computed(() => `${route.path}?embed=1`)
+
+// 本地创作 demo：直接用 srcdoc 拼出完整文档，无需子路由组件
+const localDoc = computed(() =>
+  localDemo.value
+    ? buildDemoDocument(localDemo.value.html, localDemo.value.css, localDemo.value.js)
+    : '',
+)
+
+function removeLocalDemo() {
+  removeLocal(demoId.value)
+  router.push('/')
+}
 
 // 自适应模式下让 iframe 高度贴合内容，消除展示区大片空白
 const frameEl = ref<HTMLIFrameElement | null>(null)
@@ -113,7 +142,11 @@ onUnmounted(() => {
 
 <template>
   <!-- 裸演示/嵌入模式：只渲染 demo 本体（新窗口或 iframe 内部） -->
-  <div v-if="bare || route.query.embed === '1'" class="bare">
+  <div v-if="(bare || route.query.embed === '1') && isLocal" class="bare bare-doc">
+    <iframe :srcdoc="localDoc" title="demo 演示"></iframe>
+  </div>
+
+  <div v-else-if="bare || route.query.embed === '1'" class="bare">
     <RouterView />
   </div>
 
@@ -126,13 +159,28 @@ onUnmounted(() => {
           <li v-for="s in demo.skills" :key="s">{{ s }}</li>
         </ul>
         <a
+          v-if="!isLocal"
           class="ctl-btn src-btn"
-          :href="sourceUrl(category.id, demo.id)"
+          :href="sourceUrl(category!.id, demo.id)"
           target="_blank"
           rel="noopener"
         >
           &lt;/&gt; 查看源码
         </a>
+        <RouterLink
+          v-if="isLocal"
+          class="ctl-btn src-btn"
+          :to="`/create?edit=${demo.id}`"
+        >
+          编辑
+        </RouterLink>
+        <button
+          v-if="isLocal"
+          class="ctl-btn src-btn"
+          @click="removeLocalDemo"
+        >
+          删除
+        </button>
         <div class="size-ctl" role="group" aria-label="展示尺寸">
           <button
             v-for="s in stageSizes"
@@ -157,6 +205,19 @@ onUnmounted(() => {
     <!-- demo 装在 iframe 里：媒体查询、滚动、链接跳转都按 iframe 自己的视口生效 -->
     <div class="stage" :class="{ framed: sizeId !== 'full' }">
       <iframe
+        v-if="isLocal"
+        ref="frameEl"
+        :key="demoId"
+        :srcdoc="localDoc"
+        class="frame"
+        :style="{
+          width: activeSize.w || undefined,
+          height: activeSize.h || undefined,
+        }"
+        title="demo 演示"
+      ></iframe>
+      <iframe
+        v-else
         ref="frameEl"
         :key="frameSrc"
         :src="frameSrc"
@@ -192,6 +253,13 @@ onUnmounted(() => {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.bare-doc iframe {
+  width: 100%;
+  height: 100vh;
+  border: none;
+  background: #fff;
 }
 
 .viewer {

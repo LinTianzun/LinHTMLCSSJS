@@ -37,6 +37,16 @@ const router = createRouter({
       name: 'about',
       component: () => import('../views/AboutView.vue'),
     },
+    {
+      path: '/create',
+      name: 'create',
+      component: () => import('../views/CreateView.vue'),
+    },
+    {
+      path: '/demo/local/:demoId',
+      name: 'demo-local',
+      component: DemoViewer,
+    },
     ...demoRoutes,
   ],
   scrollBehavior() {

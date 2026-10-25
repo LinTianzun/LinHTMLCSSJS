@@ -12,6 +12,8 @@ import { RouterLink } from 'vue-router'
       <nav>
         <RouterLink to="/">首页</RouterLink>
         <span class="sep">·</span>
+        <RouterLink to="/create">创作</RouterLink>
+        <span class="sep">·</span>
         <a href="https://github.com/LinTianzun/LinHTMLCSSJS" target="_blank" rel="noopener">GitHub ↗</a>
       </nav>
     </div>

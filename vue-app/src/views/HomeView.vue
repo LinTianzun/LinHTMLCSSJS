@@ -1,7 +1,18 @@
 <script setup lang="ts">
-import { demoCategories } from '../demos/registry'
+import { getAllCategories, LOCAL_CAT_ID } from '../demos/registry'
+import { useLocalDemos } from '../composables/useLocalDemos'
+import { useRouter } from 'vue-router'
 import SiteHeader from '../components/SiteHeader.vue'
 import SiteFooter from '../components/SiteFooter.vue'
+
+const { demos: localDemos, remove } = useLocalDemos()
+const categories = getAllCategories(localDemos.value)
+const router = useRouter()
+
+function removeLocal(id: string) {
+  remove(id)
+  router.go(0)
+}
 </script>
 
 <template>
@@ -15,10 +26,11 @@ import SiteFooter from '../components/SiteFooter.vue'
         曾经的约 40 个原生 HTML/CSS/JS 练习，如今全部用 Vue 3 组件重新实现，
         按六个大类归档。点开任意一条，直接在页面里体验。
       </p>
+      <RouterLink to="/create" class="new-demo-btn">＋ 新建 demo</RouterLink>
     </section>
 
     <section
-      v-for="cat in demoCategories"
+      v-for="cat in categories"
       :key="cat.id"
       class="cat"
     >
@@ -29,10 +41,18 @@ import SiteFooter from '../components/SiteFooter.vue'
       <p class="cat-summary">{{ cat.summary }}</p>
       <ul class="demo-list">
         <li v-for="d in cat.demos" :key="d.id" class="demo-item">
-          <RouterLink :to="`/demo/${cat.id}/${d.id}`" class="demo-link">
-            <span class="demo-title">{{ d.title }}</span>
-            <span class="arrow">→</span>
-          </RouterLink>
+          <div class="demo-link-wrap">
+            <RouterLink :to="`/demo/${cat.id}/${d.id}`" class="demo-link">
+              <span class="demo-title">{{ d.title }}</span>
+              <span class="arrow">→</span>
+            </RouterLink>
+            <button
+              v-if="cat.id === LOCAL_CAT_ID"
+              class="del-btn"
+              :aria-label="`删除 ${d.title}`"
+              @click="removeLocal(d.id)"
+            >×</button>
+          </div>
           <ul class="skills">
             <li v-for="s in d.skills" :key="s">{{ s }}</li>
           </ul>
@@ -170,5 +190,49 @@ h2 {
 .demo-link:hover .arrow {
   color: var(--accent);
   transform: translateX(2px);
+}
+
+.demo-link-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 0.4rem;
+}
+
+.demo-link-wrap .demo-link {
+  flex: 1;
+  min-width: 0;
+}
+
+.del-btn {
+  width: 2.2em;
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink-faint);
+  font: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.del-btn:hover {
+  border-color: #b3261e;
+  color: #b3261e;
+}
+
+.new-demo-btn {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.55em 1.4em;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--paper);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.new-demo-btn:hover {
+  opacity: 0.85;
+  text-decoration: none;
 }
 </style>
