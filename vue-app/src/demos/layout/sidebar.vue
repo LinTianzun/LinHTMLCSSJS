@@ -106,7 +106,7 @@ function toggleSubMenu(index: number): void {
 
 .demo {
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -371,10 +371,10 @@ function toggleSubMenu(index: number): void {
   position: relative;
   background: #e4e9f7;
   height: 100%;
-  min-height: 480px;
   flex: 1;
   min-width: 0;
   transition: all 0.5s ease;
+  overflow-y: auto;
 }
 
 .home-section .home-content {
