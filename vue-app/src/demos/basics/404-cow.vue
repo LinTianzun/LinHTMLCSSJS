@@ -1,0 +1,433 @@
+<script setup lang="ts">
+// 奶牛404：纯 CSS 动画艺术，奶牛从井里弹起撞到 404 文字。
+// 原 demo 用 body 作为画布并设 overflow:hidden；这里用 .demo 容器替代。
+import { onMounted, onUnmounted, ref } from 'vue'
+
+const showText = ref(false)
+let textTimer: ReturnType<typeof setTimeout> | null = null
+
+onMounted(() => {
+  // 原 demo 文字延迟显示
+  textTimer = setTimeout(() => {
+    showText.value = true
+  }, 1000)
+})
+
+onUnmounted(() => {
+  if (textTimer !== null) clearTimeout(textTimer)
+})
+</script>
+
+<template>
+  <div class="demo">
+    <div class="scene">
+      <div class="cow">
+        <div class="head">
+          <div class="face"></div>
+        </div>
+        <div class="leg f l"></div>
+        <div class="leg f r"></div>
+        <div class="leg b l"></div>
+        <div class="leg b r"></div>
+        <div class="tail"></div>
+      </div>
+
+      <div class="well">
+        <a href="javascript:void(0)" class="home-btn">首页</a>
+      </div>
+
+      <div v-if="showText" class="text-box">
+        <h1>404</h1>
+        <p>这里不准停牛</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.demo {
+  min-height: 320px;
+  --bg: linear-gradient(#acb6e5, #86fde8);
+  --anime-speed: 0.2s;
+  background: var(--bg);
+  overflow: hidden;
+  position: relative;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  font-size: 0.75rem;
+}
+
+.cow {
+  width: 30rem;
+  aspect-ratio: 2/1;
+  border-radius: 4rem/15%;
+  background-color: #fefefe;
+  position: absolute;
+  top: 40%;
+  left: 38%;
+  z-index: 10;
+  transform: translateY(15rem) rotate(90deg);
+  animation: jmb var(--anime-speed) linear,
+    move calc(var(--anime-speed) * 10) linear;
+  transform-origin: 100% 150%;
+}
+
+.cow::before {
+  content: '';
+  position: absolute;
+  left: 11%;
+  top: 0;
+  width: 40%;
+  height: 60%;
+  color: #000;
+  background: currentColor;
+  border-radius: 0 0 100% 50%;
+  box-shadow: 9rem -2rem 0 -2rem, 15rem -3rem 0 -3rem;
+}
+
+.cow::after {
+  content: '';
+  position: absolute;
+  left: 20%;
+  bottom: 6%;
+  color: #000;
+  background: currentColor;
+  box-shadow: 8rem -4rem 0 -1rem;
+  width: 5rem;
+  aspect-ratio: 1/1;
+  border-radius: 43% 57% 51% 49%/51% 55% 45% 49%;
+}
+
+.head {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  z-index: 1;
+}
+
+.face {
+  width: 11rem;
+  aspect-ratio: 12.5/7.5;
+  background: #fff;
+  box-shadow: -2rem 4.5rem #000 inset;
+  border-radius: 10% 100% 50% 45%/44% 72% 26% 25%;
+  transform: rotateX(180deg) rotate(-55deg) translate(-25%, -55%);
+  position: relative;
+  z-index: 10;
+}
+
+.head::after,
+.head::before {
+  content: '';
+  position: absolute;
+  top: -3.5rem;
+  left: -5.5rem;
+  transform: rotate(-25deg);
+  background: #000;
+  width: 4rem;
+  height: 5rem;
+  z-index: 20;
+  box-shadow: 0.2rem 0.1rem 0 0.2rem #fff inset;
+  border-radius: 0% 100% 38% 62% / 41% 73% 27% 59%;
+}
+
+.head::before {
+  z-index: 2;
+  top: -4rem;
+  left: -5rem;
+  transform: rotate(-5deg);
+}
+
+.leg {
+  position: absolute;
+  top: 95%;
+  background: #fff;
+  width: 1.5rem;
+  height: 3rem;
+  transform-origin: top center;
+}
+
+.leg::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 90%;
+  width: 100%;
+  height: 2.5rem;
+  background: #fff;
+  border-bottom: 1.5rem solid #000;
+}
+
+.leg.b {
+  left: 4%;
+  animation: legMoveB var(--anime-speed) alternate infinite;
+}
+
+.leg.l {
+  left: 13%;
+}
+
+.leg::after {
+  left: 10%;
+  top: 75%;
+  background: #fff;
+  transform: rotate(-5deg);
+}
+
+.leg::after {
+  left: 32%;
+  top: 90%;
+  background: #fff;
+  transform: rotate(-15deg);
+}
+
+.leg.f {
+  right: 5%;
+  animation: legMoveF var(--anime-speed) alternate infinite;
+}
+
+.leg.l {
+  right: 10%;
+}
+
+.leg::after {
+  right: 10%;
+  left: auto;
+  top: 75%;
+  background: #fff;
+  transform: rotate(5deg);
+}
+
+.leg.r {
+  right: 20%;
+  left: auto;
+  background: #fff;
+  animation-delay: var(--anime-speed);
+}
+
+.leg::after {
+  right: 20%;
+  left: auto;
+  top: 90%;
+  background: #fff;
+  transform: rotate(10deg);
+}
+
+.tail {
+  position: absolute;
+  right: 98%;
+  top: 12%;
+  width: 2rem;
+  height: 10rem;
+  border-left: 0.5rem solid #fff;
+  border-top: 0.5rem solid #fff;
+  border-radius: 100% 0% 51% 49% / 42% 100% 0% 58%;
+  transform-origin: top left;
+  animation: tail 0.75s alternate infinite;
+}
+
+.tail::after {
+  content: '';
+  position: absolute;
+  left: 7%;
+  top: 100%;
+  background: #000;
+  width: 1.5rem;
+  height: 1.75rem;
+  border-radius: 70% 30% 100% 0%/100% 30% 70% 0%;
+  transform: rotate(-60deg);
+}
+
+.well {
+  background: #7aa1d2;
+  width: 30rem;
+  height: 2rem;
+  position: absolute;
+  top: calc(40% + 19rem);
+  left: 60%;
+  border-radius: 50%;
+}
+
+.well::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 -1.2rem 0.05rem #7aa1d2 inset;
+  z-index: 110;
+}
+
+.well::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 24rem;
+  background: var(--bg);
+  z-index: 100;
+}
+
+.home-btn {
+  position: absolute;
+  left: -190%;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  background: #7aa1d2;
+  display: inline-block;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  transition: background 0.3s ease-in;
+  transform-origin: 45rem 45rem;
+  border-radius: 1rem;
+  animation: btnAnime calc(var(--anime-speed) * 20) linear;
+}
+
+.home-btn:hover {
+  background: #5a7fb0;
+}
+
+.text-box {
+  font-weight: 700;
+  color-scheme: #fff;
+  text-align: center;
+  position: absolute;
+  left: 10%;
+  top: 25%;
+  animation: textAnime calc(var(--anime-speed) * 18) linear;
+}
+
+.text-box h1 {
+  font-size: 15rem;
+  margin: 0;
+  line-height: 18rem;
+  color: #fff;
+}
+
+.text-box p {
+  width: 42rem;
+  font-size: 3rem;
+  line-height: 1;
+  margin: 0;
+}
+
+@keyframes btnAnime {
+  0%,
+  48% {
+    transform: translateX(-10rem) rotate(95deg);
+  }
+
+  55%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+@keyframes textAnime {
+  0%,
+  60% {
+    top: 0;
+    transform: translateY(0%);
+    opacity: 1;
+  }
+
+  73%,
+  79% {
+    top: 28%;
+    transform: translateY(-15%);
+    opacity: 1;
+  }
+
+  70%,
+  76%,
+  85% {
+    top: 28%;
+    transform: translateY(5%);
+    opacity: 1;
+  }
+
+  100% {
+    top: 28%;
+    transform: translateY(0%);
+  }
+}
+
+@keyframes move {
+  0% {
+    left: 0%;
+    transform: translateY(0) rotate(0deg);
+  }
+
+  85% {
+    left: 38%;
+    transform: translateY(0) rotate(0deg);
+  }
+
+  90% {
+    left: 40%;
+    transform: translateY(0) rotate(5deg);
+  }
+
+  95% {
+    left: 38%;
+    transform: translateY(0) rotate(90deg);
+  }
+
+  100% {
+    left: 38%;
+    transform: translateY(15rem) rotate(90deg);
+  }
+}
+
+@keyframes jmb {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+@keyframes legMoveB {
+  0% {
+    transform: rotate(2deg) translateY(0%);
+  }
+
+  100% {
+    transform: rotate(-5deg) translateY(-5%);
+  }
+}
+
+@keyframes legMoveF {
+  0% {
+    transform: rotate(0deg) translateY(0%);
+  }
+
+  100% {
+    transform: rotate(-15deg) translateY(-5%);
+  }
+}
+
+@keyframes tail {
+  0% {
+    transform: rotate(3deg);
+    height: 10rem;
+  }
+
+  100% {
+    transform: rotate(-3deg);
+    height: 8rem;
+  }
+}
+</style>

@@ -1,47 +1,41 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import type { Category } from '../data/categories'
-import { categories } from '../data/categories'
-import CategoryCard from '../components/CategoryCard.vue'
+import { demoCategories } from '../demos/registry'
 import SiteHeader from '../components/SiteHeader.vue'
 import SiteFooter from '../components/SiteFooter.vue'
-
-const activeId = ref<string>('motion')
-const active = computed<Category>(() => {
-  return categories.find((c) => c.id === activeId.value) as Category
-})
 </script>
 
 <template>
   <SiteHeader />
 
   <main class="page">
-    <!-- Hero -->
     <section class="hero">
-      <p class="eyebrow">前端练习合集 · 约 40 个 demo</p>
+      <p class="eyebrow">前端练习合集 · Vue 移植版</p>
       <h1>把每一次练习，<br />归进它该去的抽屉。</h1>
       <p class="lead">
-        这里的每个目录都是一次动手：导航栏、轮播、动效、表单、小游戏。
-        它们现在按六个大类归档——点一个标签，看看每个抽屉里装了什么。
+        曾经的约 40 个原生 HTML/CSS/JS 练习，如今全部用 Vue 3 组件重新实现，
+        按六个大类归档。点开任意一条，直接在页面里体验。
       </p>
     </section>
 
-    <!-- Tag selector -->
-    <section class="tags" aria-label="练习分类">
-      <button
-        v-for="c in categories"
-        :key="c.id"
-        class="tag"
-        :class="{ active: c.id === activeId }"
-        @click="activeId = c.id"
-      >
-        {{ c.name }}
-        <span class="count">{{ c.items.length }}</span>
-      </button>
+    <section
+      v-for="cat in demoCategories"
+      :key="cat.id"
+      class="cat"
+    >
+      <header class="cat-head">
+        <h2>{{ cat.name }}</h2>
+        <span class="badge">{{ cat.demos.length }} 个练习</span>
+      </header>
+      <p class="cat-summary">{{ cat.summary }}</p>
+      <ul class="demo-list">
+        <li v-for="d in cat.demos" :key="d.id">
+          <RouterLink :to="`/demo/${cat.id}/${d.id}`" class="demo-link">
+            {{ d.title }}
+            <span class="arrow">→</span>
+          </RouterLink>
+        </li>
+      </ul>
     </section>
-
-    <!-- Active category detail -->
-    <CategoryCard :category="active" />
   </main>
 
   <SiteFooter />
@@ -55,7 +49,7 @@ const active = computed<Category>(() => {
 }
 
 .hero {
-  margin-bottom: 3rem;
+  margin-bottom: 3.5rem;
 }
 
 .eyebrow {
@@ -81,42 +75,73 @@ h1 {
   line-height: 1.85;
 }
 
-/* Tag selector */
-.tags {
+.cat {
+  margin-bottom: 3rem;
+  padding-top: 1.5rem;
+  border-top: var(--line-ink);
+}
+
+.cat-head {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 2.5rem;
-}
-
-.tag {
-  display: inline-flex;
   align-items: baseline;
-  gap: 0.4em;
-  padding: 0.5em 1.1em;
-  border: 1px solid var(--ink);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--ink);
-  font: inherit;
-  font-size: 0.92rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.tag:hover {
-  background: var(--paper-soft);
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
 }
 
-.tag.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--paper);
-}
-
-.count {
-  font-size: 0.75em;
-  opacity: 0.6;
+.badge {
+  font-size: 0.8rem;
+  color: var(--ink-faint);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cat-summary {
+  color: var(--ink-soft);
+  margin-bottom: 1.2rem;
+  line-height: 1.7;
+}
+
+.demo-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.6rem;
+}
+
+.demo-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.65em 1em;
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.92rem;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.demo-link:hover {
+  border-color: var(--accent);
+  background: var(--paper-soft);
+  text-decoration: none;
+}
+
+.arrow {
+  color: var(--ink-faint);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.demo-link:hover .arrow {
+  color: var(--accent);
+  transform: translateX(2px);
 }
 </style>
