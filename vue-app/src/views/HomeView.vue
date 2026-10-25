@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { getAllCategories, LOCAL_CAT_ID } from '../demos/registry'
 import { useLocalDemos } from '../composables/useLocalDemos'
 import { useRouter } from 'vue-router'
@@ -6,12 +7,54 @@ import SiteHeader from '../components/SiteHeader.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 
 const { demos: localDemos, remove } = useLocalDemos()
-const categories = getAllCategories(localDemos.value)
 const router = useRouter()
 
 function removeLocal(id: string) {
   remove(id)
   router.go(0)
+}
+
+/* —— 搜索 + 技能筛选 —— */
+const searchQuery = ref('')
+const activeSkill = ref<string | null>(null)
+
+/** 全量技能标签（去重，按出现频次降序） */
+const allSkills = computed(() => {
+  const counts = new Map<string, number>()
+  for (const cat of getAllCategories(localDemos.value)) {
+    for (const d of cat.demos) {
+      for (const s of d.skills) counts.set(s, (counts.get(s) ?? 0) + 1)
+    }
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'zh'))
+    .map(([s]) => s)
+})
+
+/** 过滤后的分类列表 */
+const filteredCategories = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase()
+  const skill = activeSkill.value
+  const cats = getAllCategories(localDemos.value)
+  return cats
+    .map((cat) => ({
+      ...cat,
+      demos: cat.demos.filter((d) => {
+        const matchQ = !q || d.title.toLowerCase().includes(q) || d.skills.some((s) => s.toLowerCase().includes(q))
+        const matchS = !skill || d.skills.includes(skill)
+        return matchQ && matchS
+      }),
+    }))
+    .filter((cat) => cat.demos.length > 0)
+})
+
+function toggleSkill(s: string) {
+  activeSkill.value = activeSkill.value === s ? null : s
+}
+
+function clearFilters() {
+  searchQuery.value = ''
+  activeSkill.value = null
 }
 </script>
 
@@ -29,8 +72,33 @@ function removeLocal(id: string) {
       <RouterLink to="/create" class="new-demo-btn">＋ 新建 demo</RouterLink>
     </section>
 
+    <!-- 搜索 + 技能筛选 -->
+    <section class="filters">
+      <input
+        v-model="searchQuery"
+        class="search-input"
+        type="search"
+        placeholder="搜索 demo 标题或技能…"
+        aria-label="搜索 demo"
+      />
+      <ul class="skill-tags">
+        <li v-for="s in allSkills" :key="s">
+          <button
+            class="skill-tag"
+            :class="{ active: activeSkill === s }"
+            @click="toggleSkill(s)"
+          >{{ s }}</button>
+        </li>
+      </ul>
+      <button
+        v-if="searchQuery || activeSkill"
+        class="clear-btn"
+        @click="clearFilters"
+      >清除筛选</button>
+    </section>
+
     <section
-      v-for="cat in categories"
+      v-for="cat in filteredCategories"
       :key="cat.id"
       class="cat"
     >
@@ -59,6 +127,10 @@ function removeLocal(id: string) {
         </li>
       </ul>
     </section>
+
+    <p v-if="filteredCategories.length === 0" class="no-result">
+      没有匹配的 demo，试试换个关键词或清除筛选。
+    </p>
   </main>
 
   <SiteFooter />
@@ -234,5 +306,92 @@ h2 {
 .new-demo-btn:hover {
   opacity: 0.85;
   text-decoration: none;
+}
+
+/* 搜索 + 技能筛选 */
+.filters {
+  margin-bottom: 2.5rem;
+  padding: 1.25rem 1.25rem 1.1rem;
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.65em 1em;
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.search-input:focus {
+  border-color: var(--accent);
+}
+
+.search-input::placeholder {
+  color: var(--ink-faint);
+}
+
+.skill-tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.9rem 0 0;
+  padding: 0;
+}
+
+.skill-tag {
+  font: inherit;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  padding: 0.1em 0.7em;
+  border: 1px solid var(--grid);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.skill-tag:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.skill-tag.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--paper) !important;
+}
+
+.clear-btn {
+  margin-top: 0.6rem;
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 0.2em 0.9em;
+  border: 1px solid var(--grid);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.no-result {
+  text-align: center;
+  color: var(--ink-faint);
+  padding: 3rem 0;
+  font-size: 0.9rem;
 }
 </style>

@@ -83,7 +83,7 @@ a:hover {
   --grid:         #2e2b42;
   --ink:          #e8e4f0;
   --ink-soft:     #a8a2bc;
-  --ink-faint:    #6e6884;
+  --ink-faint:    #948fa8;   /* meta / counts — 提亮以满足暗色4.5:1对比度 */
   --accent:       #8b9ef0;
   --accent-light: #a8bcff;
   --line:         1px solid var(--grid);
