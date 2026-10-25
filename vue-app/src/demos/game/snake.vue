@@ -1,292 +1,29 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
+import {
+  useSnakeGame,
+  DIRECTION_MAP,
+  isPerpendicularTurn,
+} from '@/composables/useSnakeGame'
 
-// 游戏常量（原版：20x20 格，每格 20px，共 400x400）
-const GRID = 20
-const SIZE = 400
-const WIN_LEN = (SIZE / GRID) * (SIZE / GRID) / 2 // 占据一半格子即胜利
+const {
+  snake, food, obstacles, reward, rewardKind,
+  score, timeText, started, gameOver, showWin, isPaused,
+  difficulty, currentColor, floatTexts, GRID, SIZE,
+  start, togglePause, allowChangeDirection, direction,
+} = useSnakeGame()
 
-interface Point {
-  x: number
-  y: number
-}
-
-interface FoodPoint extends Point {
-  color: string
-}
-
-type Direction = 'up' | 'down' | 'left' | 'right'
-
-// 蛇 食物 方向 分数
-const snake = ref<Point[]>([])
-const food = ref<FoodPoint>({ x: 0, y: 0, color: '#FF4136' })
-const direction = ref<Direction>('left')
-const score = ref(0)
-const minutes = ref(0)
-const seconds = ref(0)
-const timeText = ref('时间: 00:00')
 const title = ref('贪吃蛇小游戏')
-
-// 游戏状态
-const started = ref(false)
-const gameOver = ref(false)
-const showWin = ref(false)
-const isPaused = ref(false)
-const isGameOver = ref(false)
-const allowChangeDirection = ref(true)
-
-// 难度/速度
-const GAME_RATE = 300
-const RATE_STEP = 10
-const intervalGame = ref(GAME_RATE)
-const difficulty = ref(0)
-const lastScore = ref(0)
-
-// 奖励机制
-const isOpenReward = ref(true)
-const isAddScore = ref(false)
-const isSlow = ref(false)
-const rewardPosition = ref<Point>({ x: -20, y: -20 })
-let openReward = 0
-let closeReward = 0
-
-// 定时器
-let gameInterval: ReturnType<typeof setInterval> | null = null
-let timerId: ReturnType<typeof setInterval> | null = null
-
-const SNAKE_COLORS = [
-  'orange', 'crimson', 'gold', 'forestgreen', 'deepskyblue', 'midnightblue',
-  'orchid', 'coral', 'dodgerblue', 'saddlebrown', 'royalblue',
-]
-const FOOD_COLORS = [
-  'red', 'green', 'cyan', 'blue', 'purple', 'pink', 'skyblue', 'limegreen',
-  'lawngreen', 'deepskyblue', 'goldenrod', 'chartreuse', 'paleturquoise',
-]
-
-function snakeColor(index: number): string {
-  return SNAKE_COLORS[Math.min(difficulty.value, SNAKE_COLORS.length - 1)] ?? SNAKE_COLORS[index] ?? 'orange'
-}
-
-function formatTime(t: number): string {
-  return t < 10 ? `0${t}` : `${t}`
-}
-
-function isFoodOnSnake(position: Point): boolean {
-  return snake.value.some((seg) => seg.x === position.x && seg.y === position.y)
-}
-
-// 随机生成食物/奖励的位置（不与蛇身重叠）
-function getRandomPosition(color = '#FF4136'): FoodPoint {
-  let pos: FoodPoint = {
-    x: Math.floor(Math.random() * 20) * GRID,
-    y: Math.floor(Math.random() * 20) * GRID,
-    color,
-  }
-  while (isFoodOnSnake(pos)) {
-    pos = {
-      x: Math.floor(Math.random() * 20) * GRID,
-      y: Math.floor(Math.random() * 20) * GRID,
-      color,
-    }
-  }
-  return pos
-}
-
-function getRandomFoodColor(): string {
-  return FOOD_COLORS[Math.floor(Math.random() * FOOD_COLORS.length)] ?? 'red'
-}
-
-function clearTimers(): void {
-  if (gameInterval !== null) {
-    clearInterval(gameInterval)
-    gameInterval = null
-  }
-  if (timerId !== null) {
-    clearInterval(timerId)
-    timerId = null
-  }
-}
-
-// 关闭奖励（清除奖励状态并重新开启奖励倒计时）
-function outRewardTime(): void {
-  closeReward = 0
-  isOpenReward.value = true
-  isAddScore.value = false
-  isSlow.value = false
-}
-
-// 生成奖励：随机 "加分" 或 "减速"
-function generateReward(): void {
-  const rewardArr = ['加分', '减速']
-  const randomReward = rewardArr[Math.floor(Math.random() * rewardArr.length)]
-  while (rewardPosition.value.x === food.value.x && rewardPosition.value.y === food.value.y) {
-    rewardPosition.value = getRandomPosition()
-  }
-  if (randomReward === '加分') isAddScore.value = true
-  if (randomReward === '减速') isSlow.value = true
-  isOpenReward.value = false
-}
-
-// 每秒更新时间 + 奖励倒计时
-function updateTime(): void {
-  seconds.value += 1
-  if (seconds.value === 60) {
-    minutes.value += 1
-    seconds.value = 0
-  }
-  if (isOpenReward.value) {
-    openReward++
-    if (openReward === 10) {
-      generateReward()
-      openReward = 0
-    }
-  } else {
-    closeReward++
-    if (closeReward === 10) outRewardTime()
-  }
-  timeText.value = `时间: ${formatTime(minutes.value)}:${formatTime(seconds.value)}`
-}
-
-// 检查蛇头是否与蛇身重叠
-function collision(): boolean {
-  const head = snake.value[0]
-  if (!head) return false
-  return snake.value.some(
-    (seg, i) => i > 0 && head.x === seg.x && head.y === seg.y,
-  )
-}
-
-// 更新游戏状态
-function update(): void {
-  const oldHead = snake.value[0]
-  if (!oldHead) return
-  let head: Point = { x: oldHead.x, y: oldHead.y }
-  switch (direction.value) {
-    case 'up': head = { x: oldHead.x, y: oldHead.y - GRID }; break
-    case 'down': head = { x: oldHead.x, y: oldHead.y + GRID }; break
-    case 'left': head = { x: oldHead.x - GRID, y: oldHead.y }; break
-    case 'right': head = { x: oldHead.x + GRID, y: oldHead.y }; break
-  }
-  allowChangeDirection.value = true
-  snake.value.unshift(head)
-
-  const reward = rewardPosition.value
-  if (head.x === food.value.x && head.y === food.value.y) {
-    score.value += 10
-    food.value = getRandomPosition(getRandomFoodColor())
-  } else if (head.x === reward.x && head.y === reward.y && isAddScore.value) {
-    score.value += 30
-    outRewardTime()
-  } else if (head.x === reward.x && head.y === reward.y && isSlow.value) {
-    intervalGame.value += 10
-    clearTimers()
-    gameInterval = setInterval(update, intervalGame.value)
-    timerId = setInterval(updateTime, 1000)
-    outRewardTime()
-  } else {
-    snake.value.pop()
-  }
-
-  // 每增加 100 分难度 +1，速度随之加快（最快 200ms）
-  if (score.value % 100 === 0 && score.value > lastScore.value && intervalGame.value > 200) {
-    if (difficulty.value < 10) difficulty.value += 1
-    lastScore.value = score.value
-    intervalGame.value = GAME_RATE - difficulty.value * RATE_STEP
-    if (gameInterval !== null) clearInterval(gameInterval)
-    gameInterval = setInterval(update, intervalGame.value)
-  }
-
-  // 游戏结束条件：撞墙或撞自身（蛇足够长后撞自己才算失败并提示胜利文案）
-  const winMode = snake.value.length >= WIN_LEN
-  if (
-    head.x < 0 || head.y < 0 || head.x >= SIZE || head.y >= SIZE || collision()
-  ) {
-    if (winMode && collision()) showWin.value = true
-    clearTimers()
-    gameOver.value = true
-    isGameOver.value = true
-  }
-}
-
-// 开始游戏
-function startGame(): void {
-  started.value = true
-  gameOver.value = false
-  score.value = 0
-  snake.value = [
-    { x: 200, y: 200 }, { x: 220, y: 200 }, { x: 240, y: 200 },
-  ]
-  food.value = getRandomPosition(getRandomFoodColor())
-  direction.value = 'left'
-  rewardPosition.value = getRandomPosition()
-  difficulty.value = 0
-  lastScore.value = 0
-  intervalGame.value = GAME_RATE
-  minutes.value = 0
-  seconds.value = 0
-  timeText.value = '时间: 00:00'
-  title.value = '贪吃蛇小游戏'
-  isPaused.value = false
-  isGameOver.value = false
-  outRewardTime()
-  clearTimers()
-  gameInterval = setInterval(update, intervalGame.value)
-  timerId = setInterval(updateTime, 1000)
-}
-
-// 再来一遍
-function restartGame(): void {
-  startGame()
-}
-
-// 空格暂停/继续
-function togglePause(): void {
-  if (isGameOver.value || !started.value) return
-  if (isPaused.value) {
-    gameInterval = setInterval(update, intervalGame.value)
-    timerId = setInterval(updateTime, 1000)
-    title.value = '贪吃蛇小游戏'
-  } else {
-    clearTimers()
-    title.value = '游戏暂停'
-  }
-  isPaused.value = !isPaused.value
-}
-
-const directionMap: Record<string, Direction> = {
-  w: 'up', a: 'left', s: 'down', d: 'right',
-  W: 'up', A: 'left', S: 'down', D: 'right',
-  ArrowUp: 'up', ArrowLeft: 'left', ArrowDown: 'down', ArrowRight: 'right',
-}
-
-function oppositeDirection(dir: Direction): Direction | '' {
-  switch (dir) {
-    case 'up': return 'down'
-    case 'down': return 'up'
-    case 'left': return 'right'
-    case 'right': return 'left'
-    default: return ''
-  }
-}
-
-function isValidDirection(newDir: Direction): boolean {
-  const vertical = direction.value === 'up' || direction.value === 'down'
-  const horizontal = direction.value === 'left' || direction.value === 'right'
-  const newVertical = newDir === 'up' || newDir === 'down'
-  const newHorizontal = newDir === 'left' || newDir === 'right'
-  return (vertical && newHorizontal) || (horizontal && newVertical)
-}
 
 function onKeydown(event: KeyboardEvent): void {
   const key = event.key
-  if (key in directionMap) {
+  if (key in DIRECTION_MAP) {
     if (!allowChangeDirection.value) return
     event.preventDefault()
-    const newDirection = directionMap[key]
+    const newDirection = DIRECTION_MAP[key]
     if (
       newDirection !== undefined &&
-      isValidDirection(newDirection) &&
-      newDirection !== oppositeDirection(direction.value)
+      isPerpendicularTurn(direction.value, newDirection)
     ) {
       direction.value = newDirection
       allowChangeDirection.value = false
@@ -294,6 +31,9 @@ function onKeydown(event: KeyboardEvent): void {
   } else if (event.code === 'Space') {
     event.preventDefault()
     togglePause()
+    if (started.value && !gameOver.value) {
+      title.value = isPaused.value ? '游戏暂停' : '贪吃蛇小游戏'
+    }
   }
 }
 
@@ -303,49 +43,102 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', onKeydown)
-  clearTimers()
 })
 </script>
 
 <template>
   <div class="demo">
     <h1>{{ title }}</h1>
-    <button v-if="!started" class="btn" @click="startGame">开始游戏</button>
-    <p class="meta">得分: {{ score }}</p>
-    <p class="meta">{{ timeText }}</p>
 
-    <div class="game-container">
+    <!-- 状态栏：得分 / 时间 / 难度 -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-label">得分</span>
+        <span class="status-value score">{{ score }}</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">时间</span>
+        <span class="status-value">{{ timeText }}</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">难度</span>
+        <span class="status-value">
+          <span
+            v-for="n in 10"
+            :key="n"
+            class="diff-dot"
+            :class="{ active: n <= difficulty }"
+          ></span>
+        </span>
+      </div>
+    </div>
+
+    <button v-if="!started" class="btn" @click="start">开始游戏</button>
+
+    <div class="game-container" :style="{ width: SIZE + 'px', height: SIZE + 'px' }">
+      <!-- 障碍物 -->
+      <div
+        v-for="(ob, i) in obstacles"
+        :key="'ob' + i"
+        class="obstacle"
+        :style="{ left: ob.x + 'px', top: ob.y + 'px' }"
+      ></div>
+
+      <!-- 蛇身：i=0 是蛇头（带眼睛），其余尾部渐隐 -->
       <div
         v-for="(seg, i) in snake"
-        :key="i"
+        :key="'sg' + i"
         class="snake"
-        :style="{ left: seg.x + 'px', top: seg.y + 'px', backgroundColor: snakeColor(i) }"
+        :class="{ head: i === 0 }"
+        :style="{
+          left: seg.x + 'px',
+          top: seg.y + 'px',
+          backgroundColor: currentColor,
+          opacity: 1 - Math.min(i, 30) * 0.02,
+        }"
       ></div>
+
+      <!-- 食物 -->
       <div
         class="food"
         :style="{ left: food.x + 'px', top: food.y + 'px', backgroundColor: food.color }"
       ></div>
+
+      <!-- 奖励：加分（星形）/ 减速（转圈） -->
       <div
-        v-if="isAddScore"
-        class="addScore"
-        :style="{ left: rewardPosition.x + 'px', top: rewardPosition.y + 'px' }"
-      ></div>
+        v-if="rewardKind === 'addScore'"
+        class="reward-add"
+        :style="{ left: reward.x + 'px', top: reward.y + 'px' }"
+      >★</div>
       <div
-        v-if="isSlow"
-        class="slow"
-        :style="{ left: rewardPosition.x + 'px', top: rewardPosition.y + 'px' }"
-      ></div>
+        v-if="rewardKind === 'slow'"
+        class="reward-slow"
+        :style="{ left: reward.x + 'px', top: reward.y + 'px' }"
+      >
+        <span class="ring"></span>
+      </div>
+
+      <!-- 浮动得分文字 -->
+      <div
+        v-for="f in floatTexts"
+        :key="f.id"
+        class="float-text"
+        :style="{ left: f.x + 'px', top: f.y + 'px' }"
+      >{{ f.text }}</div>
+
+      <!-- 暂停遮罩 -->
+      <div v-if="isPaused" class="pause-mask">⏸ 已暂停</div>
     </div>
 
-    <p class="tip">方向键 / WASD 控制 · 空格暂停/继续</p>
-    <button v-if="started && gameOver" class="btn" @click="restartGame">再来一遍</button>
+    <p class="tip">方向键 / WASD 控制 · 空格暂停/继续 · ★=+30分 · ⊙=减速</p>
+    <button v-if="started && gameOver" class="btn" @click="start">再来一遍</button>
 
-    <div v-if="gameOver" class="modal" @click.self="restartGame">
+    <div v-if="gameOver" class="modal" @click.self="start">
       <div class="modal-content">
-        <span class="close" @click="restartGame">&times;</span>
-        <p>游戏结束! 得分: {{ score }}</p>
-        <p v-if="showWin">恭喜你 获胜了</p>
-        <button class="btn" @click="restartGame">再来一遍</button>
+        <span class="close" @click="start">&times;</span>
+        <p class="game-over-title">{{ showWin ? '🎉 恭喜你获胜了！' : '游戏结束' }}</p>
+        <p class="game-over-info">得分: {{ score }} · 用时: {{ timeText }}</p>
+        <button class="btn" @click="start">再来一遍</button>
       </div>
     </div>
   </div>
@@ -353,194 +146,361 @@ onUnmounted(() => {
 
 <style scoped>
 .demo {
-  min-height: 480px;
-  padding-bottom: 20px;
-  background: #f9f9f9;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 40px;
+  background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
+  font-family: 'Inter', 'Noto Serif SC', system-ui, sans-serif;
+  color: #e2e8f0;
+  box-sizing: border-box;
 }
 
 h1 {
-  text-align: center;
-  font-size: 2rem;
-  color: #333;
-  margin: 20px 0 0;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0 0 16px;
+  letter-spacing: 2px;
+}
+
+/* 状态栏 */
+.status-bar {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 16px;
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+}
+
+.status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.status-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.status-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  font-variant-numeric: tabular-nums;
+}
+
+.status-value.score {
+  color: #fbbf24;
+}
+
+.diff-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 1px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  vertical-align: middle;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.diff-dot.active {
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
 }
 
 .btn {
-  display: block;
-  margin: 20px auto;
-  padding: 12px 24px;
-  font-size: 1.2rem;
-  background-color: #2196f3;
+  margin: 12px 0;
+  padding: 10px 32px;
+  font-size: 1.05rem;
+  font-weight: 600;
   color: #fff;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   border: none;
-  border-radius: 5px;
+  border-radius: 24px;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.meta {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #555;
-  margin-top: 10px;
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.55);
 }
 
 .tip {
-  text-align: center;
-  color: #999;
-  font-size: 0.9rem;
   margin-top: 16px;
+  color: #64748b;
+  font-size: 0.85rem;
 }
 
-/* 游戏区域样式 */
+/* 游戏区域 */
 .game-container {
-  width: 400px;
-  height: 400px;
-  border: 2px solid #333;
   position: relative;
-  margin: 0 auto;
-  margin-top: 20px;
-  background-color: #f0f0f0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  /* 网格背景：两条线性渐变分别绘制水平/垂直线条 */
-  background-image: linear-gradient(#fff 1px, transparent 1px),
-    linear-gradient(90deg, #fff 1px, transparent 1px);
+  border: 3px solid #334155;
+  border-radius: 12px;
+  background-color: #0b1220;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    inset 0 0 60px rgba(0, 0, 0, 0.3);
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
   background-size: 20px 20px;
   overflow: hidden;
 }
 
-/* 贪吃蛇和食物样式 */
-.snake,
-.food,
-.addScore,
-.slow {
+/* 障碍物：暗红石块 */
+.obstacle {
+  position: absolute;
   width: 20px;
   height: 20px;
+  background: repeating-linear-gradient(
+    45deg,
+    #7f1d1d,
+    #7f1d1d 4px,
+    #991b1b 4px,
+    #991b1b 8px
+  );
+  border: 1px solid #b91c1c;
+  border-radius: 4px;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.6);
+  animation: obstacleIn 0.4s ease-out;
+}
+
+@keyframes obstacleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 蛇：平滑移动 + 尾部渐隐 */
+.snake {
   position: absolute;
-  transition: all 0.2s ease-in-out;
+  width: 18px;
+  height: 18px;
+  margin: 1px;
+  border-radius: 6px;
+  transition: left 0.15s linear, top 0.15s linear, opacity 0.4s;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
-.slow {
-  display: flex;
-  width: 1em;
-  height: 1em;
-  border: 3px solid transparent;
-  border-top-color: #3cefff;
-  border-bottom-color: #3cefff;
-  border-radius: 50%;
-  animation: spinS 1.5s linear infinite;
+/* 蛇头：更圆润 + 眼睛 */
+.snake.head {
+  border-radius: 50% 50% 45% 45%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+  z-index: 2;
 }
 
-.slow :before {
+.snake.head::before,
+.snake.head::after {
   content: '';
-  display: block;
-  margin: auto;
-  width: 0.75em;
-  height: 0.75em;
-  border: 3px solid #3cefff;
+  position: absolute;
+  top: 4px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  animation: pulseS 1s alternate ease-in-out infinite;
+  background: #fff;
 }
 
-@keyframes spinS {
+.snake.head::before {
+  left: 3px;
+}
+
+.snake.head::after {
+  right: 3px;
+}
+
+/* 食物：呼吸发光 */
+.food {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: 2px;
+  border-radius: 50%;
+  animation: foodPulse 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes foodPulse {
+  from {
+    transform: scale(0.85);
+    filter: brightness(0.9);
+  }
+  to {
+    transform: scale(1.1);
+    filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+  }
+}
+
+/* 奖励 ★ +30 */
+.reward-add {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #fbbf24;
+  text-shadow: 0 0 8px #fbbf24;
+  animation: rewardFloat 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes rewardFloat {
+  from {
+    transform: translateY(0) scale(1);
+  }
+  to {
+    transform: translateY(-3px) scale(1.15);
+  }
+}
+
+/* 奖励 ⊙ 减速 */
+.reward-slow {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reward-slow .ring {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border: 3px solid #38bdf8;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spinRing 1s linear infinite;
+}
+
+@keyframes spinRing {
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes pulseS {
+/* 浮动得分 */
+.float-text {
+  position: absolute;
+  width: 40px;
+  margin-left: -10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fbbf24;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  animation: floatUp 0.8s ease-out forwards;
+  z-index: 3;
+}
+
+@keyframes floatUp {
   from {
-    transform: scale(0.5);
-  }
-
-  to {
-    transform: scale(1);
-  }
-}
-
-.addScore {
-  width: 1em;
-  height: 1em;
-  border-radius: 50%;
-  border: 4px solid #3cefff;
-  animation: spinA 1.5s ease-in-out infinite;
-}
-
-@keyframes spinA {
-  to {
-    transform: rotateY(540deg);
-  }
-}
-
-/* 贪吃蛇样式 */
-.snake {
-  border-radius: 50%;
-  animation: fade 0.8s ease-in-out alternate infinite;
-}
-
-@keyframes fade {
-  from {
+    transform: translateY(0);
     opacity: 1;
   }
-
   to {
-    opacity: 0.5;
-    transform: scale(0.9);
+    transform: translateY(-24px);
+    opacity: 0;
   }
 }
 
-/* 食物样式 */
-.food {
-  border-radius: 50%;
-  box-shadow: 0 0 20px #ff4136;
-  animation: glowing 2s ease-in-out infinite alternate;
+/* 暂停遮罩 */
+.pause-mask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.7);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  backdrop-filter: blur(2px);
+  z-index: 5;
 }
 
-@keyframes glowing {
-  from {
-    box-shadow: 0 0 10px #ff4136;
-  }
-
-  to {
-    box-shadow: 0 0 20px #ff4136;
-  }
-}
-
+/* 结束弹窗 */
 .modal {
   position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
 }
 
 .modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 2px solid #ccc;
-  border-radius: 15px;
-  width: 200px;
-  text-align: center;
   position: relative;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  width: min(300px, 85vw);
+  padding: 28px 24px;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: modalIn 0.25s ease-out;
+}
+
+@keyframes modalIn {
+  from {
+    transform: scale(0.9) translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.game-over-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0 0 8px;
+}
+
+.game-over-info {
+  color: #94a3b8;
+  margin: 0 0 16px;
 }
 
 .close {
-  color: #888;
-  float: right;
-  font-size: 1.8rem;
-  font-weight: bold;
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  color: #64748b;
+  font-size: 1.6rem;
   cursor: pointer;
 }
 
-.close:hover,
-.close:focus {
-  color: #333;
-  text-decoration: none;
+.close:hover {
+  color: #e2e8f0;
+}
+
+@media (max-width: 480px) {
+  .status-bar {
+    gap: 16px;
+    padding: 8px 16px;
+  }
 }
 </style>
