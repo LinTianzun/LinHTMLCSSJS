@@ -1,28 +1,29 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-// 侧边栏是否收起（点击左上角菜单按钮切换）
+// 侧边栏是否收起（点击 home-section 左上角菜单按钮切换）
 const closed = ref(false)
 
-// 当前展开子菜单的链接索引（对应原版对每个 li 的 showMenu class 切换）
+// 当前展开子菜单的链接索引
 const openSubMenu = ref<number | null>(null)
 
 interface NavItem {
   icon: string
   name: string
+  /** 有 children 的项用下拉箭头展开；无 children 的项用 .blank 飞出标签 */
   children?: string[]
 }
 
 const navItems: NavItem[] = [
   { icon: '▦', name: 'Dashboard' },
   { icon: '▤', name: 'Category', children: ['HTML & CSS', 'JavaScript', 'PHP & MySql'] },
-  { icon: '📖', name: 'Posts', children: ['Web Design', 'Card Design', 'Login Foem'] },
+  { icon: '📖', name: 'Posts', children: ['Web Design', 'Card Design', 'Login Form'] },
   { icon: '◕', name: 'Analytics' },
   { icon: '▮', name: 'Chart' },
-  { icon: '☁', name: 'CloudUp', children: ['Web Design', 'Card Design', 'Login Foem'] },
+  { icon: '☁', name: 'CloudUp', children: ['Web Design', 'Card Design', 'Login Form'] },
   { icon: '⚙', name: 'Setting' },
-  { icon: '☁', name: 'CloudUp2', children: ['Web Design', 'Card Design', 'Login Foem'] },
-  { icon: '☁', name: 'CloudUp3', children: ['Web Design', 'Card Design', 'Login Foem'] },
+  { icon: '☁', name: 'CloudUp2', children: ['Web Design', 'Card Design', 'Login Form'] },
+  { icon: '☁', name: 'CloudUp3', children: ['Web Design', 'Card Design', 'Login Form'] },
 ]
 
 function toggleSubMenu(index: number): void {
@@ -44,6 +45,7 @@ function toggleSubMenu(index: number): void {
           :key="i"
           :class="{ showMenu: openSubMenu === i }"
         >
+          <!-- 有子菜单的项：icon-link + 箭头 -->
           <div v-if="item.children" class="icon-link">
             <a class="icona" href="#" @click.prevent>
               <span class="icon">{{ item.icon }}</span>
@@ -51,15 +53,21 @@ function toggleSubMenu(index: number): void {
             </a>
             <span class="arrow" @click="toggleSubMenu(i)">▾</span>
           </div>
+          <!-- 无子菜单的项：只有链接 -->
           <a v-else class="icona" href="#" @click.prevent>
             <span class="icon">{{ item.icon }}</span>
             <span class="link_name">{{ item.name }}</span>
           </a>
+
+          <!-- 子菜单：有 children 的是可展开列表；无 children 的是 .blank 飞出标签 -->
           <ul v-if="item.children" class="sub-menu">
             <li><a class="link_name" href="#" @click.prevent>{{ item.name }}</a></li>
             <li v-for="(child, j) in item.children" :key="j">
               <a href="#" @click.prevent>{{ child }}</a>
             </li>
+          </ul>
+          <ul v-else class="sub-menu blank">
+            <li><a class="link_name" href="#" @click.prevent>{{ item.name }}</a></li>
           </ul>
         </li>
 
@@ -88,16 +96,24 @@ function toggleSubMenu(index: number): void {
 </template>
 
 <style scoped>
+/* 全局重置：原版第一行就是 * { margin:0; padding:0; box-sizing:border-box } */
+.demo,
+.demo * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .demo {
   width: 100%;
   min-height: 100vh;
   position: relative;
-  box-sizing: border-box;
   overflow: hidden;
   display: flex;
+  font-family: 'Open Sans', sans-serif;
 }
 
-/* 侧边栏改为常规文档流：flex 布局下宽度收缩自然推开 home-section */
+/* 侧边栏：相对定位 + flex 布局，宽度收缩推开 home-section */
 .sidebar {
   position: relative;
   height: 100%;
@@ -145,7 +161,7 @@ function toggleSubMenu(index: number): void {
   height: 100%;
   padding: 30px 0 150px 0;
   overflow: auto;
-  margin: 0;
+  list-style: none;
 }
 
 .sidebar.close .nav-links {
@@ -221,6 +237,7 @@ function toggleSubMenu(index: number): void {
   margin-top: -10px;
   background: #1d1b31;
   display: none;
+  list-style: none;
   margin-bottom: 0;
 }
 
@@ -239,6 +256,11 @@ function toggleSubMenu(index: number): void {
 
 .sidebar .nav-links li .sub-menu a:hover {
   opacity: 1;
+}
+
+/* 关键：展开侧边栏时隐藏子菜单里的 .link_name（分类标题），只在收起飞出时显示 */
+.sidebar .nav-links li .sub-menu .link_name {
+  display: none;
 }
 
 .sidebar.close .nav-links li .sub-menu {
@@ -267,7 +289,19 @@ function toggleSubMenu(index: number): void {
   display: block;
 }
 
-/* 挂在侧边栏底部：li 不设 relative，让 absolute 相对 .sidebar 定位 */
+/* .blank 子菜单：无 children 项的飞出标签（收起时 hover 才显示名称） */
+.sidebar .nav-links li .sub-menu.blank {
+  opacity: 0;
+  pointer-events: none;
+  padding: 3px 20px 6px 16px;
+}
+
+.sidebar .nav-links li:hover .sub-menu.blank {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* 底部用户资料：absolute 相对 .sidebar 定位（li 设 static） */
 .sidebar .nav-links li.profile-li {
   position: static;
 }
