@@ -90,7 +90,9 @@ function onKeydown(e: KeyboardEvent) {
 }
 
 // iframe 内加载同路由：demo 在独立视口中渲染，链接/滚动都隔离在框内
-const frameSrc = computed(() => `${route.path}?embed=1`)
+// 生产环境 base 为 /LinHTMLCSSJS/，需带上前缀，否则 iframe 加载到根路径报错
+const base = import.meta.env.BASE_URL
+const frameSrc = computed(() => `${base}${route.path}?embed=1`)
 
 // 本地创作 demo：直接用 srcdoc 拼出完整文档，无需子路由组件
 const localDoc = computed(() =>
