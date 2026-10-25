@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { assetUrl } from '../asset'
 
 interface Track {
   title: string
@@ -8,9 +9,9 @@ interface Track {
 }
 
 const musicArr: Track[] = [
-  { title: '被神明写的歌', name: 'K.D', source: '/demos/motion/music/被神明写的歌 - K.D.mp3' },
-  { title: '江南烟雨色', name: '杨树人', source: '/demos/motion/music/江南烟雨色 - 杨树人.mp3' },
-  { title: '泡沫', name: '杨树人', source: '/demos/motion/music/泡沫 (男声版) - 杨树人.mp3' },
+  { title: '被神明写的歌', name: 'K.D', source: assetUrl('/demos/motion/music/被神明写的歌 - K.D.mp3') },
+  { title: '江南烟雨色', name: '杨树人', source: assetUrl('/demos/motion/music/江南烟雨色 - 杨树人.mp3') },
+  { title: '泡沫', name: '杨树人', source: assetUrl('/demos/motion/music/泡沫 (男声版) - 杨树人.mp3') },
 ]
 
 const nowIndex = ref(0)
@@ -131,7 +132,7 @@ onUnmounted(() => {
     <div class="music-box">
       <!-- 光盘 -->
       <div class="cover-box">
-        <img :style="coverStyle" src="/demos/motion/img/04dong.jpeg" alt="封面" />
+        <img :style="coverStyle" :src="assetUrl('/demos/motion/img/04dong.jpeg')" alt="封面" />
         <span class="point"></span>
       </div>
 

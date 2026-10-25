@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
+import { assetUrl } from '../asset'
 
 const images = [
   '/demos/carousel/qq/01.jpg',
@@ -7,7 +8,7 @@ const images = [
   '/demos/carousel/qq/23.jpg',
   '/demos/carousel/qq/25.jpg',
   '/demos/carousel/qq/27.jpg',
-]
+].map(assetUrl)
 
 // 列表复制一份实现无缝循环
 const trackImages = [...images, ...images]

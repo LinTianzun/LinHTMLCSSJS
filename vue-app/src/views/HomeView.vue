@@ -171,7 +171,7 @@ h2 {
   border: 1px solid var(--grid);
   border-radius: var(--radius);
   background: var(--paper);
-  color: var(--ink);
+  color: var(--ink) !important;
   font-size: 0.92rem;
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
@@ -226,7 +226,7 @@ h2 {
   border: 1px solid var(--accent);
   border-radius: var(--radius);
   background: var(--accent);
-  color: var(--paper);
+  color: var(--paper) !important;
   font-size: 0.95rem;
   text-decoration: none;
 }

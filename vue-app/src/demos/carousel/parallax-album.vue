@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { assetUrl } from '../asset'
 
 const columns = computed(() => [
   [
@@ -26,7 +27,7 @@ const columns = computed(() => [
     '/demos/carousel/qq/17.jpg',
     '/demos/carousel/qq/18.jpg',
   ],
-])
+].map((col) => col.map(assetUrl)))
 </script>
 
 <template>

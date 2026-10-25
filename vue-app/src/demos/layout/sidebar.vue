@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { assetUrl } from '../asset'
 
 // 侧边栏是否收起（点击 home-section 左上角菜单按钮切换）
 const closed = ref(false)
@@ -74,7 +75,7 @@ function toggleSubMenu(index: number): void {
         <li class="profile-li">
           <div class="profile-details">
             <div class="profile-content">
-              <img src="/demos/book-site/testimonial-perfil-1.png" alt="avatar" />
+              <img :src="assetUrl('/demos/book-site/testimonial-perfil-1.png')" alt="avatar" />
             </div>
             <div class="name-job">
               <div class="profile_name">LinLin</div>

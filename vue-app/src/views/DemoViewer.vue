@@ -3,10 +3,12 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { demoCategories, sourceUrl, originUrl, LOCAL_CAT_ID } from '../demos/registry'
 import { useLocalDemos, buildDemoDocument } from '../composables/useLocalDemos'
+import { useTheme } from '../composables/useTheme'
 
 const route = useRoute()
 const router = useRouter()
 const { get: getLocal, remove: removeLocal } = useLocalDemos()
+const { isDark } = useTheme()
 
 const categoryId = computed(() => {
   const m = route.path.match(/^\/demo\/([^/]+)\/([^/]+)/)
@@ -22,6 +24,8 @@ const origin = computed(() => (isLocal.value ? null : originUrl(demoId.value)))
 const localDemo = computed(() =>
   isLocal.value ? getLocal(demoId.value) ?? null : null,
 )
+// 嵌入模式的暗色同步：父页在暗色时给 iframe 文档也加 dark 底色
+const frameBg = computed(() => (isDark.value ? '#1a1825' : '#ffffff'))
 
 const category = computed(() => {
   if (isLocal.value) {
@@ -254,6 +258,7 @@ onUnmounted(() => {
         :style="{
           width: activeSize.w || undefined,
           height: activeSize.h || undefined,
+          background: frameBg,
         }"
         title="demo 演示"
         @load="onFrameLoad"
@@ -268,6 +273,7 @@ onUnmounted(() => {
         :style="{
           width: activeSize.w || undefined,
           height: activeSize.h || undefined,
+          background: frameBg,
         }"
         title="demo 演示"
         @load="onFrameLoad"
@@ -288,7 +294,7 @@ onUnmounted(() => {
 .bare {
   width: 100vw;
   min-height: 100vh;
-  background: #fff;
+  background: var(--paper);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -304,7 +310,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100vh;
   border: none;
-  background: #fff;
+  background: var(--paper);
 }
 
 .viewer {
@@ -357,73 +363,48 @@ h1 {
   line-height: 1.6;
   padding: 0.05em 0.6em;
   border: 1px solid var(--grid);
-  border-radius: 999px;
+  border-radius: var(--radius);
   color: var(--ink-faint);
-  white-space: nowrap;
 }
 
-.src-btn {
-  display: inline-block;
-  padding: 0.35em 0.9em;
+.ctl-btn {
+  padding: 0.3em 0.8em;
   border: 1px solid var(--grid);
   border-radius: var(--radius);
   color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.85rem;
   text-decoration: none;
-  font-size: 0.82rem;
-  white-space: nowrap;
+  cursor: pointer;
+  background: transparent;
 }
 
-.src-btn:hover {
+.ctl-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background: transparent;
+  text-decoration: none;
+}
+
+.ctl-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--paper-soft);
 }
 
 .size-ctl {
   display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.src-btn {
   border: 1px solid var(--grid);
   border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.ctl-btn {
-  padding: 0.35em 0.8em;
-  border: none;
-  border-right: 1px solid var(--grid);
-  background: transparent;
-  color: var(--ink-soft);
-  font: inherit;
-  font-size: 0.82rem;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.ctl-btn:last-child {
-  border-right: none;
-}
-
-.ctl-btn:hover {
-  background: var(--paper-soft);
-}
-
-.ctl-btn.active {
-  background: var(--accent);
-  color: var(--paper);
 }
 
 .open-btn {
-  display: inline-block;
-  padding: 0.35em 0.9em;
   border: 1px solid var(--grid);
   border-radius: var(--radius);
-  color: var(--ink-soft);
-  text-decoration: none;
-}
-
-.open-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: transparent;
 }
 
 .stage {
@@ -437,7 +418,7 @@ h1 {
 .stage.framed {
   border: var(--line-ink);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--paper);
 }
 
 /* 自适应模式：高度由脚本贴合内容；固定尺寸预设用内联 width/height */
@@ -447,7 +428,7 @@ h1 {
   height: calc(100vh - 10rem);
   min-width: 320px;
   min-height: 320px;
-  background: #fff;
+  background: var(--paper);
 }
 
 .stage.framed .frame {
@@ -525,11 +506,5 @@ h1 {
   text-align: center;
   font-size: 0.78rem;
   color: var(--ink-faint);
-}
-
-@media (max-width: 640px) {
-  .kbd-hint {
-    display: none;
-  }
 }
 </style>

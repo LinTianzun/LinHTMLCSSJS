@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { assetUrl } from '../asset'
 
 // 原版 index.html 为空壳，此组件基于原项目的图片资源（book-*.png 等）
 // 重新构建一个响应式图书网站布局。
@@ -15,16 +16,16 @@ interface Book {
 
 // 精选图书（首页大卡片）
 const homeBooks: Book[] = [
-  { id: 1, img: '/demos/book-site/home-book-1.png', title: 'Machine Learning 基础', author: '张涛', price: 89 },
-  { id: 2, img: '/demos/book-site/home-book-2.png', title: 'CSS 新世界', author: '李明', price: 69 },
-  { id: 3, img: '/demos/book-site/home-book-3.png', title: 'Vue.js 设计与实现', author: '王芳', price: 99 },
-  { id: 4, img: '/demos/book-site/home-book-4.png', title: '算法图解', author: '刘强', price: 59 },
+  { id: 1, img: assetUrl('/demos/book-site/home-book-1.png'), title: 'Machine Learning 基础', author: '张涛', price: 89 },
+  { id: 2, img: assetUrl('/demos/book-site/home-book-2.png'), title: 'CSS 新世界', author: '李明', price: 69 },
+  { id: 3, img: assetUrl('/demos/book-site/home-book-3.png'), title: 'Vue.js 设计与实现', author: '王芳', price: 99 },
+  { id: 4, img: assetUrl('/demos/book-site/home-book-4.png'), title: '算法图解', author: '刘强', price: 59 },
 ]
 
 // 书单列表
 const books: Book[] = Array.from({ length: 10 }, (_, i) => ({
   id: i + 1,
-  img: `/demos/book-site/book-${i + 1}.png`,
+  img: assetUrl(`/demos/book-site/book-${i + 1}.png`),
   title: `图书标题 ${i + 1}`,
   author: `作者 ${String.fromCharCode(65 + (i % 26))}`,
   price: 39 + i * 6,
@@ -32,8 +33,8 @@ const books: Book[] = Array.from({ length: 10 }, (_, i) => ({
 
 // 特价图书
 const discountBooks: Book[] = [
-  { id: 101, img: '/demos/book-site/discount-book-1.png', title: '深度学习入门', author: '陈静', price: 129, discount: 0.5 },
-  { id: 102, img: '/demos/book-site/discount-book-2.png', title: 'JavaScript 高级程序设计', author: '赵磊', price: 149, discount: 0.7 },
+  { id: 101, img: assetUrl('/demos/book-site/discount-book-1.png'), title: '深度学习入门', author: '陈静', price: 129, discount: 0.5 },
+  { id: 102, img: assetUrl('/demos/book-site/discount-book-2.png'), title: 'JavaScript 高级程序设计', author: '赵磊', price: 149, discount: 0.7 },
 ]
 
 interface Testimonial {
@@ -45,10 +46,10 @@ interface Testimonial {
 }
 
 const testimonials: Testimonial[] = [
-  { id: 1, img: '/demos/book-site/testimonial-perfil-1.png', name: '林晓', role: '前端工程师', quote: '这里的书单很全，物流也快！' },
-  { id: 2, img: '/demos/book-site/testimonial-perfil-2.png', name: '王鹏', role: '大学生', quote: '学生党买书首选，折扣给力。' },
-  { id: 3, img: '/demos/book-site/testimonial-perfil-3.png', name: '赵雪', role: '产品经理', quote: '网站体验流畅，推荐给同事了。' },
-  { id: 4, img: '/demos/book-site/testimonial-perfil-4.png', name: '孙悦', role: '设计师', quote: '设计类的书很齐全，常来淘。' },
+  { id: 1, img: assetUrl('/demos/book-site/testimonial-perfil-1.png'), name: '林晓', role: '前端工程师', quote: '这里的书单很全，物流也快！' },
+  { id: 2, img: assetUrl('/demos/book-site/testimonial-perfil-2.png'), name: '王鹏', role: '大学生', quote: '学生党买书首选，折扣给力。' },
+  { id: 3, img: assetUrl('/demos/book-site/testimonial-perfil-3.png'), name: '赵雪', role: '产品经理', quote: '网站体验流畅，推荐给同事了。' },
+  { id: 4, img: assetUrl('/demos/book-site/testimonial-perfil-4.png'), name: '孙悦', role: '设计师', quote: '设计类的书很齐全，常来淘。' },
 ]
 
 // 分类筛选（响应式图书网站核心交互：点击分类过滤图书列表）
@@ -89,7 +90,7 @@ function finalPrice(book: Book): string {
   <div class="demo">
     <header class="site-header">
       <a class="brand" href="#" @click.prevent>
-        <img src="/demos/book-site/favicon.png" alt="logo" />
+        <img :src="assetUrl('/demos/book-site/favicon.png')" alt="logo" />
         <span>书海书店</span>
       </a>
       <nav class="main-nav">
@@ -107,7 +108,7 @@ function finalPrice(book: Book): string {
         <p>精选上千本技术与设计图书，响应式布局，随时随地阅读。</p>
         <a class="cta" href="#books" @click.prevent>开始逛逛</a>
       </div>
-      <img class="hero-img" src="/demos/book-site/home-book-1.png" alt="推荐图书" />
+      <img class="hero-img" :src="assetUrl('/demos/book-site/home-book-1.png')" alt="推荐图书" />
     </section>
 
     <section class="featured">
@@ -173,7 +174,7 @@ function finalPrice(book: Book): string {
       </div>
     </section>
 
-    <section class="join" :style="{ backgroundImage: 'url(/demos/book-site/join-bg.jpg)' }">
+    <section class="join" :style="{ backgroundImage: `url(${assetUrl('/demos/book-site/join-bg.jpg')})` }">
       <h2>加入会员，享全场 95 折</h2>
       <button type="button">立即注册</button>
     </section>

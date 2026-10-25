@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { assetUrl } from '../asset'
 
 interface Panel {
   img: string
@@ -7,10 +8,10 @@ interface Panel {
 }
 
 const panels = computed<Panel[]>(() => [
-  { img: '/demos/carousel/seasons/01chun.jpeg', rotate: 0 },
-  { img: '/demos/carousel/seasons/02xia.jpeg', rotate: 90 },
-  { img: '/demos/carousel/seasons/03qiu.jpeg', rotate: 180 },
-  { img: '/demos/carousel/seasons/04dong.jpeg', rotate: 270 },
+  { img: assetUrl('/demos/carousel/seasons/01chun.jpeg'), rotate: 0 },
+  { img: assetUrl('/demos/carousel/seasons/02xia.jpeg'), rotate: 90 },
+  { img: assetUrl('/demos/carousel/seasons/03qiu.jpeg'), rotate: 180 },
+  { img: assetUrl('/demos/carousel/seasons/04dong.jpeg'), rotate: 270 },
 ])
 </script>
 

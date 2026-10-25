@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { assetUrl } from '../asset'
 
 interface Bubble {
   id: number
   size: number
   left: number
 }
+
+// 背景图走 assetUrl 以兼容子路径部署（/LinHTMLCSSJS/）
+const bgImage = `url(${assetUrl('/demos/motion/img/XK.webp')})`
 
 // 倒计时目标：下一个 1 月 1 日（动态年份）
 function nextNewYear(): Date {
@@ -78,7 +82,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="demo" :class="{ newyear: finished }">
+  <div class="demo" :class="{ newyear: finished }" :style="{ backgroundImage: bgImage }">
     <template v-if="!finished">
       <div id="time">
         <div
@@ -139,7 +143,6 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   background: #490077;
-  background-image: url('/demos/motion/img/XK.webp');
   border-radius: 8px;
   position: relative;
   overflow: hidden;
