@@ -34,7 +34,7 @@ jobs:
         run: npx oxlint .
         working-directory: vue-app
       - name: Test
-        run: npm test
+        run: npx vitest run
         working-directory: vue-app
       - name: Build
         run: npx vite build
