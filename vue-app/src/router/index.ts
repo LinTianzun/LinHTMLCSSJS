@@ -48,6 +48,11 @@ const router = createRouter({
       name: 'demo-local',
       component: DemoViewer,
     },
+    {
+      path: '/share',
+      name: 'share',
+      component: () => import('../views/ShareView.vue'),
+    },
     ...demoRoutes,
     {
       path: '/:pathMatch(.*)*',

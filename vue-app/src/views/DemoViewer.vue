@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { demoCategories, sourceUrl, originUrl, LOCAL_CAT_ID } from '../demos/registry'
 import { useLocalDemos, buildDemoDocument } from '../composables/useLocalDemos'
 import { useTheme } from '../composables/useTheme'
+import { shareUrl } from '../composables/shareCodec'
 
 const route = useRoute()
 const router = useRouter()
@@ -116,6 +117,21 @@ function removeLocalDemo() {
   router.push('/')
 }
 
+// ── 分享本地创作：把代码编码进 URL，复制到剪贴板 ──
+const shareMsg = ref('')
+async function copyShare() {
+  const p = localDemo.value
+  if (!p) return
+  const url = shareUrl({ t: p.title, s: p.skills, h: p.html, c: p.css, j: p.js })
+  try {
+    await navigator.clipboard.writeText(url)
+    shareMsg.value = '分享链接已复制 ✓'
+  } catch {
+    window.prompt('手动复制这个分享链接：', url)
+  }
+  setTimeout(() => (shareMsg.value = ''), 2500)
+}
+
 // ── 加载状态：iframe load 前显示 loading 提示 ──
 const frameLoading = ref(true)
 function onFrameLoad() {
@@ -220,10 +236,18 @@ onUnmounted(() => {
         <button
           v-if="isLocal"
           class="ctl-btn src-btn"
+          @click="copyShare"
+        >
+          🔗 分享
+        </button>
+        <button
+          v-if="isLocal"
+          class="ctl-btn src-btn"
           @click="removeLocalDemo"
         >
           删除
         </button>
+        <span v-if="shareMsg" class="share-msg">{{ shareMsg }}</span>
         <div class="size-ctl" role="group" aria-label="展示尺寸">
           <button
             v-for="s in stageSizes"
@@ -410,6 +434,12 @@ h1 {
 .open-btn {
   border: 1px solid var(--grid);
   border-radius: var(--radius);
+}
+
+.share-msg {
+  font-size: 0.8rem;
+  color: var(--accent);
+  white-space: nowrap;
 }
 
 .stage {
