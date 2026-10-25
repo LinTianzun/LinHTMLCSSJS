@@ -1,0 +1,41 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.19.0
+2 info using node@v24.20.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:E:\project\HTML + CSS + JS\.npmrc
+5 silly config load:file:C:\Users\22680\.npmrc
+6 silly config load:file:C:\Users\22680\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm create vue@latest vue-app --typescript --router --pinia --eslint --prettier
+8 verbose argv "create" "vue@latest" "vue-app" "--" "--typescript" "--router" "--pinia" "--eslint" "--prettier"
+9 verbose logfile logs-max:10 dir:E:\project\HTML + CSS + JS\.npm-cache\_logs\2026-10-25T04_32_06_931Z-
+10 verbose logfile E:\project\HTML + CSS + JS\.npm-cache\_logs\2026-10-25T04_32_06_931Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 http fetch GET 200 https://registry.npmjs.org/create-vue 1122ms (cache miss)
+14 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+15 warn exec The following package was not found and will be installed: create-vue@3.24.0
+16 silly idealTree buildDeps
+17 silly fetch manifest create-vue@3.24.0
+18 silly packumentCache full:https://registry.npmjs.org/create-vue cache-miss
+19 http fetch GET 200 https://registry.npmjs.org/create-vue 446ms (cache miss)
+20 silly packumentCache full:https://registry.npmjs.org/create-vue set size:undefined disposed:false
+21 silly placeDep ROOT create-vue@3.24.0 OK for:  want: 3.24.0
+22 silly reify moves {}
+23 silly audit bulk request { 'create-vue': [ '3.24.0' ] }
+24 http cache create-vue@https://registry.npmjs.org/create-vue/-/create-vue-3.24.0.tgz 1ms (cache hit)
+25 silly tarball no local data for create-vue@https://registry.npmjs.org/create-vue/-/create-vue-3.24.0.tgz. Extracting by manifest.
+26 http fetch GET 200 https://registry.npmjs.org/npm 1783ms
+27 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 445ms
+28 silly audit report {}
+29 http fetch GET 200 https://registry.npmjs.org/create-vue/-/create-vue-3.24.0.tgz 1337ms (cache miss)
+30 verbose cwd E:\project\HTML + CSS + JS
+31 verbose os Windows_NT 10.0.26200
+32 verbose node v24.20.0
+33 verbose npm  v11.19.0
+34 notice
+34 notice New major version of npm available! 11.19.0 -> 12.2.1
+34 notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+34 notice To update run: npm install -g npm@12.2.1
+34 notice  { force: true, Symbol(proc-log.meta): true }
+35 verbose exit 0
+36 info ok

@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "create-vue": "^3.24.0"
+  },
+  "_npx": {
+    "packages": [
+      "create-vue@latest"
+    ]
+  }
+}
