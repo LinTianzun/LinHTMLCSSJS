@@ -131,11 +131,15 @@ onUnmounted(() => {
   width: 100vw;
   min-height: 100vh;
   background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .bare > :deep(*) {
   width: 100%;
-  min-height: 100vh;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .viewer {

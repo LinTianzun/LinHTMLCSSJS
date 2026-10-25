@@ -78,7 +78,7 @@ function toggleSubMenu(index: number): void {
       </ul>
     </div>
 
-    <section class="home-section" :class="{ shifted: closed }">
+    <section class="home-section">
       <div class="home-content">
         <span class="bx-menu" @click="closed = !closed">☰</span>
         <span class="text">Drop Down Sidebar</span>
@@ -89,6 +89,7 @@ function toggleSubMenu(index: number): void {
 
 <style scoped>
 .demo {
+  height: 100vh;
   min-height: 480px;
   position: relative;
   box-sizing: border-box;
@@ -96,12 +97,11 @@ function toggleSubMenu(index: number): void {
   display: flex;
 }
 
-/* 原版为 position: fixed 全屏侧边栏，这里改为相对 demo 容器 */
+/* 侧边栏改为常规文档流：flex 布局下宽度收缩自然推开 home-section */
 .sidebar {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   height: 100%;
+  flex-shrink: 0;
   width: 260px;
   background: #11101d;
   z-index: 100;
@@ -333,14 +333,9 @@ function toggleSubMenu(index: number): void {
   background: #e4e9f7;
   height: 100%;
   min-height: 480px;
-  left: 260px;
-  width: calc(100% - 260px);
+  flex: 1;
+  min-width: 0;
   transition: all 0.5s ease;
-}
-
-.home-section.shifted {
-  left: 78px;
-  width: calc(100% - 78px);
 }
 
 .home-section .home-content {
