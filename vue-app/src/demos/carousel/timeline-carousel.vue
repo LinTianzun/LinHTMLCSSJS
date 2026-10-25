@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { assetUrl } from '../asset'
 
 interface TimelineItem {
   year: string
@@ -12,7 +13,7 @@ const items: TimelineItem[] = Array.from({ length: 10 }, (_, i) => {
   return {
     year: String(year),
     text: `-In the year ${year} I reached the age of ${11 + i}`,
-    img: `/demos/carousel/wallpaper/${String(i + 1).padStart(2, '0')}.jpg`,
+    img: assetUrl(`/demos/carousel/wallpaper/${String(i + 1).padStart(2, '0')}.jpg`),
   }
 })
 
