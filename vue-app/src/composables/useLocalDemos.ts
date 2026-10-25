@@ -15,6 +15,7 @@ const demos = ref<LocalDemo[]>(load())
 
 function load(): LocalDemo[] {
   try {
+    if (typeof localStorage === 'undefined') return []
     const raw = localStorage.getItem(STORAGE_KEY)
     return raw ? JSON.parse(raw) : []
   } catch {
@@ -23,7 +24,12 @@ function load(): LocalDemo[] {
 }
 
 function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(demos.value))
+  try {
+    if (typeof localStorage === 'undefined') return
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(demos.value))
+  } catch {
+    /* localStorage 不可用时静默忽略 */
+  }
 }
 
 export function useLocalDemos() {
@@ -46,7 +52,7 @@ export function useLocalDemos() {
   function update(id: string, patch: Partial<LocalDemo>) {
     const idx = demos.value.findIndex((d) => d.id === id)
     if (idx >= 0) {
-      demos.value[idx] = { ...demos.value[idx], ...patch } as LocalDemo
+      demos.value[idx] = { ...demos.value[idx]!, ...patch } as LocalDemo
       save()
     }
   }

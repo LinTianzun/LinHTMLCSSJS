@@ -15,6 +15,7 @@ const MAX_RECORDS = 5
 
 function load(): ScoreRecord[] {
   try {
+    if (typeof localStorage === 'undefined') return []
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return []
     const parsed: unknown = JSON.parse(raw)
@@ -34,7 +35,12 @@ function load(): ScoreRecord[] {
 const records = ref<ScoreRecord[]>(load())
 
 function save(): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(records.value))
+  try {
+    if (typeof localStorage === 'undefined') return
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records.value))
+  } catch {
+    /* localStorage 不可用时静默忽略 */
+  }
 }
 
 /** 提交一局成绩；进入前 5 名返回名次（1 起），否则返回 null */
