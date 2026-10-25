@@ -28,11 +28,14 @@ import SiteFooter from '../components/SiteFooter.vue'
       </header>
       <p class="cat-summary">{{ cat.summary }}</p>
       <ul class="demo-list">
-        <li v-for="d in cat.demos" :key="d.id">
+        <li v-for="d in cat.demos" :key="d.id" class="demo-item">
           <RouterLink :to="`/demo/${cat.id}/${d.id}`" class="demo-link">
-            {{ d.title }}
+            <span class="demo-title">{{ d.title }}</span>
             <span class="arrow">→</span>
           </RouterLink>
+          <ul class="skills">
+            <li v-for="s in d.skills" :key="s">{{ s }}</li>
+          </ul>
         </li>
       </ul>
     </section>
@@ -113,6 +116,30 @@ h2 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: 0.6rem;
+}
+
+.demo-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.skills {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0 0.25rem;
+}
+
+.skills li {
+  font-size: 0.7rem;
+  line-height: 1.6;
+  padding: 0.05em 0.55em;
+  border: 1px solid var(--grid);
+  border-radius: 999px;
+  color: var(--ink-faint);
+  white-space: nowrap;
 }
 
 .demo-link {

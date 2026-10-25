@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { demoCategories } from '../demos/registry'
+import { demoCategories, sourceUrl } from '../demos/registry'
 
 const route = useRoute()
 const router = useRouter()
@@ -122,6 +122,17 @@ onUnmounted(() => {
       <RouterLink to="/" class="back">← {{ category.name }}</RouterLink>
       <h1>{{ demo.title }}</h1>
       <div class="tools">
+        <ul class="demo-skills">
+          <li v-for="s in demo.skills" :key="s">{{ s }}</li>
+        </ul>
+        <a
+          class="ctl-btn src-btn"
+          :href="sourceUrl(category.id, demo.id)"
+          target="_blank"
+          rel="noopener"
+        >
+          &lt;/&gt; 查看源码
+        </a>
         <div class="size-ctl" role="group" aria-label="展示尺寸">
           <button
             v-for="s in stageSizes"
@@ -218,6 +229,41 @@ h1 {
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.demo-skills {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-right: 0.5rem;
+}
+
+.demo-skills li {
+  font-size: 0.72rem;
+  line-height: 1.6;
+  padding: 0.05em 0.6em;
+  border: 1px solid var(--grid);
+  border-radius: 999px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.src-btn {
+  display: inline-block;
+  padding: 0.35em 0.9em;
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.src-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: transparent;
 }
 
 .size-ctl {
