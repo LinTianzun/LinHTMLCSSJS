@@ -56,6 +56,7 @@ function go(target: { id: string } | null) {
 
 // 拦截 demo 内部的 <a> 跳转：锚点只在演示区内部滚动，其余内部链接不触发整页导航
 const stageRef = ref<HTMLElement | null>(null)
+const bareRef = ref<HTMLElement | null>(null)
 function onStageClick(e: MouseEvent) {
   const target = e.target as HTMLElement
   const a = target.closest ? target.closest('a') : null
@@ -63,9 +64,11 @@ function onStageClick(e: MouseEvent) {
   const href = a.getAttribute('href') ?? ''
   if (href.startsWith('http://') || href.startsWith('https://')) return
   e.preventDefault()
+  e.stopPropagation()
   if (href.startsWith('#') && href.length > 1) {
     const id = href.slice(1)
-    const el = stageRef.value?.querySelector(`[id="${id}"]`)
+    const root = stageRef.value ?? bareRef.value
+    const el = root?.querySelector(`[id="${id}"]`)
     el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }
@@ -83,7 +86,13 @@ onUnmounted(() => {
 
 <template>
   <!-- 裸演示模式：只渲染 demo，占满整个视口 -->
-  <div v-if="bare" class="bare" :key="`bare/${demoId}/${demoKey}`">
+  <div
+    v-if="bare"
+    ref="bareRef"
+    class="bare"
+    :key="`bare/${demoId}/${demoKey}`"
+    @click.capture="onStageClick"
+  >
     <RouterView />
     <RouterLink class="bare-close" :to="route.path">✕ 关闭全屏</RouterLink>
   </div>
@@ -140,6 +149,13 @@ onUnmounted(() => {
   position: relative;
   background: #fff;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.bare > :deep(.demo) {
+  flex: 1;
+  width: 100%;
 }
 
 .bare-close {
@@ -253,6 +269,15 @@ h1 {
   margin: 0 auto;
   max-width: 72rem;
   transition: max-width 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* demo 根元素撑满展示台宽度并垂直居中 */
+.stage > :deep(*) {
+  flex: 1;
+  width: 100%;
 }
 
 .pager {
