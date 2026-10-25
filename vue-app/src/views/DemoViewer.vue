@@ -95,9 +95,14 @@ function onKeydown(e: KeyboardEvent) {
 
 // iframe 内加载同路由：demo 在独立视口中渲染，链接/滚动都隔离在框内
 // 路由用 hash 模式（createWebHashHistory），iframe src 需带 # 前缀；
-// 生产环境 base 为 /LinHTMLCSSJS/，也需带上前缀
+// 生产环境 base 为 /LinHTMLCSSJS/，也需带上前缀。
+// 时间戳查询参数：GitHub Pages 的 HTML 缓存 max-age=600，部署后 10 分钟内
+// iframe 可能命中 CDN 缓存拿到旧版 index.html（引用旧 hash 的 JS），
+// 加时间戳强制每次会话都取新文档。
 const base = import.meta.env.BASE_URL
-const frameSrc = computed(() => `${base}#${route.path}?embed=1`)
+const frameSrc = computed(
+  () => `${base}?ts=${__APP_VERSION__}#${route.path}?embed=1`,
+)
 
 // 本地创作 demo：直接用 srcdoc 拼出完整文档，无需子路由组件
 const localDoc = computed(() =>
