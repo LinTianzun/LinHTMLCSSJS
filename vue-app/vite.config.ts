@@ -6,6 +6,8 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // GitHub Pages 部署在 https://LinTianzun.github.io/LinHTMLCSSJS/ 子路径下
+  base: '/LinHTMLCSSJS/',
   plugins: [
     vue(),
     vueDevTools(),

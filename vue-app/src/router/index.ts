@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import DemoViewer from '../views/DemoViewer.vue'
 
@@ -25,7 +25,8 @@ const demoRoutes = Object.entries(demoFiles).map(([path, component]) => {
 })
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  // 使用 hash 模式：GitHub Pages 是纯静态托管，刷新子路径不会 404
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
