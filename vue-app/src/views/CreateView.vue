@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, ref, watch, onMounted, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useLocalDemos, buildDemoDocument } from '../composables/useLocalDemos'
 import SiteHeader from '../components/SiteHeader.vue'
 import SiteFooter from '../components/SiteFooter.vue'
+import { EditorView, basicSetup } from 'codemirror'
+import { html as langHtml } from '@codemirror/lang-html'
+import { css as langCss } from '@codemirror/lang-css'
+import { javascript } from '@codemirror/lang-javascript'
+import { oneDark } from '@codemirror/theme-one-dark'
+import type { Extension } from '@codemirror/state'
 
 const router = useRouter()
 const route = useRoute()
@@ -57,6 +63,39 @@ const canSave = computed(
 
 const savedIdError = ref('')
 
+// ── CodeMirror 编辑器（HTML / CSS / JS 三栏共用一套创建逻辑）──
+const htmlHost = ref<HTMLDivElement | null>(null)
+const cssHost = ref<HTMLDivElement | null>(null)
+const jsHost = ref<HTMLDivElement | null>(null)
+const editors: Partial<Record<'html' | 'css' | 'js', EditorView>> = {}
+
+function makeEditor(
+  host: HTMLDivElement,
+  lang: Extension,
+  get: () => string,
+  set: (v: string) => void,
+): EditorView {
+  return new EditorView({
+    doc: get(),
+    extensions: [
+      basicSetup,
+      lang,
+      oneDark,
+      EditorView.lineWrapping,
+      EditorView.updateListener.of((u) => {
+        if (u.docChanged) set(u.state.doc.toString())
+      }),
+    ],
+    parent: host,
+  })
+}
+
+function setEditorDoc(key: 'html' | 'css' | 'js', text: string) {
+  const view = editors[key]
+  if (!view) return
+  view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: text } })
+}
+
 // 编辑模式：从 ?edit=<id> 读取已有 demo 填充表单
 onMounted(() => {
   const editId = route.query.edit
@@ -73,6 +112,21 @@ onMounted(() => {
       js.value = existing.js
     }
   }
+  // 表单填充完再挂编辑器，保证初始 doc 是编辑模式的旧内容
+  if (htmlHost.value) {
+    editors.html = makeEditor(htmlHost.value, langHtml(), () => html.value, (v) => (html.value = v))
+  }
+  if (cssHost.value) {
+    editors.css = makeEditor(cssHost.value, langCss(), () => css.value, (v) => (css.value = v))
+  }
+  if (jsHost.value) {
+    editors.js = makeEditor(jsHost.value, javascript(), () => js.value, (v) => (js.value = v))
+  }
+})
+
+// 隐藏面板里的编辑器切回来时重新量一次布局，避免光标错位
+watch(activeTab, (t) => {
+  void nextTick(() => editors[t]?.requestMeasure())
 })
 
 function onSave() {
@@ -122,6 +176,9 @@ function onClear() {
   js.value = ''
   activeTab.value = 'html'
   savedIdError.value = ''
+  setEditorDoc('html', '')
+  setEditorDoc('css', '')
+  setEditorDoc('js', '')
 }
 
 // ── 本地数据管理：导出 / 导入 JSON（备份、迁移到别的浏览器） ──
@@ -229,27 +286,24 @@ async function importFile(e: Event) {
             {{ t.label }}
           </button>
         </div>
-        <textarea
+        <div
           v-show="activeTab === 'html'"
-          v-model="html"
-          class="code"
-          spellcheck="false"
-          placeholder="<div>hello</div>"
-        ></textarea>
-        <textarea
+          ref="htmlHost"
+          class="code-host"
+          aria-label="HTML 编辑器"
+        ></div>
+        <div
           v-show="activeTab === 'css'"
-          v-model="css"
-          class="code"
-          spellcheck="false"
-          placeholder="div { color: crimson; }"
-        ></textarea>
-        <textarea
+          ref="cssHost"
+          class="code-host"
+          aria-label="CSS 编辑器"
+        ></div>
+        <div
           v-show="activeTab === 'js'"
-          v-model="js"
-          class="code"
-          spellcheck="false"
-          placeholder="console.log('hi')"
-        ></textarea>
+          ref="jsHost"
+          class="code-host"
+          aria-label="JS 编辑器"
+        ></div>
       </section>
 
       <section class="preview">
@@ -394,26 +448,24 @@ input:focus {
   color: var(--paper);
 }
 
-.code {
-  display: block;
-  width: 100%;
+.code-host {
   min-height: 200px;
-  padding: 0.9rem 1rem;
-  border: none;
-  background: #1e1e2e;
-  color: #cdd6f4;
-  font-family: ui-monospace, SFMono-Regular, Consolas, 'Courier New', monospace;
+}
+
+.code-host .cm-editor {
+  min-height: 200px;
+  max-height: 62vh;
   font-size: 0.85rem;
+}
+
+.code-host .cm-scroller {
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Courier New', monospace;
   line-height: 1.6;
-  resize: vertical;
 }
 
-.code:focus {
+.code-host .cm-editor.cm-focused {
   outline: none;
-}
-
-.code::placeholder {
-  color: #6c7086;
 }
 
 .preview {
