@@ -30,8 +30,10 @@
 - **状态管理**：Pinia 4
 - **构建工具**：Vite 8（configLoader: native）
 - **代码规范**：ESLint + oxlint + Prettier
-- **单元测试**：Vitest 5（游戏逻辑 / 注册表 / 排行榜）
-- **本地存储**：localStorage（用户自创 demo + 贪吃蛇排行榜）
+- **单元测试**：Vitest 5（组件渲染 + 游戏逻辑 / 注册表 / 排行榜 / 分享编解码，6 文件 29 用例）
+- **本地存储**：localStorage（用户自创 demo + 贪吃蛇排行榜 + 学习笔记）
+- **编辑器**：CodeMirror 6（创作页语法高亮 / 自动缩进 / 行号 / 括号匹配）
+- **PWA**：vite-plugin-pwa（离线缓存 + 可安装）
 
 ## 🚀 快速开始
 
@@ -48,18 +50,23 @@ npm run lint        # 代码检查（oxlint + eslint）
 ## ✨ 网站功能
 
 - **分类浏览**：首页按六大类展示所有 demo，每个 demo 标注技能标签
-- **搜索与筛选**：首页搜索框按标题模糊搜索 + 75 个技能标签点选筛选，支持组合过滤
-- **在线创作**：内置代码编辑器，支持 HTML/CSS/JS 三栏实时预览，保存后即可在站内展示
+- **搜索与筛选**：首页搜索框按标题模糊搜索 + 75 个技能标签点选筛选，支持组合过滤（移动端默认折叠，一键展开全部）
+- **随机漫游**：首页 🎲 按钮随机跳到一个 demo
+- **缩略封面**：每个 demo 卡片带按分类色相生成的渐变封面与 emoji 图标
+- **在线创作**：CodeMirror 6 编辑器（语法高亮 / 行号 / 括号匹配）+ HTML/CSS/JS 三栏实时预览，保存后即可在站内展示；本地数据支持导出 / 导入 JSON 备份迁移
+- **学习笔记**：每个 demo 页可写笔记，自动保存在浏览器本地
+- **分享链接**：本地创作的 demo 可生成 URL 编码分享链接，打开即预览、一键保存到自己的浏览器
 - **设备模拟**：展示页支持自适应 / 手机 375×667 / 平板 768×1024 / 桌面 1024×768 四种尺寸切换
 - **iframe 隔离**：每个 demo 在独立 iframe 中渲染，媒体查询与滚动行为与原版一致
 - **裸模式嵌入**：支持 `?bare=1` / `?embed=1` 参数，仅渲染 demo 本身
 - **源码直达**：每个 demo 页提供 GitHub 源码链接
 - **原版对比**：一键跳转到对应的原生 HTML/CSS/JS 原版练习
 - **快捷键导航**：demo 展示页按 ← / → 键在同类练习间快速切换
-- **暗色模式**：站点级"夜间稿纸"主题，跟随系统偏好并持久化
+- **暗色模式**：站点级"夜间稿纸"主题，跟随系统偏好并持久化，View Transition 圆形揭示动画切换
 - **奶牛 404 页**：纯 CSS 奶牛动画，致敬 404-cow demo
 - **分享卡片**：OG meta 标签，社交媒体分享时显示预览卡片
 - **脚手架脚本**：`node scripts/new-demo.mjs <分类> <id> "标题"` 一键创建新 demo 骨架
+- **PWA 离线**：Service Worker 预缓存应用外壳，demo 图片/音频运行时缓存，断网也能看，支持安装到桌面 / 手机
 
 ## 📁 目录结构
 
@@ -71,8 +78,8 @@ vue-app/
 │   │   ├── asset.ts     # 资源路径助手（处理子路径部署）
 │   ├── views/            # 页面：首页 / 展示页 / 创作页 / 关于页 / 404 页
 │   ├── components/        # 通用组件（站点头部）
-│   ├── composables/      # useLocalDemos / useTheme / useSnakeGame / useSnakeScores
-│   ├── __tests__/        # Vitest 单元测试（3 文件 15 用例）
+│   ├── composables/      # useLocalDemos / useTheme / useSnakeGame / useSnakeScores / useDemoNotes / shareCodec
+│   ├── __tests__/        # Vitest 单元测试（6 文件 29 用例）
 │   └── router/           # 路由配置（自动生成 demo 路由）
 ├── public/demos/         # 静态资源（图片、音乐、字体）
 └── scripts/new-demo.mjs  # demo 脚手架脚本
@@ -90,9 +97,9 @@ vue-app/
 
 ## 📊 质量保障
 
-- **Lighthouse**：A11y 95 · Best Practices 100 · SEO 90 · Agentic 100
+- **Lighthouse**：四项全 100（A11y / Best Practices / SEO / Agentic）
 - **CI 流程**：push 自动触发 → type-check → lint → test → build → deploy GitHub Pages
-- **单元测试**：Vitest 覆盖游戏逻辑、注册表工具函数、排行榜数据管理
+- **单元测试**：Vitest 覆盖组件渲染（主题切换 / 搜索筛选 / 随机跳转）、游戏逻辑、注册表工具函数、排行榜、分享编解码
 
 ## 📄 许可证
 
