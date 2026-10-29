@@ -97,6 +97,26 @@ a:hover {
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
 }
 
+/* ===== 主题切换 View Transition：从右上角主题按钮位置圆形揭示 ===== */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: theme-reveal 0.45s ease-in;
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0% at calc(100% - 3.5rem) 2.75rem);
+  }
+  to {
+    clip-path: circle(160% at calc(100% - 3.5rem) 2.75rem);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

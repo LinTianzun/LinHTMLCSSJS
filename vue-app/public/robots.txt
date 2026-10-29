@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lintianzun.github.io/LinHTMLCSSJS/sitemap.xml

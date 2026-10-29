@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { demoCategories, sourceUrl, originUrl, LOCAL_CAT_ID } from '../demos/registry'
 import { useLocalDemos, buildDemoDocument } from '../composables/useLocalDemos'
 import { useTheme } from '../composables/useTheme'
 import { shareUrl } from '../composables/shareCodec'
+import { useDemoNotes } from '../composables/useDemoNotes'
 
 const route = useRoute()
 const router = useRouter()
@@ -131,6 +132,31 @@ async function copyShare() {
   }
   setTimeout(() => (shareMsg.value = ''), 2500)
 }
+
+// ── 学习笔记：按 demo 键存 localStorage，输入防抖自动保存 ──
+const { get: getNote, set: setNote } = useDemoNotes()
+const noteKey = computed(() => `${categoryId.value}/${demoId.value}`)
+const noteText = ref('')
+const noteSaved = ref(false)
+let noteTimer: ReturnType<typeof setTimeout> | null = null
+let noteSavedTimer: ReturnType<typeof setTimeout> | null = null
+
+function loadNote() {
+  noteText.value = getNote(noteKey.value)
+  noteSaved.value = false
+}
+loadNote()
+watch(noteKey, loadNote)
+
+watch(noteText, (val) => {
+  if (noteTimer) clearTimeout(noteTimer)
+  noteTimer = setTimeout(() => {
+    setNote(noteKey.value, val)
+    noteSaved.value = true
+    if (noteSavedTimer) clearTimeout(noteSavedTimer)
+    noteSavedTimer = setTimeout(() => (noteSaved.value = false), 1500)
+  }, 500)
+})
 
 // ── 加载状态：iframe load 前显示 loading 提示 ──
 const frameLoading = ref(true)
@@ -308,6 +334,19 @@ onUnmounted(() => {
         @load="onFrameLoad"
       ></iframe>
     </div>
+
+    <!-- 学习笔记：自动保存在本浏览器 -->
+    <details class="notes">
+      <summary>
+        📝 学习笔记
+        <span v-if="noteSaved" class="note-saved">已保存 ✓</span>
+      </summary>
+      <textarea
+        v-model="noteText"
+        placeholder="这个 demo 练了什么？踩了什么坑？写在这里，自动保存在本浏览器。"
+        aria-label="学习笔记"
+      ></textarea>
+    </details>
 
     <nav class="pager">
       <button v-if="prev" class="pager-btn" @click="go(prev)">← {{ prev.title }}</button>
@@ -509,6 +548,49 @@ h1 {
 
 .fade-leave-to {
   opacity: 0;
+}
+
+/* 学习笔记 */
+.notes {
+  max-width: 76rem;
+  margin: 0 auto 1.2rem;
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.notes summary {
+  padding: 0.6em 1em;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  user-select: none;
+}
+
+.note-saved {
+  margin-left: 0.6em;
+  color: var(--accent);
+  font-size: 0.78rem;
+}
+
+.notes textarea {
+  display: block;
+  width: 100%;
+  min-height: 7rem;
+  padding: 0.8em 1em;
+  border: none;
+  border-top: 1px solid var(--grid);
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  resize: vertical;
+  outline: none;
+}
+
+.notes textarea:focus {
+  background: var(--paper-soft);
 }
 
 .pager {

@@ -7,7 +7,7 @@ import SiteFooter from '../components/SiteFooter.vue'
 
 const router = useRouter()
 const route = useRoute()
-const { add, get, update } = useLocalDemos()
+const { demos, add, get, update } = useLocalDemos()
 
 const title = ref('')
 const skillsText = ref('')
@@ -123,6 +123,66 @@ function onClear() {
   activeTab.value = 'html'
   savedIdError.value = ''
 }
+
+// ── 本地数据管理：导出 / 导入 JSON（备份、迁移到别的浏览器） ──
+const ioMsg = ref('')
+
+function exportAll() {
+  if (demos.value.length === 0) {
+    ioMsg.value = '还没有本地 demo 可导出'
+    setTimeout(() => (ioMsg.value = ''), 2500)
+    return
+  }
+  const blob = new Blob([JSON.stringify(demos.value, null, 2)], {
+    type: 'application/json',
+  })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  const d = new Date()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  a.download = `local-demos-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+  ioMsg.value = `已导出 ${demos.value.length} 个 demo ✓`
+  setTimeout(() => (ioMsg.value = ''), 2500)
+}
+
+async function importFile(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = '' // 允许重复选择同一文件
+  if (!file) return
+  try {
+    const data = JSON.parse(await file.text()) as unknown
+    const list = Array.isArray(data) ? data : [data]
+    let imported = 0
+    for (const item of list) {
+      if (typeof item !== 'object' || item === null) continue
+      const it = item as Record<string, unknown>
+      const id = typeof it.id === 'string' ? it.id.trim() : ''
+      if (!id || typeof it.title !== 'string') continue
+      let finalId = id
+      let n = 2
+      while (get(finalId)) finalId = `${id}-${n++}` // 与现有 demo 撞 ID 时追加序号
+      add({
+        id: finalId,
+        title: it.title,
+        skills: Array.isArray(it.skills)
+          ? it.skills.filter((s): s is string => typeof s === 'string')
+          : [],
+        html: typeof it.html === 'string' ? it.html : '',
+        css: typeof it.css === 'string' ? it.css : '',
+        js: typeof it.js === 'string' ? it.js : '',
+      })
+      imported++
+    }
+    ioMsg.value = imported > 0 ? `成功导入 ${imported} 个 demo ✓` : '文件里没有可识别的 demo'
+  } catch {
+    ioMsg.value = '导入失败：不是有效的 JSON 文件'
+  }
+  setTimeout(() => (ioMsg.value = ''), 3000)
+}
 </script>
 
 <template>
@@ -201,6 +261,15 @@ function onClear() {
     <div class="actions">
       <button class="btn save" :disabled="!canSave" @click.prevent="onSave">保存</button>
       <button class="btn clear" @click.prevent="onClear">清空</button>
+    </div>
+
+    <div class="data-mgmt">
+      <button class="btn ghost" @click.prevent="exportAll">⬇ 导出全部</button>
+      <label class="btn ghost import-label">
+        ⬆ 导入 JSON
+        <input type="file" accept=".json,application/json" hidden @change="importFile" />
+      </label>
+      <span v-if="ioMsg" class="io-msg">{{ ioMsg }}</span>
     </div>
   </main>
 
@@ -402,5 +471,39 @@ input:focus {
 
 .btn.clear:hover {
   background: var(--paper-soft);
+}
+
+/* 导出 / 导入 */
+.data-mgmt {
+  max-width: 76rem;
+  margin: 1rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--grid);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.btn.ghost {
+  border-color: var(--grid);
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.btn.ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.import-label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.io-msg {
+  font-size: 0.8rem;
+  color: var(--accent);
 }
 </style>

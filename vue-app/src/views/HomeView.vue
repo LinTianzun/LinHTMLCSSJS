@@ -76,6 +76,11 @@ function randomDemo() {
   const pick = pool[Math.floor(Math.random() * pool.length)]!
   router.push(`/demo/${pick.cat}/${pick.id}`)
 }
+
+/* —— 技能标签折叠：默认只露出几行，点按展开全部 —— */
+const SKILL_COLLAPSE_THRESHOLD = 12
+const skillsExpanded = ref(false)
+const skillsCollapsible = computed(() => allSkills.value.length > SKILL_COLLAPSE_THRESHOLD)
 </script>
 
 <template>
@@ -104,7 +109,7 @@ function randomDemo() {
         placeholder="搜索 demo 标题或技能…"
         aria-label="搜索 demo"
       />
-      <ul class="skill-tags">
+      <ul class="skill-tags" :class="{ collapsed: skillsCollapsible && !skillsExpanded }">
         <li v-for="s in allSkills" :key="s">
           <button
             class="skill-tag"
@@ -113,6 +118,11 @@ function randomDemo() {
           >{{ s }}</button>
         </li>
       </ul>
+      <button
+        v-if="skillsCollapsible"
+        class="skills-toggle"
+        @click="skillsExpanded = !skillsExpanded"
+      >{{ skillsExpanded ? '收起技能 ↑' : `展开全部 ${allSkills.length} 个技能 ↓` }}</button>
       <button
         v-if="searchQuery || activeSkill"
         class="clear-btn"
@@ -467,6 +477,32 @@ h2 {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--paper) !important;
+}
+
+/* 折叠态：限高 + 底部渐隐遮罩 */
+.skill-tags.collapsed {
+  max-height: 5.4rem;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+}
+
+.skills-toggle {
+  margin-top: 0.5rem;
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 0.2em 0.9em;
+  border: 1px solid var(--grid);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.skills-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .clear-btn {
