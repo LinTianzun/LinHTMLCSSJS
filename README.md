@@ -19,7 +19,7 @@
 | 布局与导航 | 5 | 响应式导航栏、多级导航、侧边栏、书店网站、下拉菜单 |
 | 轮播与展示 | 4 | 3D 轮播、基础轮播、视差相册、时间轴轮播 |
 | 动效交互 | 8 | 加载动画、进度环、脉冲链接、日夜切换、主题按钮、躲闪按钮、新年倒计时、音乐播放器 |
-| 表单功能 | 5 | 登录注册、留言板、搜索框、分页器、成绩管理系统 |
+| 表单功能 | 6 | 登录注册、留言板、搜索框、分页器、成绩管理切片、学生成绩管理系统（登录/成绩/学生/班级/添加/密码八视图） |
 | 小游戏 | 2 | 贪吃蛇（排行榜/触屏/障碍物）、翻牌记忆游戏（3D 翻转/洗牌算法） |
 | CSS 基础 | 5 | 3D 盒子、盒模型、网格背景、404 奶牛、七夕星空 |
 
@@ -30,10 +30,10 @@
 - **状态管理**：Pinia 4
 - **构建工具**：Vite 8（configLoader: native）
 - **代码规范**：ESLint + oxlint + Prettier
-- **单元测试**：Vitest 5（组件渲染 + 游戏逻辑 / 注册表 / 排行榜 / 分享编解码，6 文件 29 用例）
-- **本地存储**：localStorage（用户自创 demo + 贪吃蛇排行榜 + 学习笔记）
-- **编辑器**：CodeMirror 6（创作页语法高亮 / 自动缩进 / 行号 / 括号匹配）
-- **PWA**：vite-plugin-pwa（离线缓存 + 可安装）
+- **单元测试**：Vitest 5（组件渲染 + 游戏逻辑 / 注册表 / 排行榜 / 分享编解码 / 打卡进度，7 文件 33 用例）
+- **本地存储**：localStorage（用户自创 demo + 贪吃蛇排行榜 + 学习笔记 + 学习打卡）
+- **编辑器**：CodeMirror 6（创作页语法高亮 / 自动缩进 / 行号 / 括号匹配，动态 import 按需加载）
+- **离线与加速**：vite-plugin-pwa（离线缓存 + 可安装）；字体与 ionicons 图标全部自托管，无 Google / unpkg CDN 依赖
 
 ## 🚀 快速开始
 
@@ -52,7 +52,7 @@ npm run lint        # 代码检查（oxlint + eslint）
 - **分类浏览**：首页按六大类展示所有 demo，每个 demo 标注技能标签
 - **搜索与筛选**：首页搜索框按标题模糊搜索 + 75 个技能标签点选筛选，支持组合过滤（移动端默认折叠，一键展开全部）
 - **随机漫游**：首页 🎲 按钮随机跳到一个 demo
-- **缩略封面**：每个 demo 卡片带按分类色相生成的渐变封面与 emoji 图标
+- **缩略封面**：每个 demo 卡片带真实运行截图（构建产物内置 29 张 800×425 预览图），无图时回退分类色相渐变 + emoji 图标
 - **在线创作**：CodeMirror 6 编辑器（语法高亮 / 行号 / 括号匹配）+ HTML/CSS/JS 三栏实时预览，保存后即可在站内展示；本地数据支持导出 / 导入 JSON 备份迁移
 - **学习笔记**：每个 demo 页可写笔记，自动保存在浏览器本地
 - **学习打卡与进度**：demo 页一键标记已学，首页进度环显示“已学 x/29”，卡片带 ✓ 角标
@@ -74,15 +74,18 @@ npm run lint        # 代码检查（oxlint + eslint）
 ```
 vue-app/
 ├── src/
-│   ├── demos/            # 30 个移植 demo 组件（按分类分子目录）
+│   ├── demos/            # 31 个移植 demo 组件（按分类分子目录）
 │   │   ├── registry.ts   # demo 注册表（分类、标题、技能标签、原版路径）
 │   │   ├── asset.ts     # 资源路径助手（处理子路径部署）
+│   │   └── thumbs.ts    # 缩略图来源（真实截图 / 渐变回退）
 │   ├── views/            # 页面：首页 / 展示页 / 创作页 / 关于页 / 404 页
-│   ├── components/        # 通用组件（站点头部）
-│   ├── composables/      # useLocalDemos / useTheme / useSnakeGame / useSnakeScores / useDemoNotes / shareCodec
-│   ├── __tests__/        # Vitest 单元测试（6 文件 29 用例）
+│   ├── components/        # 通用组件（站点头部 / IonIcon 内联图标）
+│   ├── composables/      # useLocalDemos / useTheme / useSnakeGame / useSnakeScores / useDemoNotes / useDemoProgress / shareCodec / codeEditor
+│   ├── __tests__/        # Vitest 单元测试（7 文件 33 用例）
 │   └── router/           # 路由配置（自动生成 demo 路由）
-├── public/demos/         # 静态资源（图片、音乐、字体）
+├── public/demos/         # 静态资源（图片、音乐）
+├── public/fonts/         # 自托管 Noto Serif SC + Inter（含 fonts.css）
+├── public/thumbs/        # demo 真实截图缩略图
 └── scripts/new-demo.mjs  # demo 脚手架脚本
 ```
 
@@ -100,7 +103,7 @@ vue-app/
 
 - **Lighthouse**：四项全 100（A11y / Best Practices / SEO / Agentic）
 - **CI 流程**：push 自动触发 → type-check → lint → test → build → deploy GitHub Pages
-- **单元测试**：Vitest 覆盖组件渲染（主题切换 / 搜索筛选 / 随机跳转）、游戏逻辑、注册表工具函数、排行榜、分享编解码
+- **单元测试**：Vitest 覆盖组件渲染（主题切换 / 搜索筛选 / 随机跳转）、游戏逻辑、注册表工具函数、排行榜、分享编解码、打卡进度
 
 ## 📄 许可证
 
