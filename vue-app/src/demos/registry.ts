@@ -52,6 +52,7 @@ const ORIGIN_DIR: Record<string, string> = {
   'message-board': '留言板',
   'search-box': '动态search box搜索框',
   pagination: '分页按钮',
+  'student-system': 'JSP页面',
   snake: 'game/Snakes',
   'box-3d': '样式学习',
   'box-sizing': '样式学习',
@@ -118,6 +119,7 @@ export const demoCategories: DemoCategory[] = [
       { id: 'search-box', title: '动态search box搜索框', skills: ['SVG 图标', 'hover 展开'] },
       { id: 'pagination', title: '分页按钮', skills: ['computed 分页算法', '省略号逻辑'] },
       { id: 'jsp-score', title: 'JSP 成绩管理系统', skills: ['筛选搜索', '增删改弹层', '表格分页'] },
+      { id: 'student-system', title: '学生成绩管理系统', skills: ['多视图状态机', '登录鉴权流程', '条件搜索', 'computed 分页', '增删改弹层', '表单校验', '可折叠侧边栏', '响应式布局'] },
     ],
   },
   {
