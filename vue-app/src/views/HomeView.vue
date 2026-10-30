@@ -3,11 +3,18 @@ import { ref, computed, onMounted, nextTick } from 'vue'
 import { getAllCategories, LOCAL_CAT_ID } from '../demos/registry'
 import { demoGlyph, thumbStyle } from '../demos/thumbs'
 import { useLocalDemos } from '../composables/useLocalDemos'
+import { useDemoProgress } from '../composables/useDemoProgress'
 import { useRouter, useRoute } from 'vue-router'
 import SiteHeader from '../components/SiteHeader.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 
 const { demos: localDemos, remove } = useLocalDemos()
+const { keyOf, isDone, doneCount, total, percent } = useDemoProgress()
+
+/* 首页进度环：conic-gradient 按百分比填充 */
+const ringStyle = computed(() => ({
+  background: `conic-gradient(var(--accent) ${percent.value * 3.6}deg, var(--grid) 0deg)`,
+}))
 const router = useRouter()
 const route = useRoute()
 
@@ -98,6 +105,15 @@ const skillsCollapsible = computed(() => allSkills.value.length > SKILL_COLLAPSE
         <RouterLink to="/create" class="new-demo-btn">＋ 新建 demo</RouterLink>
         <button class="random-btn" @click="randomDemo">🎲 随机体验一个</button>
       </div>
+      <div class="hero-progress" role="status" aria-label="学习进度">
+        <span class="ring" :style="ringStyle" aria-hidden="true">
+          <span class="ring-num">{{ percent }}%</span>
+        </span>
+        <span class="progress-text">
+          已学 <strong>{{ doneCount }}</strong> / {{ total }} 个练习
+          <span class="progress-hint">在 demo 页点"标记已学"打卡，记录在本浏览器</span>
+        </span>
+      </div>
     </section>
 
     <!-- 搜索 + 技能筛选 -->
@@ -149,7 +165,11 @@ const skillsCollapsible = computed(() => allSkills.value.length > SKILL_COLLAPSE
                 class="thumb"
                 :style="thumbStyle(cat.id, i)"
                 aria-hidden="true"
-              >{{ demoGlyph(d.id) }}</span>
+              >{{ demoGlyph(d.id) }}<span
+                  v-if="cat.id !== LOCAL_CAT_ID && isDone(keyOf(cat.id, d.id))"
+                  class="done-tick"
+                  title="已学"
+                >✓</span></span>
               <span class="title-row">
                 <span class="demo-title">{{ d.title }}</span>
                 <span class="arrow">→</span>
@@ -321,6 +341,27 @@ h2 {
   transform: scale(1.04);
 }
 
+.thumb {
+  position: relative;
+}
+
+/* 已学打卡角标 */
+.done-tick {
+  position: absolute;
+  top: 0.45em;
+  right: 0.45em;
+  display: grid;
+  place-items: center;
+  width: 1.6em;
+  height: 1.6em;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
 .title-row {
   display: flex;
   justify-content: space-between;
@@ -414,6 +455,53 @@ h2 {
 
 .random-btn:active {
   transform: scale(0.97);
+}
+
+/* 学习进度环 */
+.hero-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+}
+
+.ring {
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ring-num {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  border-radius: 50%;
+  background: var(--paper);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.progress-text strong {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-hint {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--ink-faint);
 }
 
 /* 搜索 + 技能筛选 */

@@ -6,6 +6,7 @@ import { useLocalDemos, buildDemoDocument } from '../composables/useLocalDemos'
 import { useTheme } from '../composables/useTheme'
 import { shareUrl } from '../composables/shareCodec'
 import { useDemoNotes } from '../composables/useDemoNotes'
+import { useDemoProgress } from '../composables/useDemoProgress'
 
 const route = useRoute()
 const router = useRouter()
@@ -158,6 +159,17 @@ watch(noteText, (val) => {
   }, 500)
 })
 
+// ── 学习打卡：标记已学，与首页进度环联动 ──
+const { keyOf, isDone: isKeyDone, toggle: toggleKey } = useDemoProgress()
+const progressKey = computed(() => keyOf(categoryId.value, demoId.value))
+const done = ref(isKeyDone(progressKey.value))
+watch(progressKey, () => {
+  done.value = isKeyDone(progressKey.value)
+})
+function toggleDone() {
+  done.value = toggleKey(progressKey.value)
+}
+
 // ── 加载状态：iframe load 前显示 loading 提示 ──
 const frameLoading = ref(true)
 function onFrameLoad() {
@@ -233,6 +245,15 @@ onUnmounted(() => {
         <ul class="demo-skills">
           <li v-for="s in demo.skills" :key="s">{{ s }}</li>
         </ul>
+        <button
+          v-if="!isLocal"
+          class="ctl-btn done-btn"
+          :class="{ done }"
+          :title="done ? '点击取消打卡' : '记下：这个练习我学完了'"
+          @click="toggleDone"
+        >
+          {{ done ? '✓ 已学' : '标记已学' }}
+        </button>
         <a
           v-if="!isLocal"
           class="ctl-btn src-btn"
@@ -468,6 +489,18 @@ h1 {
 .src-btn {
   border: 1px solid var(--grid);
   border-radius: var(--radius);
+}
+
+/* 打卡按钮：已学态反色强调 */
+.done-btn.done {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--paper) !important;
+}
+
+.done-btn.done:hover {
+  opacity: 0.85;
+  color: var(--paper) !important;
 }
 
 .open-btn {
