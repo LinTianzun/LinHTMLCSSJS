@@ -51,6 +51,15 @@ export function demoGlyph(demoId: string): string {
 }
 
 /**
+ * 真实截图缩略图：public/thumbs/ 下的 `<cat>-<id>.png`（800×425，16:8.5），
+ * 由 headless Chrome 对每个 demo 的 bare 模式批量截图生成。
+ * 没有截图的 demo（本地创作等）回退到渐变 + 符号封面。
+ */
+export function demoThumbSrc(catId: string, demoId: string): string | null {
+  return GLYPHS[demoId] && catId !== 'local' ? `/thumbs/${catId}-${demoId}.png` : null
+}
+
+/**
  * 封面配色：分类身份色 + 序号微调。
  * 返回可直接展开到元素 style 上的 CSS 自定义属性。
  */

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { getAllCategories, LOCAL_CAT_ID } from '../demos/registry'
-import { demoGlyph, thumbStyle } from '../demos/thumbs'
+import { demoGlyph, demoThumbSrc, thumbStyle } from '../demos/thumbs'
+import { assetUrl } from '../demos/asset'
 import { useLocalDemos } from '../composables/useLocalDemos'
 import { useDemoProgress } from '../composables/useDemoProgress'
 import { useRouter, useRoute } from 'vue-router'
@@ -165,7 +166,13 @@ const skillsCollapsible = computed(() => allSkills.value.length > SKILL_COLLAPSE
                 class="thumb"
                 :style="thumbStyle(cat.id, i)"
                 aria-hidden="true"
-              >{{ demoGlyph(d.id) }}<span
+              ><img
+                  v-if="demoThumbSrc(cat.id, d.id)"
+                  class="thumb-img"
+                  :src="assetUrl(demoThumbSrc(cat.id, d.id)!)"
+                  alt=""
+                  loading="lazy"
+                /><template v-else>{{ demoGlyph(d.id) }}</template><span
                   v-if="cat.id !== LOCAL_CAT_ID && isDone(keyOf(cat.id, d.id))"
                   class="done-tick"
                   title="已学"
@@ -343,6 +350,19 @@ h2 {
 
 .thumb {
   position: relative;
+}
+
+/* 真实截图：铺满封面框，暗色下稍压亮度以融入深色卡片 */
+.thumb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+:root.dark .thumb-img {
+  filter: brightness(0.88) saturate(0.92);
 }
 
 /* 已学打卡角标 */
