@@ -1,15 +1,10 @@
 <script setup lang="ts">
-import { computed, ref, watch, onMounted, nextTick } from 'vue'
+import { computed, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useLocalDemos, buildDemoDocument } from '../composables/useLocalDemos'
+import { mountCodeEditor, type MountedEditor } from '../composables/codeEditor'
 import SiteHeader from '../components/SiteHeader.vue'
 import SiteFooter from '../components/SiteFooter.vue'
-import { EditorView, basicSetup } from 'codemirror'
-import { html as langHtml } from '@codemirror/lang-html'
-import { css as langCss } from '@codemirror/lang-css'
-import { javascript } from '@codemirror/lang-javascript'
-import { oneDark } from '@codemirror/theme-one-dark'
-import type { Extension } from '@codemirror/state'
 
 const router = useRouter()
 const route = useRoute()
@@ -67,33 +62,10 @@ const savedIdError = ref('')
 const htmlHost = ref<HTMLDivElement | null>(null)
 const cssHost = ref<HTMLDivElement | null>(null)
 const jsHost = ref<HTMLDivElement | null>(null)
-const editors: Partial<Record<'html' | 'css' | 'js', EditorView>> = {}
-
-function makeEditor(
-  host: HTMLDivElement,
-  lang: Extension,
-  get: () => string,
-  set: (v: string) => void,
-): EditorView {
-  return new EditorView({
-    doc: get(),
-    extensions: [
-      basicSetup,
-      lang,
-      oneDark,
-      EditorView.lineWrapping,
-      EditorView.updateListener.of((u) => {
-        if (u.docChanged) set(u.state.doc.toString())
-      }),
-    ],
-    parent: host,
-  })
-}
+const editors: Partial<Record<'html' | 'css' | 'js', MountedEditor>> = {}
 
 function setEditorDoc(key: 'html' | 'css' | 'js', text: string) {
-  const view = editors[key]
-  if (!view) return
-  view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: text } })
+  editors[key]?.setDoc(text)
 }
 
 // 编辑模式：从 ?edit=<id> 读取已有 demo 填充表单
@@ -113,15 +85,29 @@ onMounted(() => {
     }
   }
   // 表单填充完再挂编辑器，保证初始 doc 是编辑模式的旧内容
-  if (htmlHost.value) {
-    editors.html = makeEditor(htmlHost.value, langHtml(), () => html.value, (v) => (html.value = v))
+  const refs = { html, css, js }
+  const mounts: [HTMLDivElement | null, 'html' | 'css' | 'js'][] = [
+    [htmlHost.value, 'html'],
+    [cssHost.value, 'css'],
+    [jsHost.value, 'js'],
+  ]
+  for (const [host, key] of mounts) {
+    if (!host) continue
+    void mountCodeEditor({
+      host,
+      lang: key,
+      get: () => refs[key].value,
+      set: (v) => {
+        refs[key].value = v
+      },
+    }).then((ed) => {
+      editors[key] = ed
+    })
   }
-  if (cssHost.value) {
-    editors.css = makeEditor(cssHost.value, langCss(), () => css.value, (v) => (css.value = v))
-  }
-  if (jsHost.value) {
-    editors.js = makeEditor(jsHost.value, javascript(), () => js.value, (v) => (js.value = v))
-  }
+})
+
+onUnmounted(() => {
+  for (const ed of Object.values(editors)) ed?.destroy()
 })
 
 // 隐藏面板里的编辑器切回来时重新量一次布局，避免光标错位
