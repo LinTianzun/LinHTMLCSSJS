@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import IonIcon from '../../components/IonIcon.vue'
 
 type ThemeId = 'light-theme' | 'dark-theme' | 'black-theme'
 
@@ -69,7 +70,7 @@ const cssVars = computed<Record<string, string>>(() => {
               v-model="theme"
             />
             <label :for="t.id">
-              <ion-icon :name="t.icon"></ion-icon>
+              <IonIcon :name="t.icon"></IonIcon>
               <span>{{ t.label }}</span>
             </label>
           </template>
@@ -81,7 +82,7 @@ const cssVars = computed<Record<string, string>>(() => {
       </div>
       <div class="menu-body">
         <a v-for="item in items" :key="item.label" href="#" @click.prevent>
-          <ion-icon :name="item.icon"></ion-icon>
+          <IonIcon :name="item.icon"></IonIcon>
           {{ item.label }}
         </a>
       </div>
@@ -190,7 +191,7 @@ const cssVars = computed<Record<string, string>>(() => {
   background-color: var(--c-bg-secondary);
 }
 
-ion-icon {
+.ionicon {
   margin-right: 5px;
   font-size: 20px;
   margin: 2px;

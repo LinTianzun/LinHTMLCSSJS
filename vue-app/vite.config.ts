@@ -35,8 +35,9 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // 只预缓存代码与字体；demos 下的大图片/音频不进预缓存，走下面的运行时缓存
-        globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
+        // 只预缓存代码；6MB 中文字体子集和 demos 下的大图片/音频不进预缓存，走运行时缓存
+        globPatterns: ['**/*.{js,css,html,ico,svg}'],
+        globIgnores: ['**/fonts/**'],
         runtimeCaching: [
           {
             urlPattern: /\/demos\//,
@@ -46,6 +47,18 @@ export default defineConfig({
               expiration: {
                 maxEntries: 200,
                 maxAgeSeconds: 30 * 24 * 60 * 60,
+              },
+            },
+          },
+          {
+            // 自托管字体：首次用到哪个子集就缓存哪个子集
+            urlPattern: /\/fonts\//,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'site-fonts',
+              expiration: {
+                maxEntries: 120,
+                maxAgeSeconds: 180 * 24 * 60 * 60,
               },
             },
           },

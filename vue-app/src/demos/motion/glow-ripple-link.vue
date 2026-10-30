@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import IonIcon from '../../components/IonIcon.vue'
+
 interface PulseLink {
   href: string
   icon: string
@@ -24,7 +26,7 @@ const links: PulseLink[] = [
       :aria-label="link.alt"
       @click.prevent
     >
-      <ion-icon :name="link.icon"></ion-icon>
+      <IonIcon :name="link.icon"></IonIcon>
     </a>
   </div>
 </template>
@@ -49,7 +51,7 @@ const links: PulseLink[] = [
   }
 }
 
-.pulse ion-icon {
+.pulse .ionicon {
   font-size: 35px;
   position: absolute;
   padding: 7px;

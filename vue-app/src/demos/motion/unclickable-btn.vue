@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import IonIcon from '../../components/IonIcon.vue'
 
 const answered = ref(false)
 const noLeft = ref('')
@@ -16,12 +17,12 @@ function dodge() {
 <template>
   <div class="demo">
     <form action="" class="wrapper" @submit.prevent>
-      <ion-icon class="iconHihg wen" name="help-circle" :class="{ hidden: answered }"></ion-icon>
-      <ion-icon
+      <IonIcon class="iconHihg wen" name="help-circle" :class="{ hidden: answered }"></IonIcon>
+      <IonIcon
         class="iconHihg ai"
         name="heart-circle"
         :class="{ shown: answered }"
-      ></ion-icon>
+      ></IonIcon>
       <h2 class="title">
         <template v-if="!answered">喜欢我吗?</template>
         <template v-else>2024 请从爱自己开始<br /></template>
