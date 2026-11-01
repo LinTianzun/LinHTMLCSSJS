@@ -1,5 +1,5 @@
-﻿<script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+<script setup lang="ts">
+import { computed, reactive, ref, watch, onMounted, onUnmounted } from 'vue'
 
 /* ---------- 数据模型（对应原版后端返回的 JSON 结构） ---------- */
 interface ClassInfo {
@@ -192,7 +192,7 @@ const {
 
 const scoreFilterName = computed<string>(() => {
   if (scoreClass.value === 'all') return '全部班级'
-  return classes.value.find((c) => c.bjbh === scoreClass.value)?.bjmc ?? '未知班级'
+  return classNameMap.value.get(scoreClass.value) ?? '未知班级'
 })
 
 function pickScoreClass(bjbh: string): void {
@@ -201,8 +201,16 @@ function pickScoreClass(bjbh: string): void {
   scoreReset()
 }
 
+const classNameMap = computed<Map<string, string>>(() => new Map(classes.value.map((c) => [c.bjbh, c.bjmc])))
+
 function className(bh: string): string {
-  return classes.value.find((c) => c.bjbh === bh)?.bjmc ?? '未知班级'
+  return classNameMap.value.get(bh) ?? '未知班级'
+}
+
+/* 三科总分（0~100 校验通过才算，否则显示占位符）；成绩修改弹层与添加页共用 */
+function sumScore(yw: unknown, sx: unknown, yy: unknown): string {
+  if (!isScoreNum(yw) || !isScoreNum(sx) || !isScoreNum(yy)) return '—'
+  return (Number(yw) + Number(sx) + Number(yy)).toFixed(2)
 }
 
 function isScoreNum(v: unknown): boolean {
@@ -216,12 +224,7 @@ const scoreTarget = ref<ScoreRow | null>(null)
 const scoreForm = reactive({ bh: '', xh: '', xm: '', yw: '', sx: '', yy: '' })
 const scoreEditErr = ref('')
 
-const scoreFormZf = computed<string>(() => {
-  if (isScoreNum(scoreForm.yw) && isScoreNum(scoreForm.sx) && isScoreNum(scoreForm.yy)) {
-    return (Number(scoreForm.yw) + Number(scoreForm.sx) + Number(scoreForm.yy)).toFixed(2)
-  }
-  return '—'
-})
+const scoreFormZf = computed<string>(() => sumScore(scoreForm.yw, scoreForm.sx, scoreForm.yy))
 
 function openScoreEdit(row: ScoreRow): void {
   scoreTarget.value = row
@@ -274,12 +277,7 @@ function removeScore(row: ScoreRow): void {
 const scoreAddForm = reactive({ bh: '', xh: '', xm: '', yw: '', sx: '', yy: '' })
 const scoreAddErr = ref('')
 
-const scoreAddZf = computed<string>(() => {
-  if (isScoreNum(scoreAddForm.yw) && isScoreNum(scoreAddForm.sx) && isScoreNum(scoreAddForm.yy)) {
-    return (Number(scoreAddForm.yw) + Number(scoreAddForm.sx) + Number(scoreAddForm.yy)).toFixed(2)
-  }
-  return '—'
-})
+const scoreAddZf = computed<string>(() => sumScore(scoreAddForm.yw, scoreAddForm.sx, scoreAddForm.yy))
 
 function resetScoreAdd(): void {
   scoreAddForm.bh = ''
@@ -552,6 +550,27 @@ function submitPass(): void {
   resetPass()
   showToast(found ? '密码修改成功' : '密码修改成功（演示账号未在用户列表中）')
 }
+
+/* Escape 从最上层开始关 UI：确认框 → 弹层 → 下拉 → 移动端侧边栏 */
+function onKeydown(e: KeyboardEvent): void {
+  if (e.key !== 'Escape') return
+  if (confirmBox.value) {
+    confirmBox.value = null
+  } else if (scoreModal.value) {
+    scoreModal.value = false
+  } else if (userModal.value) {
+    userModal.value = false
+  } else if (classModal.value) {
+    classModal.value = false
+  } else if (scoreMenuOpen.value) {
+    scoreMenuOpen.value = false
+  } else if (typeof window !== 'undefined' && window.innerWidth <= 860 && sidebarOpen.value) {
+    sidebarOpen.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('keydown', onKeydown))
+onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 </script>
 
 <template>
@@ -605,13 +624,19 @@ function submitPass(): void {
             <div class="profile_name">{{ loginUser }}</div>
             <div class="job">Student</div>
           </div>
-          <button class="logout-btn" type="button" title="退出登录" @click="doLogout">🚪</button>
+          <button class="logout-btn" type="button" title="退出登录" aria-label="退出登录" @click="doLogout">🚪</button>
         </div>
       </aside>
 
       <main class="home">
         <div class="topbar">
-          <button class="menu-btn" type="button" @click="sidebarOpen = !sidebarOpen">☰</button>
+          <button
+            class="menu-btn"
+            type="button"
+            aria-label="展开或收起侧边栏"
+            :aria-expanded="sidebarOpen"
+            @click="sidebarOpen = !sidebarOpen"
+          >☰</button>
           <span class="topbar-title">学生成绩管理系统</span>
           <span class="topbar-crumb">{{ activeTitle }}</span>
         </div>
@@ -957,7 +982,7 @@ function submitPass(): void {
 
       <!-- 修改成绩弹层 -->
       <div v-if="scoreModal" class="modal-mask" @click.self="scoreModal = false">
-        <div class="modal">
+        <div class="modal" role="dialog" aria-modal="true" aria-label="修改成绩">
           <h3>修改成绩</h3>
           <div class="form-row">
             <label>班级</label>
@@ -999,7 +1024,7 @@ function submitPass(): void {
 
       <!-- 修改学生弹层 -->
       <div v-if="userModal" class="modal-mask" @click.self="userModal = false">
-        <div class="modal">
+        <div class="modal" role="dialog" aria-modal="true" aria-label="修改学生">
           <h3>修改学生</h3>
           <div class="form-row">
             <label>用户名</label>
@@ -1025,7 +1050,7 @@ function submitPass(): void {
 
       <!-- 修改班级弹层 -->
       <div v-if="classModal" class="modal-mask" @click.self="classModal = false">
-        <div class="modal">
+        <div class="modal" role="dialog" aria-modal="true" aria-label="修改班级">
           <h3>修改班级</h3>
           <div class="form-row">
             <label>班级编号</label>
@@ -1046,7 +1071,7 @@ function submitPass(): void {
 
     <!-- 删除确认弹窗 -->
     <div v-if="confirmBox" class="modal-mask">
-      <div class="modal confirm">
+      <div class="modal confirm" role="alertdialog" aria-modal="true" aria-label="删除确认">
         <p class="confirm-text">{{ confirmBox.text }}</p>
         <div class="form-actions">
           <button class="op delete" type="button" @click="settleConfirm(true)">确定</button>

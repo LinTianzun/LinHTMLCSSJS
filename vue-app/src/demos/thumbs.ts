@@ -35,7 +35,7 @@ const GLYPHS: Record<string, string> = {
   'message-board': '💬',
   'search-box': '🔍',
   pagination: '🔢',
-  'jsp-score': '🧮',
+  'student-system': '🧮',
   snake: '🐍',
   'memory-cards': '🃏',
   'box-3d': '📦',

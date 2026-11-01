@@ -112,14 +112,13 @@ export const demoCategories: DemoCategory[] = [
   {
     id: 'form',
     name: '表单与功能页面',
-    summary: '有真实功能的页面：登录、留言板、搜索框、分页，以及整套 JSP 成绩管理系统。',
+    summary: '有真实功能的页面：登录、留言板、搜索框、分页，以及整套 JSP 学生成绩管理系统。',
     demos: [
       { id: 'login-page', title: '登录页面', skills: ['毛玻璃', '表单校验', '响应式表单'] },
       { id: 'message-board', title: '留言板', skills: ['列表渲染', '响应式数据'] },
       { id: 'search-box', title: '动态search box搜索框', skills: ['SVG 图标', 'hover 展开'] },
       { id: 'pagination', title: '分页按钮', skills: ['computed 分页算法', '省略号逻辑'] },
-      { id: 'jsp-score', title: 'JSP 成绩管理系统', skills: ['筛选搜索', '增删改弹层', '表格分页'] },
-      { id: 'student-system', title: '学生成绩管理系统', skills: ['多视图状态机', '登录鉴权流程', '条件搜索', 'computed 分页', '增删改弹层', '表单校验', '可折叠侧边栏', '响应式布局'] },
+      { id: 'student-system', title: 'JSP 学生成绩管理系统', skills: ['多视图状态机', '登录鉴权流程', '条件搜索', 'computed 分页', '增删改弹层', '表单校验', '可折叠侧边栏', '响应式布局'] },
     ],
   },
   {
